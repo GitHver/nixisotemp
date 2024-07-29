@@ -9,8 +9,8 @@
     ./hardware-configuration.nix
     ./disko.nix
     inputs.disko.nixosModules.disko
-    #./${path}amdgpu.nix    # If you have an AMD GPU
-    ./${path}nvidia.nix    # or If you have an Nvidia GPU
+    #./${path}/amdgpu.nix    # If you have an AMD GPU
+    #./${path}/nvidia.nix    # or If you have an Nvidia GPU
   ];
 
  #====<< Luks incryption >>====================================================>
