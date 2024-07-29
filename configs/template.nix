@@ -18,11 +18,6 @@ in
 
  #====<< User management >>====================================================>
   users.mutableUsers = true;         # Makes the home directory writeable.
-  # users.users.${username} = {        # See variables at top ↑.
-  #   description = "${displayname}";
-  #   isNormalUser = true;
-  #   extraGroups = [ "wheel" "networkmanager" ];
-  # };
 
  #====<< System packages >>====================================================>
   services.flatpak.enable = false;       # See "flatpaks" for more info.
@@ -41,6 +36,7 @@ in
     starship  # Shell promt customization tool.
     btop      # Better top, a resource monitoring tool.
    #==<< Other >>======================>
+    alacritty # Terminal emulator
     git       # Best learn to use git. it *WILL* make your life easier.
     gitui     # Git terminal user interface written in rust.
   ];
@@ -97,11 +93,5 @@ in
       #"FiraCode"
     ]; })
   ];
-
-  #programs.bash.loginShellInit = ''
-  #  eval "$(zoxide init bash)"
-  #  eval "$(starship init bash)"
-  #  eval "$(zellij setup --generate-auto-start bash)"
-  #'';
 
 };} ################ End of variable & config scope. ###########################
