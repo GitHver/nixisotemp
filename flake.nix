@@ -1,9 +1,12 @@
 { ############################ Initial scope ###################################
 
-description = "SputNix flake!";
+description = ''
+  SputNix flake!
+'';
 
 inputs = {
 
+  #====<< Core Nixpkgs >>======================================================>
   nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
   home-manager.url = "github:nix-community/home-manager";
@@ -12,19 +15,27 @@ inputs = {
   disko.url = "github:nix-community/disko";
   disko.inputs.nixpkgs.follows = "nixpkgs";
 
+  sops-nix.url = "github:Mic92/sops-nix";
+  sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+
+  #====<< DEs & Compositors >>=================================================>
   niri.url = "github:sodiboo/niri-flake";
+  niri.inputs.nixpkgs.follows = "nixpkgs";
 
 };
 
 outputs = { self, nixpkgs, niri, ... }@inputs:
 
 let
-  allusers = import ./users.nix;
-  system-path      = "/etc/nixos";
-  umport = (import ./modules/lib/umport.nix {inherit (nixpkgs) lib;}).umport;
+  pa = {
+    system-path = "/etc/nixos";
+  };
+  umport = (import ./lib/umport.nix {inherit (nixpkgs) lib;}).umport;
+  makeUsers = (import ./lib/makeusers.nix {inherit (nixpkgs) lib;}).makeUsers;
+  recursiveMerge = (import ./lib/recursiveMerge.nix {inherit (nixpkgs) lib;}).recursiveMerge;
 in
 
-{ ############################ Variable scope ##################################
+{ ############################ Output scope ####################################
 
   /* These are example configurations provided to begin using flakes.
   Rename each configuration to the hostnanme of the hardware each uses */ 
@@ -32,13 +43,10 @@ in
 
    #==<< Template configuration >>=============================================>
     template = nixpkgs.lib.nixosSystem {
-      modules = [ ./configs/default.nix ./hardware/template/hardware.nix ] ++ 
-      umport { path = ./modules/essentials; recursive = true; };
+      modules = [ ./configs/common.nix ];
       specialArgs = {
-        #adminusers = builtins.catAttrs "hver" allusers;
-        adminusers = allusers;
-        hostname = "y720";
-        inherit inputs system-path umport ;};};
+        hostname = "YOUR-HOSTNAME";
+        inherit inputs pa umport makeUsers recursiveMerge niri ;};};
 
     # Using the following command, a result directory will be made
     # with a custom ISO in the 'result/bin' directory.
@@ -47,7 +55,9 @@ in
    #==<< Custom ISO image >>===================================================>
     ISO = nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs; };
-      modules = [ ./configs/ISO-image.nix ]; };
+      modules = [
+        ./configs/ISO-image.nix
+        inputs.home-manager.nixosModules.default ]; };
 
   };
 /*
@@ -55,4 +65,4 @@ in
     "<name>" = derivation;
   }
 */
-};} ################ End of variable and inital scope ##########################
+};} ################ End of Output and inital scope ############################

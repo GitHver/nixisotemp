@@ -16,7 +16,7 @@
             mountpoint = "/boot"; };};
 
         plainSwap = {
-          size = "16G";
+          size = "20G";
           content = {
             type = "swap";
             discardPolicy = "both";
