@@ -2,6 +2,7 @@
 
 let
   username = "nixos";
+  directory = "nixisotemp";
 in {
 
  #====<< Imports >>============================================================>
@@ -25,12 +26,7 @@ in {
   networking = {
     hostName = "nixos";     # The name of your computer.
     networkmanager.enable = true; # Networkmanager handles wifi and ethernet.
-    wireless.enable = false;
-    # firewall = {                    # If you're having trouble with connection
-    #   enable = true;                # permissions, you can disable the firewall
-    #   #allowedTCPPorts = [ ... ];   # or open some ports here
-    #   #allowedUDPPorts = [ ... ];   # or here.
-    #   };
+    wireless.enable = false;  # This is to prevent conflicts with networkmanager
   };
 
  #====<< Localization & internationalization >>================================>
@@ -51,29 +47,27 @@ in {
 
  #=====<< Shell aliases >>=====================================================>
   environment.shellAliases = {
+    instructions = "bat /home/nixos/instructions.md";
     yy = "sudo -E yazi";
     wifi-connect = ''
       nmcli device wifi connect $wifiname password $wifipass
     '';
-    get-inix = ''
-      sudo git clone https://github.com/GitHver/inix.git ./inix
-      cd inix
-    '';
-    edit-disko = ''
-      hx ./hardware/template/disko.nix
+    get-repo = ''
+      sudo git clone https://github.com/GitHver/${directory}.git ./${directory}
+      cd ${directory}
     '';
     mount-disko = ''
       sudo nix run github:nix-community/disko -- --mode disko ./hardware/template/disko.nix
     '';
-    genarate-config = ''
+    generate-config = ''
       sudo nixos-generate-config --no-filesystems --root /mnt
-      sudo cp -r ~/inix/. /mnt/etc/nixos
+      sudo cp -r ~/${directory}/. /mnt/etc/nixos
       cd /mnt/etc/nixos
       sudo mv ./hardware-configuration.nix ./hardware/template
       sudo rm ./configuration.nix
     '';
     install = ''
-      git add .
+      sudo git add .
       sudo nixos-install --flake .#template
     '';
   };

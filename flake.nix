@@ -28,6 +28,7 @@ outputs = { self, nixpkgs, niri, ... }@inputs:
 
 let
   pa = {
+    hostname    = "y720";
     system-path = "/etc/nixos";
   };
   umport = (import ./lib/umport.nix {inherit (nixpkgs) lib;}).umport;
@@ -42,12 +43,40 @@ in
   nixosConfigurations = {
 
    #==<< Template configuration >>=============================================>
-    template = nixpkgs.lib.nixosSystem {
+    y720 = nixpkgs.lib.nixosSystem {
       modules = [ ./configs/common.nix ];
       specialArgs = {
-        hostname = "YOUR-HOSTNAME";
         inherit inputs pa umport makeUsers recursiveMerge niri ;};};
+        
+/*
+   #==<< Template configuration >>=============================================>
+    y720niri = nixpkgs.lib.nixosSystem {
+      modules = [
+        ./configs/default.nix 
+        ./hardware/y720/hardware.nix
+        #inputs.agenix.nixosModule.default
+        ] ++ 
+        umport { path = ./modules/essentials; recursive = true; };
+      specialArgs = {
+        #adminusers = builtins.catAttrs "hver" allusers;
+        adminusers = allusers;
+        hostname = "y720";
+        inherit inputs system-path niri umport ;};};
 
+   #==<< Template configuration >>=============================================>
+    template = nixpkgs.lib.nixosSystem {
+      modules = [
+        ./configs/template.nix 
+        ./hardware/template/hardware.nix
+        #inputs.agenix.nixosModule.default
+        ] ++ 
+        umport { path = ./modules/essentials; recursive = true; };
+      specialArgs = {
+        #adminusers = builtins.catAttrs "hver" allusers;
+        adminusers = allusers;
+        hostname = "nixos";
+        inherit inputs system-path umport ;};};
+*/
     # Using the following command, a result directory will be made
     # with a custom ISO in the 'result/bin' directory.
     # $ nix build \.#nixosConfigurations.ISO.config.system.build.isoImage

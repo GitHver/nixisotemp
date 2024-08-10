@@ -8,6 +8,7 @@
   in [
     ./hardware-configuration.nix
     ./disko.nix
+    ./users.nix
     inputs.disko.nixosModules.disko
     #./${path}/amdgpu.nix    # If you have an AMD GPU
     #./${path}/nvidia.nix    # or If you have an Nvidia GPU
