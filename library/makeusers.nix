@@ -1,14 +1,13 @@
-{ lib, umport, ... }:
+{ lib, ... }:
 
 let
   inherit (lib) nameValuePair;
   inherit (lib.lists) forEach;
   inherit (builtins) listToAttrs;
 
-  makeUsers = { userpath, userrules }: let
-    userpaths = umport { path = userpath; };
+  makeUsers = { userpaths, userrules }: let
     users = forEach userpaths (user: import user);
-  in 
+  in
     listToAttrs (forEach users
       (user: nameValuePair user.un {
         isNormalUser = true;
