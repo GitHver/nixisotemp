@@ -8,6 +8,7 @@ inputs = {
 
   #====<< Core Nixpkgs >>======================================================>
   nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+  stable.url  = "github:nixos/nixpkgs/nixos-24.05";
 
   home-manager.url = "github:nix-community/home-manager";
   home-manager.inputs.nixpkgs.follows = "nixpkgs";
@@ -46,7 +47,7 @@ in
       modules = [ ./configs/template.nix ];
       specialArgs = {
         hostname = "YOUR_HOSTNAME";
-        inherit inputs pa umport makeUsers recursiveMerge; };};
+        inherit inputs pa umport makeUsers recursiveMerge niri; };};
 
     # Using the following command, a result directory will be made
     # with a custom ISO in the 'result/bin' directory.
