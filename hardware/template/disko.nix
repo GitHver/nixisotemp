@@ -1,7 +1,7 @@
 {
   disko.devices.disk.main = {
 
-    device = "/dev/nvme0n1";
+    device = "/dev/sda";
     type = "disk";
     content = {
       type = "gpt";
@@ -15,19 +15,20 @@
             format = "vfat";
             mountpoint = "/boot"; };};
 
-        plainSwap = {
-          size = "20G";
-          content = {
-            type = "swap";
-            discardPolicy = "both";
-            resumeDevice = true; };};
-
         root = {
           size = "100%";
           content = {
             type = "filesystem";
             format = "ext4";
             mountpoint = "/"; };};
+
+        plainSwap = {
+          size = "8G";
+          content = {
+            type = "swap";
+            discardPolicy = "both";
+            resumeDevice = false; };};
+
       };
     };
 

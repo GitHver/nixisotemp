@@ -19,6 +19,8 @@ in
       remotePlay.openFirewall = true;
       # Open ports in the firewall for Steam server
       dedicatedServer.openFirewall = true;
+      # For better game tuning
+      gamescopeSession.enable = true;
     };
   };
 }

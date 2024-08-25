@@ -1,4 +1,4 @@
-{ pkgs, lib, config, niri, ... }:
+{ pkgs, lib, config, inputs, ... }:
 
 with lib;
 let
@@ -6,7 +6,7 @@ let
 in
 
 {
-  imports = [ niri.nixosModules.niri ];
+  imports = [ inputs.niri.nixosModules.niri ];
   
   options.niri.enable = mkOption {
     type = types.bool;
@@ -16,27 +16,11 @@ in
 
   config = mkIf cnfg.enable { 
 
-    #imports = [ niri.nixosModules.niri ];
-
     services.xserver.enable = true;
-  
-    programs.niri.enable = true;
-    nixpkgs.overlays = [niri.overlays.niri];
+
+    programs.niri.enable  = true;
     programs.niri.package = pkgs.niri-stable;
-    # programs.niri.package = pkgs.niri-unstable.override {src = niri-working-tree;};
+    nixpkgs.overlays = [ inputs.niri.overlays.niri ];
   
-    environment.variables.NIXOS_OZONE_WL = "1";
-    environment.systemPackages = with pkgs; [
-      wl-clipboard
-      wayland-utils
-      rofi-wayland
-      waybar
-      libsecret
-      cage
-      gamescope
-    ];
-      # qt.enable = true;
-      # qt.style = "adwaita-dark";
-      # qt.platformTheme = "gnome";
   };
 }

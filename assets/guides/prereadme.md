@@ -1,5 +1,14 @@
 
-# Overview
+#### Table of contents
+
+1. [Nix introduction]
+2. [Terminal navigation]
+3. [Installation]
+4. [Git basics]
+5. [Windows virtual machine]
+6. [OpenSSH]
+
+# Nix introduction
 
 This guide is meant both for people new to Nix and Linux. No prior experience with Nix or Linux is expected nor any know-how of the internal workings of either, though I do assume that you heard of them and know what Linux and Nix are in it's most basic form. If you are already on NixOS and are struggling or are an experienced user and you're looking for a way to introduce your friends to Nix, then this guide is also for you.
 
@@ -7,49 +16,137 @@ This guide is meant both for people new to Nix and Linux. No prior experience wi
 
 One of the biggest question about ***Nix*** is why everyone who uses it praises it like some religious icon, but to answer your, you firstly need to understand what exactly ***Nix*** is, because "***Nix***" is actually three things: A package manager and repository (Nixpkgs), a programming language (NixLang), and a Linux distribution (NixOS).
 
-[Nix-holy-trinity.png](https://media.hachyderm.io/media_attachments/files/111/071/129/711/481/861/original/cb247e197294b62a.png)
+![Nix-holy-trinity.png](https://media.hachyderm.io/media_attachments/files/111/071/129/711/481/861/original/cb247e197294b62a.png)
 
 Nix, *the Linux distribution*, is really just the implementation of Nix, *the package manager*, on a larger scale, using Nix, *the programming language*, to configure the entire system, giving you the full ***Nix*** experience. So what is it that the ***Nix*** experience provides that can make even the most jumpy distro hopper settle down? It can become quite evident by going over the features nix provides:
 
-- No dependency hell. Each package is built in isolation and has it's own dependencies.  When a package needs a new dependency, it simply gets rebuild with a symlink to the new dependency. No packages are removed. Any shared dependencies are just symlinks to the specific program, so no space is wasted.
+- ***No dependency hell***. Each package is built in isolation and has it's own dependencies.  When a package needs a new dependency, it simply gets rebuild with a symlink to the new dependency. No packages are removed. Any shared dependencies are just symlinks to the specific program, so no space is wasted.
 
-- Plenty of packages. The nixpkgs repository is the largest package repository in the world, having over a 100'000 packages. You won't ever have to look at another package manager again!
+- ***Plenty of packages***. The nixpkgs repository is the largest package repository in the world, having over a 100'000 packages. You won't ever have to look at another package manager again!
 
-- Stable. The stability of a package manager really boils down to two things: Whether or not its is running ustable/experimental builds of packages and how well the dependency conflicts are handled. Since Nix eliminates the latter, all you have to do to run a stable system is to use the stable channel that only uses verified working packages and Nix takes care of the rest.
+- ***Stable***. The stability of a package manager really boils down to two things: Whether or not its is running ustable/experimental builds of packages and how well the dependency conflicts are handled. Since Nix eliminates the latter, all you have to do to run a stable system is to use the stable channel that only uses verified working packages and Nix takes care of the rest.
 
-- Bleeding edge. The nixpkgs-unstable is a rolling release channel that sports the most up-to-date packages in the Linux world, making sure you have access to the newest packages of everything. With flakes you can run both the stable and the unstable channels at the same time allowing you to use the stable for programs that cannot break and the unstable for programs that need the newest updates.
+- ***Bleeding edge***. The nixpkgs-unstable is a rolling release channel that sports the most up-to-date packages in the Linux world, making sure you have access to the newest packages of everything. With flakes you can run both the stable and the unstable channels at the same time allowing you to use the stable for programs that cannot break and the unstable for programs that need the newest updates.
 
-- Atomic updates. Updates in Nix either happen fully, or not at all. With each package being uniquely identified by their hash, new ones don't override old ones, so if something goes wrong during an update you aren't left with a broken system.
+- ***Atomic upgrades***. Updates in Nix either happen fully, or not at all. With each package being uniquely identified by their hash, new ones don't override old ones, so if something goes wrong during an update you aren't left with a broken system.
 
-- Configuration files. The entirety of your system is configured through configuration files making managing your system incredibly easy and everything you do is self documenting, so no need to look up those commands you always forget, just read your code.
+- ***Configuration files***. The entirety of your system is configured through configuration files making managing your system incredibly easy and everything you do is self documenting, so no need to look up those commands you always forget, just read your code.
 
-- Reproducible. Since everything about your system is stored in a single git repository, sharing your system with others is as easy as sending them zip file or a link to a remote repository. And with flakes, everything is guaranteed to be an exact replication, down to the exact commit of each package.
+- ***Reproducible***. Since everything about your system is stored in a single git repository, sharing your system with others is as easy as sending them zip file or a link to a remote repository. And with flakes, everything is guaranteed to be an exact replication, down to the exact commit of each package.
 
-- Rollbacks. With Nix you can rollback to previous configurations, meaning that if an update contains a broken package or an experimental change you don't like, you can just revert to the state before the update as if it never happened.
+- ***Rollbacks***. With Nix you can rollback to previous configurations, meaning that if an update contains a broken package or an experimental change you don't like, you can just revert to the state before the update as if it never happened.
 
-- Dynamic environments. Nix gives you access to the Nix shell which is an environment where you can specify whatever packages you want and use them for the duration of the shell. If you have Python3.x on your system, but for a specific task you need Python3.y, then all you have to do is initiate a shell with Python3.y and it will be gone when you leave the shell.
+- ***Dynamic environments***. Nix gives you access to the Nix shell which is an environment where you can specify whatever packages you want and use them for the duration of the shell. If you have Python3.x on your system, but for a specific task you need Python3.y, then all you have to do is initiate a shell with Python3.y and it will be gone when you leave the shell.
 
-- Purely functional. Nix is a declarative, purely functional language. This means that functions have no effect on external state. This may take some time getting used to, but it allows the interpreter to make a whole bunch of assumptions which is the key to its reproducible nature. This also forces you into a pattern that rarely produces bugs, keeping your system stable.
+- ***Purely functional***. Nix is a declarative, purely functional language. This means that functions have no effect on external state. This may take some time getting used to, but it allows the interpreter to make a whole bunch of assumptions which is the key to its reproducible nature. This also forces you into a pattern that rarely produces bugs, keeping your system stable.
 
-- Lazily evaluated. Nix only evaluates values if they are called. Any errors like divisions by zero and anything that would take eons to compute is not calculated unless it is needed. You don't pay for what you don't use.
+- ***Lazily evaluated***. Nix only evaluates values if they are called. Any errors like divisions by zero and anything that would take eons to compute is not calculated unless it is needed. You don't pay for what you don't use.
 
 With a feature set like this it can be hard to not see the appeal.
 
-### Why SputNix?
 
-SputNix (this repository) is what you'd call a NixOS configuration/flake. It's a collection of configuration files all managed by the top-level `flake.nix`. It very closely resembles my personal repository, but has had some personal tastes/preferences and nested structures removed for ease of understanding. It's not a distribution derived from NixOS, but rather a starter template configuration for you to get up to speed with everything Nix has to offer as fast as possible, and exposing you to good practises in managing your system.
+# Nix basics
 
-Getting this configuration to the point it is at took a lot of time, the reason being that the documentation for NixOS is not the best. The main problem with NixOS documentation isn't necessarily that it is bad, lackluster or shallow (though it often can be), but rather that it is all scattered throughout the internet like a broken vase, and the ones you find often require 
+##### Types
 
-This is why so many NixOS users may have such varied configurations, with some aspects of them being very clever, while simultaneously having some extremely questionable aspects, like tons of `if else` statements because the user hasn't heard about the config/options system, and just used the knowledge they had available to modularize their configuration.
+Integers
 
-This also results in many configurations being quite hard to navigate, making those GitHub pages newbies get linked to *use as reference* mostly useless as in order to use anything from someones configuration, you need to be able to untangle that one weird/over-complicated aspect that plaques everything, which often requires a lot of effort and know-how, which the newbies that stand to gain the most from it don't have.
+Booleans
 
-So while robust, most configurations are built upon a very personal knowledge and learning journey, making the experience akin to those textbooks that leave the proof to the reader, "*as it is trivial to prove*" (it never is).
+Nulls
 
-SputNix aims to be a one-stop shop for all the basics that you need in order to have a functional configuration at the start of your NixOS journey with all the features you would have otherwise found yourself rewriting your configuration in order to accommodate, like flakes, home-manager, disko and sops-nix, while also explaining what these are, why you want them and how to modify them to your preference, instead of just blindly giving you a configuration with these features, reproducing the problems mentioned above.
+Strings
 
-# Installer walk-through
+Paths
+
+Lists
+
+Attribute sets
+
+##### Operators
+
+`+`
+
+`-`
+
+`/`
+
+`*`
+
+`++`
+
+`attribute-set.attribute`
+
+`//`
+
+
+##### Other
+
+let - in
+
+if - else
+
+with
+
+inherit
+
+brackets ( )
+
+##### Functions
+
+Arguments
+
+Recursion
+
+Libraries
+
+
+# Terminal navigation
+
+Before you go any further, it is best to get a bit more familiar with the terminal, as to not get lost when trying to navigate your system 
+
+### File managers - Yazi
+
+Yazi is a very advanced, batteries included terminal file manager. A good terminal file manager can change the terminal experience from tedious to blissful. Since all a Unix system is is files and directories (not really), having a good way to navigate files is a must
+
+Yazi comes with tons of integrations with modern terminal utils like zoxide and fzf. It even has image previews (provided that your terminal environment supports it).
+
+You can press `o` to open files with their default method (edit, unzip, view, etc), `.` to show hidden files, `a` to create files (if it ends in `/` the it becomes a directory), `r` to rename files, `Space` to toggle select files, `y`, `p` and `x` to yank (copy), paste and cut respectively, with the capital versions `Y` and `X` undoing their selections. `q` is to quit.
+
+### Text editors - Helix
+
+Helix, a "post-modern modal text editor", is a great terminal text editor for beginners and power-users alike. With it being a 'modal' text editor, it has modes. When you open Helix it starts on `NORMAL` mode, where you can do many things such as use `x` to select lines, `d` to delete under the cursor or the current selection, `o` and `O` to create new lines below and above respectively, `Space` then `f` to open the file picker fuzzy finder and many more.
+
+Helix has many modes, but the most important on is of course `INSERT` mode. you can enter it by pressing `i` or `a` to insert or append the current character, or with `I` or `A` to got to the start or the end of the current line.
+
+To exit, press `Escape`  to go back to `NORMAL` mode and the hit `:` to start a command at the bottom line. The command to exit is `:q`, short for `:quit`. To save changes `:w`, short for `:write` writes the current changes to the file. If you need to exit without saving changes then use`:q!`. To save and exit `:wq` or `:x` is the shorthand for `:write-quit`.
+
+### Multiplexers - zellij
+
+Right now you are in a Zellij session, you can see it by the text instructions at the bottom. Zellij is a terminal multiplexer program, allowing you to have multiple panes (terminal instances) making multitasking and just usage in general more easy and understandable.
+
+press `alt`+`n` to create a new pane, you use `alt`+(`←↓↑→` or `HJKL`) to move between panes. `ctrl`+`p` goes into pane mode where you can press `x` to close the pane you are currently on. Just cycle through the modes available to see all options you can use. `ctrl`+`g` locks the interface, stopping Zellij from taking any other input, so if a program you use has conflicting keybinds, you can disable Zellij for to interact with the other program as Zellij always takes priority.
+
+### Navigation tools
+
+#### ls - eza
+
+#### cd - zoxide
+
+#### grep - ripgrep
+
+#### fuzzy finder
+
+### Others
+
+#### fetch
+
+#### btop
+
+#### pipes
+
+
+# Installation
 
 Even if you already have a Working NixOS system it can still be valuable to read through the following section, as it goes over *Disko* and user management. Otherwise, skip to [Configuration](#configuration).
 
@@ -69,7 +166,7 @@ To boot from the ISO on the USB, open the power menu, Hold shift and click resta
 
 there is no standard interface, so you'll have to navigate the menus yourself. But the things you need to make sure are true is:
 
-- To disable secure boot, as it has nothing to do with security or safety.
+- To disable secure boot, as it likely won't let you boot otherwise. *see also*: [lanzaboote](https://github.com/nix-community/lanzaboote)
 - Make sure SATA mode is not in any RAID configuration. Set it to AHCI.
 - Move the USB that you are booting from to the top of the boot priority.
 
@@ -77,19 +174,19 @@ Then hit `F10` to Save and exit the BIOS/UEFI environment. On boot you will be p
 
 ### Keyboard input
 
-Currently, changing keymaps during the installation is more of a hassle than it is worth, so you are stuck with the uk keymap. Don't worry, you will have whatever keymap you use for your language once the installation is complete. Just Search up an image of the uk layout and use it as reference to find your keys.
+Currently, changing keymaps during the installation is more of a hassle than it is worth, so you are stuck with the uk keymap. Don't worry, you will have whatever keymap you use for your language once the installation is complete, and when you make your own custom ISO it can come with whatever keymap you want. For now, just Search up an image of the uk layout and use it as reference to find your keys.
 
 ### Internet
 
 The first thing you want to do is connect to the internet. If you have an Ethernet cable, use that, else your going to have to connect to wifi. To do so, type in the following:
 
-```bash
+```shell
 nmcli device wifi connect "your wifi's name" password "your wifi's password"
 ```
 
 It should say that you have successfully connected with to your wifi. you can test it by pinging any site, try:
 
-```bash
+```shell
 ping gnu.org
 ```
 
@@ -101,47 +198,25 @@ get-repo
 
 This will fetch the repository from GitHub so that you can start editing your system.
 
-### Terminal navigation
-
-Before you go any further, it is best to get a bit more familiar with the terminal, as to not get lost when trying to navigate your system 
-
-##### Zellij
-
-Right now you are in a Zellij session, you can see it by the text instructions at the bottom. Zellij is a terminal multiplexer program, allowing you to have multiple panes (terminal instances) making multitasking and just usage in general more easy and understandable.
-
-press `alt`+`n` to create a new pane, you use `alt`+(`←↓↑→` or `HJKL`) to move between panes. `ctrl`+`p` goes into pane mode where you can press `x` to close the pane you are currently on. Just cycle through the modes available to see all options you can use. `ctrl`+`g` locks the interface, stopping Zellij from taking any other input, so if a program you use has conflicting keybinds, you can disable Zellij for to interact with the other program as Zellij always takes priority.
-
-##### Yazi
-
-Yazi is a very advanced, batteries included terminal file manager. A good terminal file manager can change the terminal experience from tedious to blissful. Since all a Unix system is is files and directories (not really), having a good way to navigate files is a must
-
-Yazi comes with tons of integrations with modern terminal utils like zoxide and fzf. It even has image previews (provided that your terminal environment supports it).
-
-You can press `o` to open files with their default method (edit, unzip, view, etc), `.` to show hidden files, `a` to create files (if it ends in `/` the it becomes a directory), `r` to rename files, `Space` to toggle select files, `y`, `p` and `x` to yank (copy), paste and cut respectively, with the capital versions `Y` and `X` undoing their selections. `q` is to quit.
-
-##### Helix
-
-Helix, a "post-modern modal text editor", is a great terminal text editor for beginners and power-users alike. With it being a 'modal' text editor, it has modes. When you open Helix it starts on `NORMAL` mode, where you can do many things such as use `x` to select lines, `d` to delete under the cursor or the current selection, `o` and `O` to create new lines below and above respectively, `Space` then `f` to open the file picker fuzzy finder and many more.
-
-Helix has many modes, but the most important on is of course `INSERT` mode. you can enter it by pressing `i` or `a` to insert or append the current character, or with `I` or `A` to got to the start or the end of the current line.
-
-To exit, press `Escape`  to go back to `NORMAL` mode and the hit `:` to start a command at the bottom line. The command to exit is `:q`, short for `:quit`. To save changes `:w`, short for `:write` writes the current changes to the file. If you need to exit without saving changes then use`:q!`. To save and exit `:wq` or `:x` is the shorthand for `:write-quit`.
-
-##### Setup
-
-You should start by opening a new pane in Zellij and running yazi with sudo privilegegs by typing:
-
-```
-sudo yazi
-```
-
-now you have one pane where you can navigate the repository and open files to edit and another where you can run commands
-
 ### Disk partition
 
-We'll be using Disko to declaratively partition your drive. Go to the yazi pane and navigate to `hardware/template` and open `disko.nix`
+We'll be using Disko to declaratively partition your drive. Go to the yazi pane and navigate to `hardware/template` and open `disko.nix`. In the other pane, use:
 
-The current setup should be fine for most. But if you want swap with hibernation then uncomment the `resumeDevice = true;` and set the swap size to about the size of your RAM + the square root of your RAM. Example: with 16GB of RAM, your hibernate swap should be 20GB (16 + 4). We will go more in depth on partitioning on the second remote install, so don't worry to much about setting up your partitions. 
+```shell
+lsblk
+```
+
+This will show available drives/devices to be used. There should be two drives; your USB you are currently booting from, and the drive you want to install NixOS onto. Find the correct drive and put it's name (`sda`, `nvme0`, `vda`) into the `device` field. example: If the name of your drive is `nvme0`(`n1`), the it should look like this:
+
+```nix
+  disko.devices.disk.main = {
+  
+    device = "/dev/nvme0n1";
+    type = "disk";
+    ...
+```
+
+The current setup should be fine for most. But if you want swap with hibernation then change `resumeDevice` to be `true` and set the swap size to about the size of your RAM + the square root of your RAM. Example: with 16GB of RAM, your hibernate swap should be 20GB (16 + 4). We will go more in depth on partitioning on the second remote install, so don't worry to much about setting up your partitions. 
 
 When you're done setting up your drive exit by going into normal mode with escape, then `:wq` and enter to write and quit. Now in the command panel type:
 
@@ -165,7 +240,7 @@ Once you've done that open the flake.nix file at the root of the repository and 
 
 ```nix
   /* These are example configurations provided to begin using flakes.
-  Rename each configuration to the hostnanme of the hardware each uses */ 
+  Rename each configuration to the hostnanme of the hardware each uses */
   nixosConfigurations = {
 
    #==<< Template configuration >>=============================================>
@@ -186,12 +261,10 @@ Once you have decided, go to the `users` directory and open the example-user.nix
 
 ```nix
 let example-user = {
-    # your username
-    un = "example-user";
-    # your displayname
-    dn = "Example User";
-    # Your inital password, CHANGE AS SOON AS YOU BOOT!
-    pw = "Null&Nix1312";
+  #your username
+  un = "example-user";
+  #your displayname
+  dn = "Example User";
 };
 in example-user
 ```
@@ -246,13 +319,13 @@ Now save and exit the template file.
 
 Now you should be able to initialize the installation. First you need to add all files to be tracked by git with:
 
-```
+```shell
 sudo git add .
 ```
 
 And with that you can now start the installation with:
 
-```
+```shell
 nixos-install --flake .#YOUR_HOSTNAME
 ```
 
@@ -264,7 +337,7 @@ After that is done simply type `reboot` and hit enter.
 
 ### Home manager bootstrapping
 
-Once you've booted into your system and logged in to your user; open any terminal emultor (Alacritty for example) and type in the following:
+Once you've booted into your system and logged in to your user account open any terminal emulator (Alacritty for example) and type in the following:
 
 ```
 home-install
@@ -272,9 +345,9 @@ home-install
 
 Most likely you will receive an error message. Don't worry, simply log in and out again and execute the command again (just press the up arrow to cycle through recent commands).
 
-Why this fails is because of how NixOS manages shells, but since this just bootstrapping Home-manager to your system for it to be able to manage itself, so you'll never have to use this command again.
+Why this fails is because of how NixOS manages shells, but this is just bootstrapping Home-manager to your system for it to be able to manage itself, so you'll never have to use this command again.
 
-Now use the bellow command to fetch the home-manager template i have provided.
+Now use the bellow command to fetch the home-manager template I have provided.
 
 ```
 get-home
@@ -353,3 +426,6 @@ Once you have a remote repository, you can use `git push` to push all changes yo
 ### More documentation
 
 This should be well enough for most everything you will need to do with git. There are some more things such as notes and tags, advanced shortcut commands and some general concepts on how version control works under the hood, but for now this should suffice. If you ever need to learn anything more, simply checkout the [git documentation](https://git-scm.com/docs/git) or just search up a git cheat sheet if you need a refresher on available commands.
+
+# Windows virtual machine
+# OpenSSH

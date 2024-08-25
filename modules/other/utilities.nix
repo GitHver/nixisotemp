@@ -18,12 +18,10 @@
    #==<< Ohter >>======================>
     wget          # Web get
     cachix
-    wl-clipboard  # Wayland clipboard tool
-    neofetch      # 
-   #==<< Bevy >>=======================>
-    pkg-config
-    alsa-lib
-    libudev-zero
+   #==<< Secrets >>= ===================>
+    age
+    ssh-to-age
+    sops
   ];
 
 }

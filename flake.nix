@@ -10,9 +10,10 @@ inputs = {
   nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
   stable.url  = "github:nixos/nixpkgs/nixos-24.05";
 
-  home-manager.url = "github:nix-community/home-manager";
-  home-manager.inputs.nixpkgs.follows = "nixpkgs";
+  # home-manager.url = "github:nix-community/home-manager";
+  # home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
+  #====<< Extension utils >>===================================================>
   disko.url = "github:nix-community/disko";
   disko.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -20,45 +21,64 @@ inputs = {
   sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
   #====<< DEs & Compositors >>=================================================>
+  nixos-cosmic.url = "github:lilyinstarlight/nixos-cosmic";
+  nixos-cosmic.inputs.nixpkgs.follows = "nixpkgs";
+  
   niri.url = "github:sodiboo/niri-flake";
   niri.inputs.nixpkgs.follows = "nixpkgs";
 
+  hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
+  hyprland.inputs.nixpkgs.follows = "nixpkgs";
+
+  #====<< Libraries and utilities >>===========================================>
+  nypkgs.url = "github:yunfachi/nypkgs";
+  nypkgs.inputs.nixpkgs.follows = "nixpkgs";
+
 };
 
-outputs = { self, nixpkgs, niri, ... }@inputs:
+outputs = { self, nixpkgs, ... }@inputs:
 
 let
-  pa = {
+  system = "x86_64-linux";
+  patt = {
     system-path = "/etc/nixos";
   };
-  umport = (import ./lib/umport.nix {inherit (nixpkgs) lib;}).umport;
-  makeUsers = (import ./lib/makeusers.nix {inherit (nixpkgs) lib;}).makeUsers;
-  recursiveMerge = (import ./lib/recursiveMerge.nix {inherit (nixpkgs) lib;}).recursiveMerge;
-in
+  plib = {
+    makeUsers = (import ./library/makeusers.nix {
+      inherit (nixpkgs) lib;
+    } ).makeUsers;
+    recursiveMerge = (import ./library/recursiveMerge.nix {
+      inherit (nixpkgs) lib;
+    } ).recursiveMerge;
+  };
+  lib = nixpkgs.lib;
+  ylib = inputs.nypkgs.lib.${system};
+  alib = lib // ylib // plib;
+in {
 
-{ ############################ Output scope ####################################
-
+  nixosConfigurations = {
   /* These are example configurations provided to begin using flakes.
   Rename each configuration to the hostnanme of the hardware each uses */ 
-  nixosConfigurations = {
 
-   #==<< Template configuration >>=============================================>
-    YOUR_HOSTNAME = nixpkgs.lib.nixosSystem {
-      modules = [ ./configs/template.nix ];
+    #==<< Desktop configuration >>=============================================>
+    YOUR_HOSTNAME = let hostname = "YOUR_HOSTNAME"; in
+    nixpkgs.lib.nixosSystem {
+      modules = [ ./configs/default.nix ];
       specialArgs = {
-        hostname = "YOUR_HOSTNAME";
-        inherit inputs pa umport makeUsers recursiveMerge niri; };};
+        # hostname = "YOUR_HOSTNAME";
+        inherit inputs patt alib hostname;
+      };
+    };
 
     # Using the following command, a result directory will be made
     # with a custom ISO in the 'result/bin' directory.
     # $ nix build \.#nixosConfigurations.ISO.config.system.build.isoImage
     # put your packages you want on the ISO in ./configd/ISO-image.nix
-   #==<< Custom ISO image >>===================================================>
+    #==<< Custom ISO image >>==================================================>
     ISO = nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs; };
-      modules = [
-        ./configs/ISO-image.nix
-        inputs.home-manager.nixosModules.default ]; };
+      modules = [ ./configs/ISO-image.nix ];
+    };
 
   };
 /*

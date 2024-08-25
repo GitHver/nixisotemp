@@ -1,4 +1,4 @@
-{ pkgs, lib, modulesPath, ... }:
+{ pkgs, alib, modulesPath, ... }:
 
 let
   username = "nixos";
@@ -8,19 +8,19 @@ in {
  #====<< Imports >>============================================================>
   imports = [
     "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix"
-    ./../modules/essentials/localization.nix
+    ./../modules/other/localization.nix
   ]; config = {
 
  #====<< Nixos user >>=========================================================>
-  home-manager.users."nixos" = { pkgs, ... }: {
-    home.username = "${username}";
-    home.homeDirectory = "/home/${username}";
-    home.stateVersion = "24.05";
-    programs.home-manager.enable = true;
+  # home-manager.users."nixos" = { pkgs, ... }: {
+  #   home.username = "${username}";
+  #   home.homeDirectory = "/home/${username}";
+  #   home.stateVersion = "24.05";
+  #   programs.home-manager.enable = true;
     #home.file."inix" = {
     #  source = ./../.;
     #  recursive = true; };
-  };
+  # };
   
  #====<< Network config >>=====================================================>
   networking = {

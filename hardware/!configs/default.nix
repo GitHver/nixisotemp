@@ -1,18 +1,20 @@
-{ pkgs, lib, pa, hostname, umport, ... }:
-/*
+{ pkgs, alib, patt, hostname, ... }:
+
 let
+  inherit (alib) umport;
 in
-*/
+
 { ############################ Variable scope ##################################
 
  #=====<< Module imports >>==========================================true======>
-  imports = [ ./../hardware/${pa.hostname}/hardware.nix ] ++
+  imports = [ ./../hardware/${hostname}/hardware.nix ] ++
   umport { paths = [ ./../modules ]; recursive = true; };
 
 config = { ############### Config scope ########################################
 
  #====<< Options >>============================================================>
   gnome.enable = true;
+  steam-client.enable = false;
 
  #=====<< Bootloader >>========================================================>
   boot.loader.systemd-boot.enable = true;
@@ -48,31 +50,27 @@ config = { ############### Config scope ########################################
   system.stateVersion = "24.11";              # What version of Nix to use
   programs.nix-ld.enable = true;              # Nix-ld is mostly for developers.
   programs.nix-ld.libraries = with pkgs; [];  # doesn't hurt to have it though!
+  nix.nixPath = [ "nixos-config=/etc/nixos" ];
   nix.settings = {
     allowed-users = [ "root" "@wheel" "@nixers" ];  # Note: the wheel group is for admins.
     trusted-users = [ "root" "@wheel" "@nixers" ];
     experimental-features = [ "flakes" "nix-command" ]; };
-  programs.nh = {
+  /*programs.nh = {
     enable = true;
     clean.enable = true;
     clean.extraArgs = "--keep-since 8d --keep 3";
-    flake = "${pa.system-path}"; };
+    flake = "${patt.system-path}"; };*/
 
  #====<< System packages >>====================================================>
   services.flatpak.enable = false;       # See "flatpaks" for more info.
   # Below is where all the sytem-wide packages are installed.
   # Go to https://search.nixos.org/packages to search for programs.
   nixpkgs.config.allowUnfree = true;
-  environment.systemPackages = with pkgs; [ 
+  environment.systemPackages = with pkgs; [
    #==<< Terminal Programs >>==========>
     zellij    # User friendly terminal multiplexer.
     helix     # No nonsense terminal modal text editor.
     yazi      # Batteries included terminal file manager.
-   #==<< Terminal utils >>=============>
-    zoxide    # A better cd command that learns your habbits.
-    eza       # LS but with more options ad customization.
-    bat       # Better cat. Print out files in the terminal.
-    starship  # Shell promt customization tool.
     btop      # Better top, a resource monitoring tool.
    #==<< Other >>======================>
     alacritty
@@ -84,12 +82,12 @@ config = { ############### Config scope ########################################
   xdg.portal.enable = true;         # XDG Desktop portal (for nix and flatpaks)
   programs.xwayland.enable = true;  # For running X11 applications
   services.printing.enable = true;  # Printer protocols
-  fonts.packages = with pkgs; [     # Fonts to import
-    maple-mono-NF
-    (nerdfonts.override { fonts = [ # Nerd Fonts for displaying special glyphs
-      "CascadiaCode"
-      #"FiraCode"
-    ]; })
-  ];
+  # fonts.packages = with pkgs; [     # Fonts to import
+  #   maple-mono-NF
+  #   (nerdfonts.override { fonts = [ # Nerd Fonts for displaying special glyphs
+  #     "CascadiaCode"
+  #     #"FiraCode"
+  #   ]; })
+  # ];
 
 };} ################ End of variable & config scope. ###########################

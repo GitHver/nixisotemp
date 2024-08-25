@@ -1,8 +1,9 @@
-{ pa, ... }:
+{ patt, hostname, ... }:
+
 let
-  inherit (pa) system-path hostname;
-in
-{
+  inherit (patt) system-path;
+in {
+
   programs.bash.shellAliases = {
     
     rebuild = "sudo nixos-rebuild switch --flake ${system-path}#${hostname}";
@@ -16,7 +17,7 @@ in
     clean-W = "sudo nix-collect-garbage --delete-older-than 1w";
     clean-M = "sudo nix-collect-garbage --delete-older-than 1m";
 
-    sga = "sudo git add .";
+    sga = "sudo -E git add .";
     sgc = "sudo -E git commit";
 
     home-install = ''
@@ -24,21 +25,31 @@ in
       nix-channel --update
       nix-shell '<home-manager>' -A install
     '';
+    # or
+    # nix run home-manager/$branch -- init --switch ~/hmconf
+    # or
+    # nix shell nixpkgs#home-manager
+    # nix shell nixpkgs#home-manager --command home-manager switch --flake ~/Nix/home
 
-    ssh-setup1 = ''
-      echo 'ssh-keygen -t ed25519 -C "your@email.host"'
-    '';
-    ssh-setup2 =''
+    ssh1 = ''
       echo '
+      copy the following and replace it with your email and then run it
+
+      ssh-keygen -t ed25519 -C "your@email.host"'
+    '';
+    ssh2 =''
+      echo '
+      copy the below and pasrte it into the next step
+      
       Host *
         AddKeysToAgent yes
         IdentityFile ~/.ssh/id_ed25519'
     '';
-    shh-setup3 = ''
+    ssh3 = ''
       touch ~/.ssh/config
       $EDITOR ~/.ssh/config
     '';
-    shh-setup4 = ''
+    ssh4 = ''
       ssh-add ~/.ssh/id_ed25519
       cat ~/.ssh/id_ed25519.pub
     '';

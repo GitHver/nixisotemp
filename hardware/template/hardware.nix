@@ -1,18 +1,21 @@
-{ inputs, ... }:
+{ inputs, alib, ... }:
 
-{
+let
+ inherit (alib) umport;
+in {
 
  #====<< Import all device specific modules >>=================================>
-  imports = let 
-    path = "../../modules/hardware";
-  in [
+  imports = [
     ./hardware-configuration.nix
     ./disko.nix
     ./users.nix
     inputs.disko.nixosModules.disko
-    #./${path}/amdgpu.nix    # If you have an AMD GPU
-    #./${path}/nvidia.nix    # or If you have an Nvidia GPU
-  ];
+  ] ++ umport { path = ./../../modules/hardware; recursive = true; };
+
+ #====<< Hardware Options >>===================================================>
+  amdgpu.enable = false;
+  nvidia.enable = false;
+  qemuvm.enable = false;
 
  #====<< Luks incryption >>====================================================>
   # if you are using encryption on your drives, you should put it here
