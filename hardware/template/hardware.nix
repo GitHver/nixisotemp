@@ -11,7 +11,7 @@ in {
     ./users.nix
     inputs.disko.nixosModules.disko
     ./../${"!"}configs/default.nix
-  ] ++ umport { path = ./../../modules/hardware; recursive = true; };
+  ] ++ umport { path = ./../../modules; recursive = true; };
 
  #====<< Hardware Options >>===================================================>
   amdgpu.enable = false;

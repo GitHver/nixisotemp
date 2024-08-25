@@ -4,13 +4,7 @@ let
   inherit (alib) umport;
 in
 
-{ ############################ Variable scope ##################################
-
- #=====<< Module imports >>==========================================true======>
-  imports = #[ ./../hardware/${hostname}/hardware.nix ] ++
-  umport { paths = [ ./../..modules ]; recursive = true; };
-
-config = { ############### Config scope ########################################
+{ config = {
 
  #====<< Options >>============================================================>
   gnome.enable = true;
@@ -55,11 +49,6 @@ config = { ############### Config scope ########################################
     allowed-users = [ "root" "@wheel" "@nixers" ];  # Note: the wheel group is for admins.
     trusted-users = [ "root" "@wheel" "@nixers" ];
     experimental-features = [ "flakes" "nix-command" ]; };
-  /*programs.nh = {
-    enable = true;
-    clean.enable = true;
-    clean.extraArgs = "--keep-since 8d --keep 3";
-    flake = "${patt.system-path}"; };*/
 
  #====<< System packages >>====================================================>
   services.flatpak.enable = false;       # See "flatpaks" for more info.
@@ -82,12 +71,5 @@ config = { ############### Config scope ########################################
   xdg.portal.enable = true;         # XDG Desktop portal (for nix and flatpaks)
   programs.xwayland.enable = true;  # For running X11 applications
   services.printing.enable = true;  # Printer protocols
-  # fonts.packages = with pkgs; [     # Fonts to import
-  #   maple-mono-NF
-  #   (nerdfonts.override { fonts = [ # Nerd Fonts for displaying special glyphs
-  #     "CascadiaCode"
-  #     #"FiraCode"
-  #   ]; })
-  # ];
 
 };} ################ End of variable & config scope. ###########################
