@@ -62,8 +62,11 @@ in { config = {
     helix     # No nonsense terminal modal text editor.
     yazi      # Batteries included terminal file manager.
     btop      # Better top, a resource monitoring tool.
+    ripgrep       # Rust regex search
+    fzf           # terminal fuzzy finder
    #==<< Other >>======================>
     alacritty
+    cachix
     git       # Best learn to use git. it *WILL* make your life easier.
   ];
 
