@@ -8,7 +8,7 @@ in {
  #====<< Imports >>============================================================>
   imports = [
     "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix"
-    ./../modules/other/localization.nix
+    ./../../modules/other/localization.nix
   ]; config = {
 
  #====<< Nixos user >>=========================================================>

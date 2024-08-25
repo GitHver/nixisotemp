@@ -10,6 +10,7 @@ in {
     ./disko.nix
     ./users.nix
     inputs.disko.nixosModules.disko
+    ./../${"!"}configs/default.nix
   ] ++ umport { path = ./../../modules/hardware; recursive = true; };
 
  #====<< Hardware Options >>===================================================>

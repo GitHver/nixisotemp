@@ -7,8 +7,8 @@ in
 { ############################ Variable scope ##################################
 
  #=====<< Module imports >>==========================================true======>
-  imports = [ ./../hardware/${hostname}/hardware.nix ] ++
-  umport { paths = [ ./../modules ]; recursive = true; };
+  imports = #[ ./../hardware/${hostname}/hardware.nix ] ++
+  umport { paths = [ ./../..modules ]; recursive = true; };
 
 config = { ############### Config scope ########################################
 

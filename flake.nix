@@ -63,11 +63,8 @@ in {
     #==<< Desktop configuration >>=============================================>
     YOUR_HOSTNAME = let hostname = "YOUR_HOSTNAME"; in
     nixpkgs.lib.nixosSystem {
-      modules = [ ./configs/default.nix ];
-      specialArgs = {
-        # hostname = "YOUR_HOSTNAME";
-        inherit inputs patt alib hostname;
-      };
+      modules = [ ./hardware/${hostname}/hardware.nix ];
+      specialArgs = { inherit inputs patt alib hostname; };
     };
 
     # Using the following command, a result directory will be made
@@ -77,7 +74,7 @@ in {
     #==<< Custom ISO image >>==================================================>
     ISO = nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs; };
-      modules = [ ./configs/ISO-image.nix ];
+      modules = [ ./hardware/${"!"}configs/ISO-image.nix ];
     };
 
   };
