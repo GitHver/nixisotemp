@@ -2,23 +2,23 @@
 
 let
   inherit (alib) umport;
-in
-
-{ config = {
+in { config = {
 
  #====<< Options >>============================================================>
   gnome.enable = false;
   niri.enable  = true;
+  programs.hyprland.enable = false;
   steam-client.enable = false;
 
- #=====<< Bootloader >>========================================================>
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  /* Be VERY careful when changing this, nix is unbreakable in everything except
+ #=====<< Bootloader & Display manager >>======================================>
+  /* Be VERY careful when changing this, Nix is unbreakable in everything except
   in one thing: messing with the boot-loader. You don't want to leave your
   system in an unbootable state, so make sure you know what you are doing when
   rebuilding any changes here. Best to first use a virtual machine or a
   "throw-away"/secondary computer. */
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+  services.xserver.displayManager.lightdm.enable = true;
 
  #====<< Network config >>=====================================================>
   networking = {
@@ -69,7 +69,6 @@ in
 
  #====<< Miscellaneous >>======================================================>
   xdg.portal.enable = true;         # XDG Desktop portal (for nix and flatpaks)
-  programs.xwayland.enable = true;  # For running X11 applications
   services.printing.enable = true;  # Printer protocols
 
 };} ################ End of variable & config scope. ###########################

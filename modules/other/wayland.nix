@@ -11,7 +11,8 @@ in
     default = true;
   };
 
-  config = mkIf cnfg.enable { 
+  config = mkIf cnfg.enable {
+    programs.xwayland.enable = true;  # For running X11 applications
     environment.variables.NIXOS_OZONE_WL = "1";
     environment.systemPackages = with pkgs; [
       wl-clipboard
