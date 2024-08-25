@@ -7,7 +7,8 @@ in
 { config = {
 
  #====<< Options >>============================================================>
-  gnome.enable = true;
+  gnome.enable = false;
+  niri.enable  = true;
   steam-client.enable = false;
 
  #=====<< Bootloader >>========================================================>
@@ -64,7 +65,6 @@ in
    #==<< Other >>======================>
     alacritty
     git       # Best learn to use git. it *WILL* make your life easier.
-    gitui     # Git terminal user interface written in rust.
   ];
 
  #====<< Miscellaneous >>======================================================>

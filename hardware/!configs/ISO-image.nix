@@ -1,7 +1,6 @@
 { pkgs, alib, modulesPath, ... }:
 
 let
-  username = "nixos";
   directory = "nixisotemp";
 in {
 
@@ -11,17 +10,6 @@ in {
     ./../../modules/other/localization.nix
   ]; config = {
 
- #====<< Nixos user >>=========================================================>
-  # home-manager.users."nixos" = { pkgs, ... }: {
-  #   home.username = "${username}";
-  #   home.homeDirectory = "/home/${username}";
-  #   home.stateVersion = "24.05";
-  #   programs.home-manager.enable = true;
-    #home.file."inix" = {
-    #  source = ./../.;
-    #  recursive = true; };
-  # };
-  
  #====<< Network config >>=====================================================>
   networking = {
     hostName = "nixos";     # The name of your computer.
@@ -47,11 +35,8 @@ in {
 
  #=====<< Shell aliases >>=====================================================>
   environment.shellAliases = {
-    instructions = "bat /home/nixos/instructions.md";
+
     yy = "sudo -E yazi";
-    wifi-connect = ''
-      nmcli device wifi connect $wifiname password $wifipass
-    '';
     get-repo = ''
       sudo git clone https://github.com/GitHver/${directory}.git ./${directory}
       cd ${directory}
@@ -66,20 +51,11 @@ in {
       sudo mv ./hardware-configuration.nix ./hardware/template
       sudo rm ./configuration.nix
     '';
-    install = ''
-      sudo git add .
-      sudo nixos-install --flake .#template
-    '';
   };
 
   environment.variables = {
-    EDITOR = "hx";  # this is so that yazi opens hx on 'o'.
+    EDITOR = "hx";  # this is so that yazi opens hx on 'o'/'enter'.
   };
-
-  programs.bash.loginShellInit = ''
-    eval "$(zellij setup --generate-auto-start bash)"
-    eval "$(zoxide init bash)"
-  '';
 
  #====<< Installed packages >>=================================================>
   nixpkgs.config.allowUnfree = true;
