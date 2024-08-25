@@ -35,11 +35,11 @@ in {
 
  #=====<< Shell aliases >>=====================================================>
   environment.shellAliases = {
-
     yy = "sudo -E yazi";
     get-repo = ''
       sudo git clone https://github.com/GitHver/${directory}.git ./${directory}
       cd ${directory}
+      sudo rm -rf .git
     '';
     mount-disko = ''
       sudo nix run github:nix-community/disko -- --mode disko ./hardware/template/disko.nix

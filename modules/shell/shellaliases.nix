@@ -39,5 +39,12 @@ in {
       home-manager switch --flake ~/Home
     '';
 
+    git-system = ''
+      cd /etc/nixos
+      sudo -E git init
+      sudo -E git add .
+      sudo -E git commit -m 'inital commit'
+      cd
+    '';
   };
 }
