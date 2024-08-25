@@ -22,19 +22,20 @@ in {
     sgc = "sudo -E git commit";
     sgp = "sudo -E git push";
 
-    get-home = ''
+    home-get = ''
       git clone https://github.com/GitHver/nixisotemphome.git ~/Home
       cd  ~/Home
       rm -rf ~/Home/.git
-      git init
-      nix shell nixpkgs#home-manager
-      hx flake.nix
+      $EDITOR flake.nix
     '';
-    build-home = ''
+    home-build = ''
+      nix shell nixpkgs#home-manager --command sh -c "home-manager switch --flake ~/Home && exit"
+    '';
+    home-finish = ''
+      nix shell nixpkgs#home-manager --command home-manager switch --flake ~/Home
+      git init
       git add .
-      git commit -m 'initial'
-      home-manager switch --flake ~/Home
-      exit
+      git commit -m 'initial commit'
       home-manager switch --flake ~/Home
     '';
 
