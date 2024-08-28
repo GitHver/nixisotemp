@@ -63,13 +63,13 @@ This is just an alias to `git clone` the repository from GItHub so that you don'
 
 ### Disk partition
 
-We'll be using Disko to declaratively partition your drive. Go to the yazi pane and navigate to `hardware/template` and open `disko.nix`. In the other pane, use:
+We'll be using Disko to declaratively partition your drive. Use:
 
 ```shell
 lsblk
 ```
 
-This will show available drives/devices to be used. There should be two drives; your USB you are currently booting from, and the drive you want to install NixOS onto. Find the correct drive and put it's name (`sda`, `nvme0`, `vda`) into the `device` field. example: If the name of your drive is `nvme0n1`, then it should look like this:
+This will show available drives/devices to be used. There should be two drives; your USB you are currently booting from, and the drive you want to install NixOS onto. Find the correct drive (`sda`, `nvme0`, `vda`) and navigate to `hardware/template` and open `disko.nix`. Put the name of your drive into the `device` field. example: If the name of your drive is `nvme0n1`, then it should look like this:
 
 ```nix
   disko.devices.disk.main = {
@@ -84,21 +84,21 @@ The current setup should be fine for most. But if you want swap with hibernation
 > [!CAUTION]
 > Make sure you have the right disk. The selected disk will be completely wiped 
 
-When you're done setting up your drive exit by going into normal mode with escape, then `:wq` and enter to write and quit. Now in the command panel type:
+When you're done setting up your drive you can save and exit. Now type:
 
 ```
 mount-disko
 ```
 
-This will take a short while, but if it fails for whatever reason, try fiddling with the size of the swap (like seting it to 9GB instead of 8GB).
+This will take a short while, so wait until the promt apears again.
+
+### Host configuration
 
 Now you need to run a provided alias that generates a config for your system's hardware:
 
 ```
 generate-config
 ```
-
-### Host configuration
 
 You'll need to decide on a hostname for your system. It can be anything, but best to make it something that is connected to its actual name or physical structure, for example; if you have Lenovo Yoga Slim 7, the hostname could be `slim7`, or if your computer's case is a fractal north terra the hostname could be `fn-terra`.  Once you've done that open the `flake.nix` file at the root of the repository and scroll down to here:
 
@@ -210,8 +210,6 @@ With your system up and running you can start to get to know your system and it'
 If use `cd /ect/nixos` or `z /etc/nixos` you will go into the directory containing the configuration you modified during the installation. To see the directory in a tree view you can use `eza -lt`, where you can add `-s type` to the end to sort directories first.  From here you can open `yazi` and look around the directory.
 
 The root of the repository contains the *flake* files that are used to control the output of the commands you use to change and update your system. From the `flake.nix` file, all other files are eventually imported for evaluation.
-
-The `configs` directory contains all config presets you make. This is where you keep all config files that don't contain any hardware specific settings, allowing it to be shared across devices. It is possible to only have one config file for all your systems and only manage options in the hardware files of each system, but it can be useful to create presets files that 
 
 The `hardware` directory contains all hardware specific settings and configurations such as; Graphic drivers, Disk partitions, available users and anything that needs special settings to accommodate hardware limitations.
 
