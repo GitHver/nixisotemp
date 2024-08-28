@@ -183,7 +183,7 @@ Once that is done you will be prompted to set a new root password. "root" is bas
 
 Now to install home-manager, so that you can manage user packages and configs without sudo privileges or affecting the system in any way. 
 
-> [!INFO]
+> [!NOTE]
 > If you plan on using other means of dotfiles management, you might want to skip this step. However, home-manager can be used as a dotfiles symlinker, so migrating your configs is as easy as copying your dotfile directory into the `~/Home/dotfiles` directory.
 
 Once you've booted into your system and logged in to your user account open any terminal emulator (Alacritty for example) and type in the following:
