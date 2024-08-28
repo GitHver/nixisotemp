@@ -20,9 +20,13 @@ in { config = {
   boot.loader.efi.canTouchEfiVariables = true;
   services.xserver.displayManager.lightdm.enable = true;
 
+  #====<< Desktop >>===========================================================>
+  services.xserver.enable = true;
+  services.xserver.exportConfiguration = true;  
+
   #====<< Network config >>====================================================>
   networking = {
-    hostName = "${hostname}";     # The name of your computer.
+    hostName = hostname;     # The name of your computer.
     networkmanager.enable = true; # Networkmanager handles wifi and ethernet.
     #wireless.enable = true;      # Unneccesary, Comes packaged with most DEs.
     firewall = {                    # If you're having trouble with connection
@@ -39,7 +43,8 @@ in { config = {
   console.keyMap = "is-latin1";         # Sets the console keymap.
   services.xserver.xkb = {              
     layout = "is";                # Set the keymap for Xserver.
-    options = "caps:escape"; };   # Modification options.
+    options = "caps:escape";      # Modification options.
+  };
 
   #====<< Nix specific settings >>=============================================>
   system.stateVersion = "24.11";              # What version of Nix to use
@@ -49,7 +54,8 @@ in { config = {
   nix.settings = {
     allowed-users = [ "root" "@wheel" "@nixers" ];  # Note: the wheel group is for admins.
     trusted-users = [ "root" "@wheel" "@nixers" ];
-    experimental-features = [ "flakes" "nix-command" ]; };
+    experimental-features = [ "flakes" "nix-command" ];
+  };
 
   #====<< System packages >>===================================================>
   services.flatpak.enable = false;       # See "flatpaks" for more info.
@@ -58,13 +64,14 @@ in { config = {
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
     #==<< Terminal Programs >>=========>
-    zellij    # User friendly terminal multiplexer.
-    helix     # No nonsense terminal modal text editor.
-    yazi      # Batteries included terminal file manager.
-    btop      # Better top, a resource monitoring tool.
-    ripgrep       # Rust regex search
-    fzf           # terminal fuzzy finder
+    # zellij    # User friendly terminal multiplexer.
+    # helix     # No nonsense terminal modal text editor.
+    # yazi      # Batteries included terminal file manager.
+    # btop      # Better top, a resource monitoring tool.
+    # ripgrep   # Rust regex search
+    # fzf       # terminal fuzzy finder
     #==<< Other >>=====================>
+    micro
     alacritty
     kitty
     cachix
