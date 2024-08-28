@@ -22,10 +22,11 @@ in {
       git clone https://github.com/GitHver/nixisotemphome.git ~/Home
       cd  ~/Home
       rm -rf ~/Home/.git
-      micro flake.nix
+      $EDITOR flake.nix
     '';
     home-install = ''
       nix shell nixpkgs#home-manager --command home-manager switch --flake ~/Home
+      cd ~/Home
       git init
       git add .
       git commit -m 'initial commit'
