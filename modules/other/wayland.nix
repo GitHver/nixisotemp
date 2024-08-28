@@ -18,9 +18,6 @@ in
       wl-clipboard-rs
       wayland-utils
       xwayland-satellite
-      wl-gammactl
-      wl-gammarelay-rs
-      wlr-randr
 
       cage
       libsecret
@@ -28,6 +25,9 @@ in
 
       brightnessctl
       clightd
+      wl-gammactl
+      wl-gammarelay-rs
+      wlr-randr
     ];
   };
 }

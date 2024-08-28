@@ -317,7 +317,7 @@ Flakes also have other features, in fact they have quite a lot of features, mayb
 
 Flakes provide a way to create multiple predefined configurations
 
-This is essentially what flakes are, an *input-output* control centre where you can version all your inputs and packages and manage all your different hosts an example of a minimal flake would be:
+This is essentially what flakes are, an *input-output* control centre where you can version all your inputs and packages and manage all your different hosts. An example of a minimal flake would be:
 
 ```nix
 {

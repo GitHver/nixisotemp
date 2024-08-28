@@ -18,17 +18,13 @@ in {
     clean-W = "sudo nix-collect-garbage --delete-older-than 7d";
     clean-M = "sudo nix-collect-garbage --delete-older-than 30d";
 
-    sga = "sudo -E git add .";
-    sgc = "sudo -E git commit";
-    sgp = "sudo -E git push";
-
     home-get = ''
       git clone https://github.com/GitHver/nixisotemphome.git ~/Home
       cd  ~/Home
       rm -rf ~/Home/.git
-      $EDITOR flake.nix
+      micro flake.nix
     '';
-    home-finish = ''
+    home-install = ''
       nix shell nixpkgs#home-manager --command home-manager switch --flake ~/Home
       git init
       git add .
@@ -43,5 +39,10 @@ in {
       sudo -E git commit -m 'inital commit'
       cd
     '';
+
+    sga = "sudo -E git add .";
+    sgc = "sudo -E git commit";
+    sgp = "sudo -E git push";
+
   };
 }

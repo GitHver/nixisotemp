@@ -50,7 +50,6 @@ in { config = {
   system.stateVersion = "24.11";              # What version of Nix to use
   programs.nix-ld.enable = true;              # Nix-ld is mostly for developers.
   programs.nix-ld.libraries = with pkgs; [];  # doesn't hurt to have it though!
-  nix.nixPath = [ "nixos-config=/etc/nixos" ];
   nix.settings = {
     allowed-users = [ "root" "@wheel" "@nixers" ];  # Note: the wheel group is for admins.
     trusted-users = [ "root" "@wheel" "@nixers" ];
