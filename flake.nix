@@ -61,7 +61,7 @@ in {
   Rename each configuration to the hostnanme of the hardware each uses */ 
 
     #==<< Desktop configuration >>=============================================>
-    YOUR_HOSTNAME = let hostname = "YOUR_HOSTNAME"; in
+    your-hostname = let hostname = "your-hostname"; in
     nixpkgs.lib.nixosSystem {
       modules = [ ./hardware/${hostname}/hardware.nix ];
       specialArgs = { inherit inputs patt alib hostname; };

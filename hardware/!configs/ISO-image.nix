@@ -48,13 +48,13 @@ in {
       sudo rm -rf .git
     '';
     mount-disko = ''
-      sudo nix run github:nix-community/disko -- --mode disko ./hardware/template/disko.nix
+      sudo nix run github:nix-community/disko -- --mode disko ./hardware/default/disko.nix
     '';
     generate-config = ''
       sudo nixos-generate-config --no-filesystems --root /mnt
       sudo cp -r ~/${directory}/. /mnt/etc/nixos
       cd /mnt/etc/nixos
-      sudo mv ./hardware-configuration.nix ./hardware/template
+      sudo mv ./hardware-configuration.nix ./hardware/default
       sudo rm ./configuration.nix
     '';
   };
