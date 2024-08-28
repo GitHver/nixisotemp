@@ -6,8 +6,8 @@ in { config = {
 
   #====<< Options >>===========================================================>
   gnome.enable = true;
-  niri.enable  = true;
-  programs.hyprland.enable = true;
+  niri.enable  = false;
+  programs.hyprland.enable = false;
   steam-client.enable = false;
 
   #=====<< Bootloader & Display manager >>=====================================>
@@ -63,15 +63,9 @@ in { config = {
   # Go to https://search.nixos.org/packages to search for programs.
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
-    #==<< Terminal Programs >>=========>
-    # zellij    # User friendly terminal multiplexer.
-    # helix     # No nonsense terminal modal text editor.
-    # yazi      # Batteries included terminal file manager.
-    # btop      # Better top, a resource monitoring tool.
-    # ripgrep   # Rust regex search
-    # fzf       # terminal fuzzy finder
-    #==<< Other >>=====================>
+    #==<< Programs >>==================>
     micro
+    btop
     alacritty
     kitty
     cachix

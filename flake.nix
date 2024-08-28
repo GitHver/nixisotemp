@@ -68,7 +68,7 @@ in {
     };
 
     # Using the following command, a result directory will be made
-    # with a custom ISO in the 'result/bin' directory.
+    # with a custom ISO in the 'result/iso' directory.
     # $ nix build \.#nixosConfigurations.ISO.config.system.build.isoImage
     # put your packages you want on the ISO in `hardware/!configs/ISO-image.nix`
     #==<< Custom ISO image >>==================================================>

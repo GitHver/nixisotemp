@@ -11,8 +11,8 @@ in {
   ]; config = {
 
   #====<< xserver >>===========================================================>
-  services.xserver.enable = true;
-  services.xserver.exportConfiguration = true;
+  # services.xserver.enable = true;
+  # services.xserver.exportConfiguration = true;
 
   #====<< Network config >>====================================================>
   networking = {

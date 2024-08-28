@@ -3,19 +3,202 @@
 
 Welcome to the Sput*Nix* Repository.
 
-The aim of this repository is to provide a full feature NixOS configuration/flake, without it being
+This Repository aims to solve one problem: Getting started with NixOS is extremely tedious. The documentation can often be really shallow and it's all scattered throughout the internet like a broken vase.
 
-SputNix (this repository) is what you'd call a NixOS configuration/flake. It's a collection of configuration files all managed by the top-level `flake.nix`. It very closely resembles my personal repository, but has had some personal tastes/preferences and nested structures removed for ease of understanding. It's not a distribution derived from NixOS, but rather a starter template configuration for you to get up to speed with everything Nix has to offer as fast as possible, and exposing you to good practises in managing your system.
+SputNix aims to be a one-stop shop for all the basics that you need in order to have a functional configuration at the start of your NixOS journey with all the features you would have otherwise found yourself rewriting your configuration in order to accommodate, like Flakes, Home-manager or Disko, while also explaining what these are, why you want them and how to modify them to your preference.
 
-Getting this configuration to the point it is at took a lot of time, the reason being that the documentation for NixOS is not the best. The main problem with NixOS documentation isn't necessarily that it is bad, lacklustre or shallow (though it often can be), but rather that it is all scattered throughout the internet like a broken vase, and the ones you find often require 
+It is best if you know some Linux basics and how to navigate a terminal user interface, but this is not required. You should however learn [Git](), as it will make your life much easier, but you can learn it as you go.
 
-This is why so many NixOS users may have such varied configurations, with some aspects of them being very clever, while simultaneously having some extremely questionable aspects, like tons of `if ... else` statements because the user hasn't heard about the config/options system, and just used the knowledge they had available to modularize their configuration.
 
-This also results in many configurations being quite hard to navigate, making those GitHub pages newbies get linked to *use as reference* mostly useless as in order to use anything from someones configuration, you need to be able to untangle that one weird/over-complicated aspect that plaques everything, which often requires a lot of effort and know-how, which the newbies that stand to gain the most from it don't have.
+# Installation ISO
 
-So while robust, most configurations are built upon a very personal knowledge and learning journey, making the experience akin to those textbooks that leave the proof to the reader, "*as it is trivial to prove*" (it never is).
+> [!IMPORTANT]
+> Even if you already have a Working NixOS system it can still be valuable to read through the following section, as it goes over *Disko* and user management. Otherwise, skip to [Configuration](#configuration).
 
-SputNix aims to be a one-stop shop for all the basics that you need in order to have a functional configuration at the start of your NixOS journey with all the features you would have otherwise found yourself rewriting your configuration in order to accommodate, like Flakes, Home-manager or Disko, while also explaining what these are, why you want them and how to modify them to your preference, instead of just blindly giving you a configuration with these features, reproducing the problems mentioned above.
+### Installing the ISO
+
+For this guide I have provided a custom ISO for you to use. It comes with many helpful utils and bash aliases to make the installation near automatic. Beware though that by downloading this ISO you are trusting that I have not bundled any malicious software with it. You can see the contents of the ISO in the `hardware/!configs/ISO-image.nix` so if you do not trust me, you can use the minimal ISO provided by nixos.org and a see what each command does for yourself. by the end you will also be able to make your own ISO mage.
+
+[Link to ISO download]()
+
+The first thing you'll need is a USB thumb drive to flash the ISO to. You can use either [Etcher](https://etcher.balena.io/) or [Ventoy](https://www.ventoy.net/en/index.html). I recommend Ventoy, as you can have multiple ISO images on it while also storing files. This way you can download both a NixOS ISO and a Windows ISO, so if you want go back or something goes wrong, you can just boot back into Windows with out needing a second computer to redownload and flash the ISO.
+
+### BIOS and booting
+
+To boot from the ISO on the USB, open the power menu, Hold shift and click restart. If this doesn't work, you need to restart/turn on your computer, and hit either: `F2`, `F12` or `Delete` when the computer is booting. A splash screen image might say which one you need to press. With that you should be but into the BIOS/UEFI interface.
+
+there is no standard interface, so you'll have to navigate the menus yourself. But the things you need to make sure are true is:
+
+- To disable secure boot, as it likely won't let you boot otherwise. *see also*: [lanzaboote](https://github.com/nix-community/lanzaboote)
+- Make sure SATA mode is not in any RAID configuration. Set it to AHCI.
+- Move the USB that you are booting from to the top of the boot priority.
+
+Then hit `F10` to Save and exit the BIOS/UEFI environment. On boot you will be prompted to chose boot options, just hit enter to chose the default options.
+
+### Keyboard input
+
+Currently, changing keymaps during the installation is more of a hassle than it is worth, so you are stuck with the uk keymap. Don't worry, you will have whatever keymap you use for your language once the installation is complete, and when you make your own custom ISO it can come with whatever keymap you want. For now, just Search up an image of the uk layout and use it as reference to find your keys.
+
+### Internet
+
+The first thing you want to do is connect to the internet. If you have an Ethernet cable, use that, else your going to have to connect to wifi. To do so, type in the following:
+
+```shell
+nmcli device wifi connect "your wifi's name" password "your wifi's password"
+```
+
+It should say that you have successfully connected with to your wifi. you can test it by pinging any site, try:
+
+```shell
+ping gnu.org
+```
+
+When you see packets being sent, hit ctrl+c to stop pinging. Next, type:
+
+```
+get-repo
+```
+
+This is just an alias to `git clone` the repository from GItHub so that you don't have to type out the url yourself.
+
+### Disk partition
+
+We'll be using Disko to declaratively partition your drive. Go to the yazi pane and navigate to `hardware/template` and open `disko.nix`. In the other pane, use:
+
+```shell
+lsblk
+```
+
+This will show available drives/devices to be used. There should be two drives; your USB you are currently booting from, and the drive you want to install NixOS onto. Find the correct drive and put it's name (`sda`, `nvme0`, `vda`) into the `device` field. example: If the name of your drive is `nvme0n1`, then it should look like this:
+
+```nix
+  disko.devices.disk.main = {
+  
+    device = "/dev/nvme0n1";
+    type = "disk";
+    ...
+```
+
+The current setup should be fine for most. But if you want swap with hibernation then change `resumeDevice` to be `true` and set the swap size to about the size of your RAM + the square root of your RAM. Example: with 16GB of RAM, your hibernate swap should be 20GB (16 + 4). We will go more in depth on partitioning on the second remote install, so don't worry to much about setting up your partitions.
+
+> [!CAUTION]
+> Make sure you have the right disk. The selected disk will be completely wiped 
+
+When you're done setting up your drive exit by going into normal mode with escape, then `:wq` and enter to write and quit. Now in the command panel type:
+
+```
+mount-disko
+```
+
+This will take a short while, but if it fails for whatever reason, try fiddling with the size of the swap (like seting it to 9GB instead of 8GB).
+
+Now you need to run a provided alias that generates a config for your system's hardware:
+
+```
+generate-config
+```
+
+### Host configuration
+
+You'll need to decide on a hostname for your system. It can be anything, but best to make it something that is connected to its actual name or physical structure, for example; if you have Lenovo Yoga Slim 7, the hostname could be `slim7`, or if your computer's case is a fractal north terra the hostname could be `fn-terra`.  Once you've done that open the `flake.nix` file at the root of the repository and scroll down to here:
+
+```nix
+  nixosConfigurations = {
+
+    #==<< Template configuration >>=============================================>
+    YOUR_HOSTNAME = let hostname = "YOUR_HOSTNAME" in
+    nixpkgs.lib.nixosSystem {
+      modules = [ ./hardware/template/hardware.nix ];
+      specialArgs = { inherit inputs alib patt hostname; };
+    };
+```
+
+Here you need to change all `YOUR_HOSTNAME`'s to the hostname you want and then save the file. Next navigate to the `hardware` directory and then rename the `template` directory to your hostname.
+
+### Users
+
+Now decide on an username and a displayname. The username will be the one used to refer to your user in everything is is your actual username, It can't be uppercase or contain any spaces. Your displayname is what is shown when selecting users in the display manager (log-in screen) and can contain spaces and any characters. Once you have decided, go to the `users` directory and open the example-user.nix file.
+
+```nix
+{
+  #your username
+  un = "example-user";
+  #your displayname
+  dn = "Example User";
+}
+```
+
+Now change the `un` (username) variable to your username, and then the `dn` (displayname) variable to your desired displayname and the save and exit and then rename the file to your username(`.nix`).
+
+### Localization
+
+Now scroll down to here:
+
+```nix
+ #====<< Localization & internationalization >>================================>
+  time.timeZone = "Europe/London";
+  i18n.defaultLocale  = "en_US.UTF-8";  # Set default localization.
+  extraLocaleSettings = "en_GB.UTF-8";  # Set other localization.
+  console.keyMap = "uk";                # Sets the console keymap.
+  services.xserver.xkb = {              
+    layout = "gb";                # Set the keymap for Xserver.
+    #variant = "colemak"          # Your preference.
+    options = "caps:escape"; };   # Modification options.
+```
+
+What to do here is pretty straight forward:
+
+- Change the `timeZone` to your timezone.
+- Set the `defaultLocale` to the language you want your system to be in.
+- `extraLocaleSettings` is all other locales (formating, time & date, measurements, etc).
+- `console.keymap` is the keyboard layout in the terminal, like `"us"` or `"is-latin1"`
+- xKeyboard, `xkb`, is your keyboard.
+	- `layout` is your language layout (`"gb"`, `"ru"`, `"is"`).
+	- `variant` is any specific variation of that layout (`"colemak"`, `"dvorak"`).
+	- `options` is keyboard behaviour. Here `caps-lock` is an additional `escape`
+	- These options are all mapped to the xkb options. see more [here]()
+
+Now save and exit the template file.
+
+### Choosing a desktop environment
+
+Gnome
+Niri
+Hyprland
+
+### NixOS install script
+
+And with that you can now start the installation with:
+
+```shell
+sudo nixos-install --flake .#YOUR_HOSTNAME
+```
+
+Once that is done you will be prompted to set a new root password. "root" is basically just a user that is assigned to your computer, so really just ***The*** admin user. You will rarely ever be prompted to use this password, maybe never, but it is the key to your system so **don't forget it**. After that is done simply type `reboot` and hit enter.
+
+> [!IMPORTANT]
+> If you get any errors, read the middle line where the error is actually displayed and trace the file destination (usually down at the bottom), but remember to add all changes to git before trying to install again.
+
+### Home manager bootstrapping
+
+Now to install home-manager, so that you can manage user packages and configs without sudo privileges or affecting the system in any way. 
+
+> [!INFO]
+> If you plan on using other means of dotfiles management, you might want to skip this step. However, home-manager can be used as a dotfiles symlinker, so migrating your configs is as easy as copying your dotfile directory into the `~/Home/dotfiles` directory.
+
+Once you've booted into your system and logged in to your user account open any terminal emulator (Alacritty for example) and type in the following:
+
+```
+home-get
+```
+
+The use Yazi to navigate to the new repository and open the flake.nix file there. The only thing you have to do is go down to the `let ... in` block and change the `username` and `email` variables to their correct values, save and exit and then run:
+
+```
+home-install
+```
+
+If you open a new terminal instance, you will be placed into a fish shell. If you do not wish to use fish as your shell, go to `modules/shells/bash.nix` and comment out the `bash.profileExtra`
 
 
 # Configuration
@@ -54,21 +237,15 @@ If you open `configs/template.nix` and scroll a bit down, you'll see a commented
     zellij    # User friendly terminal multiplexer.
     helix     # No nonsense terminal modal text editor.
     yazi      # Batteries included terminal file manager.
-   #==<< Terminal utils >>=============>
-    zoxide    # A better cd command that learns your habbits.
-    eza       # LS but with more options and customization.
-    bat       # Better cat. Print out files in the terminal.
-    starship  # Shell promt customization tool.
     btop      # Better top, a resource monitoring tool.
    #==<< Other >>======================>
     alacritty
     git       # Best learn to use git. it *WILL* make your life easier.
-    gitui     # Git terminal user interface written in rust.
   ];
 }
 ```
 
-The first line is just if you want to enable flatpaks (you shouldn't), but below that is a list called `systemPackages` and inside that list you'll find a bunch of entries such as `helix`, `eza` and `yazi`. These are some of the programs I have included for you to get started, but of course you can remove them and replace them with what ever you want.
+The first line is just if you want to enable flatpaks (you shouldn't), but below that is a list called `systemPackages` and inside that list you'll find a bunch of entries such as `helix`, `btop` and `yazi`. These are some of the programs I have included for you to get started, but of course you can remove them and replace them with what ever you want.
 
 An important thing to note is that these are of course not all of the packages included with your system. In the `modules` directory, you'll find files that, when enabled, install a bunch of packages. This is because to use this module, you'll need the packages provided, so if this module/option is enabled, then these packages will be included automatically. 
 
@@ -78,12 +255,9 @@ The default module is fairly minimal, especially if you have no desktop environm
 
 To find packages, go to https://search.nixos.org/packages. Here you can search for package in either the unstable channel, or the current stable channel. You can also search for `options`, which are nix expressions you can put into your nix config files. Try searching for `users` to see options containing anything with users, or `programs` to see all options to provided programs.
 
-
 ### Module system
 
 ### Commands
-
-##### switching configs
 
 To apply any of the changes you have made to your config, you'll need to execute a command like in any package manager when you update (like `apt upgrade`). On NixOS this command is:
 
@@ -94,25 +268,15 @@ sudo nixos-rebuild <option> --flake /path/to/flake#<configuration>
 Here `nixos-rebuild` is the command that creates a new profile based on the provided configuration. `<option>` is how you want to output the new build, where you can either:
 
 - `switch`. This takes the new configuration and activates it once the build finishes.
-- `build`. This just build the result into a `result/` directory. this can be used to test for any errors without activating the configuration if it passes.
+- `build`. This just build the result into a `result/` directory. This can be used to test for any errors without activating the configuration if it passes.
 - `test`. Same as switch, but does not add a new profile to the bootloader.
 - `boot`. Builds a configuration and adds it to the bootloader, but does not activate it.
 - `build-wm`. Builds a virtual machine to test the new configuration.
 
-The `--flake` flag makes it so the rebuild will look for a `flake.nix` instead of a `configuration.nix`. The path behind it is the path to the flake, the default being `/etc/nixos`, but you can change this with the following in your nix configuration:
-
-```nix
-{
-  nix.nixPath = [ "nixos-config=/path/to/flake" ];
-}
-```
-
-The `#<configuration>` specifies what configuration to use. If this is dropped it will instead look for a configuration with the same name as your hostname. This will become more clear in the [Flake](#flakes) chapter.
-
-With the nix path set, and assuming that your flake has a configuration named after the hostname of your system, you can drop the later part and only type:
+The `--flake` flag makes it so the rebuild will look for a `flake.nix` instead of a `configuration.nix`. The path behind it is the path to the flake. The `#<configuration>` specifies what configuration to use. If this is dropped it will instead look for a configuration with the same name as your hostname. So an example of this usage would be:
 
 ```shell
-sudo nixos-rebuild switch --flake
+sudo nixos-rebuild switch --flake /ect/nixos
 ```
 
 You can also rollback to previous configurations using the `--rollback` flag like so:
@@ -121,17 +285,13 @@ You can also rollback to previous configurations using the `--rollback` flag lik
 sudo nixos-rebuild --rollback switch
 ```
 
-##### updating system
-
 Since this config uses flakes, in order to update your system/packages, you'll need to update the `flake.lock`. You do this by using:
 
 ```shell
-nix flake update <input>
+nix flake update <input> /path/to/flake
 ```
 
-The `<input>` option is used to specify which input to update. if it is dropped, all inputs will be updates and such the entire system. You still need to run a `nixos-rebuild` command to apply the changes.
-
-##### garbage collection
+The `<input>` option is used to specify which input to update. if it is dropped, all inputs will be updates and such the entire system. The path is the path to the `flake.lock` you want to update. You still need to run a `nixos-rebuild` command to apply the changes.
 
 When updating the system, all old packages are kept, otherwise you wouldn't be able to rollback to previous configs. To delete old generations you no longer wish to keep, use:
 
@@ -141,15 +301,13 @@ sudo nix-collect-garbage -d
 
 This deletes all old generations and packages used by them. If you want to keep some generations, you can replace the `-d` flag with `--delete-older-than <period>`, where period can be: `3d`, `21d`, `365d`, etc.
 
-##### other comands
-
 Some other useful commands are:
 
 - `nix repl`. This a repl command for Nix that allows you to test out nix expressions and code. Type `:q` to quit. Learn more [here](https://nix.dev/manual/nix/2.24/command-ref/new-cli/nix3-repl.html).
-- `nix shell`. This command creates ephemeral environments with any package you specify either on the command-line with `-p`, or in a `shell.nix` file in the current directory.
+- `nix shell`. This command creates ephemeral environments with any package you specify either on the command-line with `nixpkgs#<package>`, or in a `shell.nix` file in the current directory.
 
 
-# Confusing flakes
+# Flakes
 
 If you have been using NixOS or used it before, you'll undoubtedly have heard people mention "flakes". In fact I have mentioned them a lot in the text leading up to this chapter. But what are flakes? The name isn't exactly descriptive and everyone seams to describe flakes in different ways? Why would you even want to use flakes?
 
@@ -166,9 +324,11 @@ This is essentially what flakes are, an *input-output* control centre where you 
 ```nix
 {
   description = "My flake!";
-  
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-  
+
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+  };
+
   outputs = { nixpkgs }: {
     nixosConfigurations.<HOST> = nixpkgs.lib.nixSystem {
       modules = [ configuration.nix ];
@@ -179,7 +339,7 @@ This is essentially what flakes are, an *input-output* control centre where you 
 
 ### Inputs
 
-The inputs attributeset is what controls what goes into the `flake.lock`
+The inputs attribute set is what controls what goes into the `flake.lock`
 
 ```nix
 {
