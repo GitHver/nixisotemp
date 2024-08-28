@@ -4,36 +4,42 @@ let
   directory = "nixisotemp";
 in {
 
- #====<< Imports >>============================================================>
+  #====<< Imports >>===========================================================>
   imports = [
     "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix"
     ./../../modules/other/localization.nix
   ]; config = {
 
- #====<< Network config >>=====================================================>
+  #====<< xserver >>===========================================================>
+  services.xserver.enable = true;
+  services.xserver.exportConfiguration = true;
+
+  #====<< Network config >>====================================================>
   networking = {
-    hostName = "nixos";     # The name of your computer.
+    hostName = "nixos";           # The name of your computer.
     networkmanager.enable = true; # Networkmanager handles wifi and ethernet.
-    wireless.enable = false;  # This is to prevent conflicts with networkmanager
+    wireless.enable = false;      # This is to prevent conflicts with networkmanager
   };
 
- #====<< Localization & internationalization >>================================>
+  #====<< Localization & internationalization >>===============================>
   time.timeZone = "Atlantic/Reykjavik";
   i18n.defaultLocale  = "en_GB.UTF-8";  # Set default localization.
   extraLocaleSettings = "is_IS.UTF-8";  # Set main localization.
   console.keyMap = "is-latin1";         # Sets the console keymap.
   services.xserver.xkb = {              
     layout = "is";                # Set the keymap for Xserver.
-    options = "caps:escape"; };
+    options = "caps:escape";
+  };
 
- #====<< Nix specific settings >>==============================================>
+  #====<< Nix specific settings >>=============================================>
   system.stateVersion = "24.11";          # What version of Nix to use
   nix.settings = {
     allowed-users = [ "root" "@wheel" ];  # Note: the wheel group is for admins.
     trusted-users = [ "root" "@wheel" ];
-    experimental-features = [ "flakes" "nix-command" ]; };
+    experimental-features = [ "flakes" "nix-command" ];
+  };
 
- #=====<< Shell aliases >>=====================================================>
+  #=====<< Shell aliases >>====================================================>
   environment.shellAliases = {
     yy = "sudo -E yazi";
     get-repo = ''
@@ -46,7 +52,7 @@ in {
     '';
     generate-config = ''
       sudo nixos-generate-config --no-filesystems --root /mnt
-      sudo cp -r ~/${directory}/. /mnt/etc/nixos
+      sudo mv -r ~/${directory}/. /mnt/etc/nixos
       cd /mnt/etc/nixos
       sudo mv ./hardware-configuration.nix ./hardware/template
       sudo rm ./configuration.nix
@@ -57,18 +63,18 @@ in {
     EDITOR = "hx";  # this is so that yazi opens hx on 'o'/'enter'.
   };
 
- #====<< Installed packages >>=================================================>
+  #====<< Installed packages >>================================================>
   nixpkgs.config.allowUnfree = true;
   nixpkgs.hostPlatform = "x86_64-linux";
   environment.systemPackages = with pkgs; [
-   #==<< Base utils >>=================>
+    #==<< Base utils >>================>
     util-linux
     git
     gitui
-   #==<< Partition utils >>============>
+    #==<< Partition utils >>===========>
     disko
     parted
-   #==<< Terminal Navigation >>========>
+    #==<< Terminal Navigation >>=======>
     zellij
     helix
     yazi
@@ -77,10 +83,10 @@ in {
     ripgrep
     eza
     bat
-   #==<< Internet >>===================>
+    #==<< Internet >>==================>
     wget
     wpa_supplicant
-   #==<< Other >>======================>
+    #==<< Other >>=====================>
     marksman
     nil
     bash-language-server
