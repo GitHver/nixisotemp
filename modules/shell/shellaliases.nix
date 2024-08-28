@@ -28,9 +28,6 @@ in {
       rm -rf ~/Home/.git
       $EDITOR flake.nix
     '';
-    home-build = ''
-      nix shell nixpkgs#home-manager --command sh -c "home-manager switch --flake ~/Home && exit"
-    '';
     home-finish = ''
       nix shell nixpkgs#home-manager --command home-manager switch --flake ~/Home
       git init

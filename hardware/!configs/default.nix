@@ -4,13 +4,13 @@ let
   inherit (alib) umport;
 in { config = {
 
- #====<< Options >>============================================================>
-  gnome.enable = false;
+  #====<< Options >>===========================================================>
+  gnome.enable = true;
   niri.enable  = true;
-  programs.hyprland.enable = false;
+  programs.hyprland.enable = true;
   steam-client.enable = false;
 
- #=====<< Bootloader & Display manager >>======================================>
+  #=====<< Bootloader & Display manager >>=====================================>
   /* Be VERY careful when changing this, Nix is unbreakable in everything except
   in one thing: messing with the boot-loader. You don't want to leave your
   system in an unbootable state, so make sure you know what you are doing when
@@ -20,7 +20,7 @@ in { config = {
   boot.loader.efi.canTouchEfiVariables = true;
   services.xserver.displayManager.lightdm.enable = true;
 
- #====<< Network config >>=====================================================>
+  #====<< Network config >>====================================================>
   networking = {
     hostName = "${hostname}";     # The name of your computer.
     networkmanager.enable = true; # Networkmanager handles wifi and ethernet.
@@ -32,7 +32,7 @@ in { config = {
       };};
   services.openssh.enable = false;
 
- #====<< Localization & internationalization >>================================>
+  #====<< Localization & internationalization >>===============================>
   time.timeZone = "Atlantic/Reykjavik";
   i18n.defaultLocale  = "en_GB.UTF-8";  # Set default localization.
   extraLocaleSettings = "is_IS.UTF-8";  # Set main localization.
@@ -41,7 +41,7 @@ in { config = {
     layout = "is";                # Set the keymap for Xserver.
     options = "caps:escape"; };   # Modification options.
 
- #====<< Nix specific settings >>==============================================>
+  #====<< Nix specific settings >>=============================================>
   system.stateVersion = "24.11";              # What version of Nix to use
   programs.nix-ld.enable = true;              # Nix-ld is mostly for developers.
   programs.nix-ld.libraries = with pkgs; [];  # doesn't hurt to have it though!
@@ -51,27 +51,32 @@ in { config = {
     trusted-users = [ "root" "@wheel" "@nixers" ];
     experimental-features = [ "flakes" "nix-command" ]; };
 
- #====<< System packages >>====================================================>
+  #====<< System packages >>===================================================>
   services.flatpak.enable = false;       # See "flatpaks" for more info.
   # Below is where all the sytem-wide packages are installed.
   # Go to https://search.nixos.org/packages to search for programs.
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
-   #==<< Terminal Programs >>==========>
+    #==<< Terminal Programs >>=========>
     zellij    # User friendly terminal multiplexer.
     helix     # No nonsense terminal modal text editor.
     yazi      # Batteries included terminal file manager.
     btop      # Better top, a resource monitoring tool.
     ripgrep       # Rust regex search
     fzf           # terminal fuzzy finder
-   #==<< Other >>======================>
+    #==<< Other >>=====================>
     alacritty
+    kitty
     cachix
     git       # Best learn to use git. it *WILL* make your life easier.
   ];
 
- #====<< Miscellaneous >>======================================================>
+  #====<< Miscellaneous >>=====================================================>
   xdg.portal.enable = true;         # XDG Desktop portal (for nix and flatpaks)
   services.printing.enable = true;  # Printer protocols
+  # programs.light.brightnessKeys = {
+  #   enable = true;
+  #   step  = 5;
+  # };
 
 };} ################ End of variable & config scope. ###########################

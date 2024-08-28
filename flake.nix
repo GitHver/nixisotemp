@@ -8,7 +8,7 @@ inputs = {
 
   #====<< Core Nixpkgs >>======================================================>
   nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-  stable.url  = "github:nixos/nixpkgs/nixos-24.05";
+  nixpkgs-stable.url  = "github:nixos/nixpkgs/nixos-24.05";
 
   # home-manager.url = "github:nix-community/home-manager";
   # home-manager.inputs.nixpkgs.follows = "nixpkgs";
@@ -70,11 +70,11 @@ in {
     # Using the following command, a result directory will be made
     # with a custom ISO in the 'result/bin' directory.
     # $ nix build \.#nixosConfigurations.ISO.config.system.build.isoImage
-    # put your packages you want on the ISO in ./configd/ISO-image.nix
+    # put your packages you want on the ISO in `hardware/!configs/ISO-image.nix`
     #==<< Custom ISO image >>==================================================>
     ISO = nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs; };
-      modules = [ ./hardware/${"!"}configs/ISO-image.nix ];
+      modules = [ ./hardware/${"!configs"}/ISO-image.nix ];
     };
 
   };

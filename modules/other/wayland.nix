@@ -15,12 +15,19 @@ in
     programs.xwayland.enable = true;  # For running X11 applications
     environment.variables.NIXOS_OZONE_WL = "1";
     environment.systemPackages = with pkgs; [
-      wl-clipboard
+      wl-clipboard-rs
       wayland-utils
       xwayland-satellite
+      wl-gammactl
+      wl-gammarelay-rs
+      wlr-randr
+
       cage
       libsecret
       gamescope
+
+      brightnessctl
+      clightd
     ];
   };
 }
