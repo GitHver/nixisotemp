@@ -1,7 +1,6 @@
 { pkgs, alib, modulesPath, ... }:
 
 let
-  directory = "nixisotemp";
 in {
 
   #====<< Imports >>===========================================================>
@@ -40,19 +39,22 @@ in {
   };
 
   #=====<< Shell aliases >>====================================================>
-  environment.shellAliases = {
+  environment.shellAliases = let
+    repository = "nixisotemp";
+    default-directory = "./hardware/default";
+  in {
     yy = "sudo -E yazi";
     get-repo = ''
-      sudo git clone https://github.com/GitHver/${directory}.git ./${directory}
-      cd ${directory}
+      sudo git clone https://github.com/GitHver/${repository}.git ./${repository}
+      cd ${repository}
       sudo rm -rf .git
     '';
     mount-disko = ''
-      sudo nix run github:nix-community/disko -- --mode disko ./hardware/default/disko.nix
+      sudo nix run github:nix-community/disko -- --mode disko ${default-directory}/disko.nix
       sudo nixos-generate-config --no-filesystems --root /mnt
-      sudo cp -r ~/${directory}/. /mnt/etc/nixos
+      sudo cp -r ~/${repository}/. /mnt/etc/nixos
       cd /mnt/etc/nixos
-      sudo mv ./hardware-configuration.nix ./hardware/default
+      sudo mv ./hardware-configuration.nix ${default-directory}
       sudo rm ./configuration.nix
     '';
   };

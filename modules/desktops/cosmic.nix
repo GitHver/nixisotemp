@@ -11,9 +11,11 @@ let
   cfg = config.services.desktopManager.cosmic.cachix;
 in {
 
+  imports = [ inputs.nixos-cosmic.nixosModules.default ];
+
   options.services.desktopManager.cosmic.cachix.enable = mkOption {
     type = types.bool;
-    default = true;
+    default = false;
   };
 
   config = mkIf cfg.enable { 
