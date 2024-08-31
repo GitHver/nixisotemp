@@ -24,6 +24,9 @@ in {
       rm -rf ~/Home/.git
       $EDITOR flake.nix
     '';
+    home-init = ''
+      nix shell nixpkgs#home-manager --command home-manager switch --flake ~/Home
+    '';
     home-install = ''
       rm -rf ~/Home/.git
       nix shell nixpkgs#home-manager --command home-manager switch --flake ~/Home
