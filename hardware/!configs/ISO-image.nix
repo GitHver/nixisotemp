@@ -52,7 +52,7 @@ in {
       sudo nixos-generate-config --no-filesystems --root /mnt
       sudo cp -r ~/${directory}/. /mnt/etc/nixos
       cd /mnt/etc/nixos
-      sudo mv ./hardware-configuration.nix ./hardware/template
+      sudo mv ./hardware-configuration.nix ./hardware/default
       sudo rm ./configuration.nix
     '';
   };
