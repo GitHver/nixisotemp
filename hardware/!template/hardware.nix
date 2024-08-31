@@ -18,6 +18,21 @@ in {
   nvidia.enable = false;
   qemuvm.enable = false;
 
+  #=====<< Bootloader >>=======================================================>
+  /* Be VERY careful when changing this, Nix is unbreakable in everything except
+  in one thing: messing with the boot-loader. You don't want to leave your
+  system in an unbootable state, so make sure you know what you are doing when
+  rebuilding any changes here. Best to first use a virtual machine or a
+  "throw-away"/secondary computer. */
+  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.grub = {
+    enable = true;
+    device = "nodev";
+    efiSupport = true;
+    # efiInstallAsRemovable = true;
+    splashImage = null;
+  };
+
   #====<< Luks incryption >>===================================================>
   # if you are using encryption on your drives, you should put it here
   # it should look something like this:

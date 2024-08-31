@@ -2,6 +2,7 @@
 
 let
   inherit (patt) system-path;
+  home-path = "~/.config/home-manager";
 in {
 
   programs.bash.shellAliases = {
@@ -19,33 +20,21 @@ in {
     clean-M = "sudo nix-collect-garbage --delete-older-than 30d";
 
     home-get = ''
-      git clone https://github.com/GitHver/nixisotemphome.git ~/Home
-      cd  ~/Home
-      rm -rf ~/Home/.git
+      git clone https://github.com/GitHver/nixisotemphome.git ${home-path}
+      rm -rf ${home-path}/.git
+      cd  ${home-path}
       $EDITOR flake.nix
     '';
+    # Incase you already have a home configuration
     home-init = ''
-      nix shell nixpkgs#home-manager --command home-manager switch --flake ~/Home-manager
+      nix shell nixpkgs#home-manager --command home-manager switch --flake ${home-path}
     '';
     home-install = ''
-      rm -rf ~/Home/.git
-      nix shell nixpkgs#home-manager --command home-manager switch --flake ~/Home-manager
+      nix shell nixpkgs#home-manager --command home-manager switch --flake ${home-path}
       git init
       git add .
       git commit -m 'initial commit'
     '';
-
-    git-system = ''
-      cd /etc/nixos
-      sudo -E git init
-      sudo -E git add .
-      sudo -E git commit -m 'inital commit'
-      cd
-    '';
-
-    sga = "sudo -E git add .";
-    sgc = "sudo -E git commit";
-    sgp = "sudo -E git push";
 
   };
 }
