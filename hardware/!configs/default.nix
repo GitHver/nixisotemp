@@ -12,14 +12,12 @@ in { config = {
   rebuilding any changes here. Best to first use a virtual machine or a
   "throw-away"/secondary computer. */
   # boot.loader.systemd-boot.enable = true;
-  boot.loader = {
-    efi.canTouchEfiVariables = true;
-    grub = {
-      enable = true;
-      efiSupport = true;
-      efiInstallAsRemovable = false;
-      # device = "nodev";
-    };
+  # boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.grub = {
+    enable = true;
+    efiSupport = true;
+    efiInstallAsRemovable = true;
+    device = "nodev";
   };
 
   #====<< Desktop >>===========================================================>
@@ -28,7 +26,7 @@ in { config = {
     xserver.exportConfiguration = true;
     displayManager.cosmic-greeter.enable = true;
     desktopManager.cosmic.enable = true;
-    desktopManager.cosmic.cachix.enable = true;
+    desktopManager.cosmic.cachix.enable = false;
   };
 
   #====<< Network config >>====================================================>
