@@ -24,10 +24,11 @@ in { config = {
   services = {
     xserver.enable = true;
     xserver.exportConfiguration = true;
-    displayManager.cosmic-greeter.enable = true;
-    desktopManager.cosmic.enable = true;
-    desktopManager.cosmic.cachix.enable = false;
+    # displayManager.cosmic-greeter.enable = true;
+    # desktopManager.cosmic.enable = true;
+    # desktopManager.cosmic.cachix.enable = false;
   };
+  gnome.enable = true;
 
   #====<< Network config >>====================================================>
   networking = {
