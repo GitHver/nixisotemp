@@ -25,12 +25,11 @@ in {
       $EDITOR flake.nix
     '';
     home-install = ''
+      rm -rf ~/Home/.git
       nix shell nixpkgs#home-manager --command home-manager switch --flake ~/Home
-      cd ~/Home
       git init
       git add .
       git commit -m 'initial commit'
-      home-manager switch --flake ~/Home
     '';
 
     git-system = ''

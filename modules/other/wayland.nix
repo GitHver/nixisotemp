@@ -15,7 +15,7 @@ in
     programs.xwayland.enable = true;  # For running X11 applications
     environment.variables.NIXOS_OZONE_WL = "1";
     environment.systemPackages = with pkgs; [
-      wl-clipboard-rs
+      wl-clipboard
       wayland-utils
       xwayland-satellite
 
@@ -29,5 +29,9 @@ in
       wl-gammarelay-rs
       wlr-randr
     ];
+  # programs.light.brightnessKeys = {
+  #   enable = true;
+  #   step  = 5;
+  # };
   };
 }

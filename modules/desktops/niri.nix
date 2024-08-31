@@ -1,26 +1,29 @@
-{ pkgs, lib, config, inputs, ... }:
+{ pkgs
+, lib
+, config
+, inputs
+, ...
+}:
 
-with lib;
 let
-  cnfg = config.niri;
-in
+  inherit (lib) mkOption mkIf types;
+  name = "niri";
+  cnfg = config.${name};
+in {
 
-{
   imports = [ inputs.niri.nixosModules.niri ];
   
-  options.niri.enable = mkOption {
+  options.${name}.enable = mkOption {
     type = types.bool;
     default = false;
-    # description = "The Niri wayland compositor";
   };
 
   config = mkIf cnfg.enable { 
-
-    services.xserver.enable = true;
-
     programs.niri.enable  = true;
     programs.niri.package = pkgs.niri-stable;
     nixpkgs.overlays = [ inputs.niri.overlays.niri ];
-  
+    environment.systemPackages = (with pkgs; [
+      alacritty
+    ]);
   };
 }

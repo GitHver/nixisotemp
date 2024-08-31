@@ -49,12 +49,10 @@ in {
     '';
     mount-disko = ''
       sudo nix run github:nix-community/disko -- --mode disko ./hardware/default/disko.nix
-    '';
-    generate-config = ''
       sudo nixos-generate-config --no-filesystems --root /mnt
       sudo cp -r ~/${directory}/. /mnt/etc/nixos
       cd /mnt/etc/nixos
-      sudo mv ./hardware-configuration.nix ./hardware/default
+      sudo mv ./hardware-configuration.nix ./hardware/template
       sudo rm ./configuration.nix
     '';
   };

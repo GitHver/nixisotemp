@@ -5,15 +5,14 @@ description = ''
 '';
 
 inputs = {
-
   #====<< Core Nixpkgs >>======================================================>
   nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
   nixpkgs-stable.url  = "github:nixos/nixpkgs/nixos-24.05";
 
+  #====<< Extension utils >>===================================================>
   # home-manager.url = "github:nix-community/home-manager";
   # home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-  #====<< Extension utils >>===================================================>
   disko.url = "github:nix-community/disko";
   disko.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -23,7 +22,7 @@ inputs = {
   #====<< DEs & Compositors >>=================================================>
   nixos-cosmic.url = "github:lilyinstarlight/nixos-cosmic";
   nixos-cosmic.inputs.nixpkgs.follows = "nixpkgs";
-  
+
   niri.url = "github:sodiboo/niri-flake";
   niri.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -33,15 +32,16 @@ inputs = {
   #====<< Libraries and utilities >>===========================================>
   nypkgs.url = "github:yunfachi/nypkgs";
   nypkgs.inputs.nixpkgs.follows = "nixpkgs";
-
 };
 
 outputs = { self, nixpkgs, ... }@inputs:
 
 let
   system = "x86_64-linux";
+  pkgs = nixpkgs.legacyPackages.${system};
   patt = {
     system-path = "/etc/nixos";
+    pkgs-stable = inputs.nixpkgs-stable.legacyPackages.${system};
   };
   plib = {
     makeUsers = (import ./library/makeusers.nix {

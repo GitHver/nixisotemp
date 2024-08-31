@@ -24,7 +24,7 @@ in
 
     hardware.nvidia = {
 
-      package = config.boot.kernelPackages.nvidiaPackages.beta;
+      package = config.boot.kernelPackages.nvidiaPackages.stable;
       open = false;   # Currently alpha-quality/buggy, so false is currently the recommended setting.
 
       # Enable the Nvidia settings menu,

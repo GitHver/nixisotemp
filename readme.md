@@ -3,7 +3,7 @@
 
 Welcome to the Sput*Nix* Repository.
 
-This Repository aims to solve one problem: Getting started with NixOS is extremely tedious. The documentation can often be really shallow and it's all scattered throughout the internet like a broken vase.
+This Repository aims to solve one problem: Getting started with NixOS is extremely tedious. The documentation is often really shallow and it's all scattered throughout the internet like a broken vase.
 
 SputNix aims to be a one-stop shop for all the basics that you need in order to have a functional configuration at the start of your NixOS journey with all the features you would have otherwise found yourself rewriting your configuration in order to accommodate, like Flakes, Home-manager or Disko, while also explaining what these are, why you want them and how to modify them to your preference.
 
@@ -13,7 +13,7 @@ It is best if you know some Linux basics and how to navigate a terminal user int
 # Installation ISO
 
 > [!IMPORTANT]
-> Even if you already have a Working NixOS system it can still be valuable to read through the following section, as it goes over *Disko* and user management. Otherwise, skip to [Configuration](#configuration).
+> If you already have a working nix config, simply edit the files according to instructions and then build the repository and skip to the [Configuration](#configuration) chapter.
 
 ### Installing the ISO
 
@@ -72,10 +72,10 @@ lsblk
 This will show available drives/devices to be used. There should be two drives; your USB you are currently booting from, and the drive you want to install NixOS onto. Find the correct drive (`sda`, `nvme0`, `vda`) and navigate to `hardware/template` and open `disko.nix`. Put the name of your drive into the `device` field. example: If the name of your drive is `nvme0n1`, then it should look like this:
 
 ```nix
-  disko.devices.disk.main = {
-  
-    device = "/dev/nvme0n1";
-    type = "disk";
+  disko.devices.disk = {
+    disk1 = {
+      device = "/dev/nvme0n1";
+      type = "disk";
     ...
 ```
 
@@ -90,15 +90,9 @@ When you're done setting up your drive you can save and exit. Now type:
 mount-disko
 ```
 
-This will take a short while, so wait until the promt apears again.
+This will take a short while, so wait until the prompt appears again.
 
 ### Host configuration
-
-Now you need to run a provided alias that generates a config for your system's hardware:
-
-```
-generate-config
-```
 
 You'll need to decide on a hostname for your system. It can be anything, but best to make it something that is connected to its actual name or physical structure, for example; if you have Lenovo Yoga Slim 7, the hostname could be `slim7`, or if your computer's case is a fractal north terra the hostname could be `fn-terra`.  Once you've done that open the `flake.nix` file at the root of the repository and scroll down to here:
 
@@ -106,14 +100,14 @@ You'll need to decide on a hostname for your system. It can be anything, but bes
   nixosConfigurations = {
 
     #==<< Template configuration >>=============================================>
-    YOUR_HOSTNAME = let hostname = "YOUR_HOSTNAME" in
+    your-hostname = let hostname = "your-hostname" in
     nixpkgs.lib.nixosSystem {
       modules = [ ./hardware/template/hardware.nix ];
       specialArgs = { inherit inputs alib patt hostname; };
     };
 ```
 
-Here you need to change all `YOUR_HOSTNAME`'s to the hostname you want and then save the file. Next navigate to the `hardware` directory and then rename the `template` directory to your hostname.
+Here you need to change all `your-hostname`'s to the hostname you want and then save the file. Next navigate to the `hardware` directory and then rename the `template` directory to your hostname.
 
 ### Users
 
@@ -135,7 +129,7 @@ Now change the `un` (username) variable to your username, and then the `dn` (dis
 Now scroll down to here:
 
 ```nix
- #====<< Localization & internationalization >>================================>
+  #====<< Localization & internationalization >>===============================>
   time.timeZone = "Europe/London";
   i18n.defaultLocale  = "en_US.UTF-8";  # Set default localization.
   extraLocaleSettings = "en_GB.UTF-8";  # Set other localization.
@@ -163,6 +157,7 @@ Now save and exit the template file.
 ### Choosing a desktop environment
 
 Gnome
+Cosmic
 Niri
 Hyprland
 
@@ -177,7 +172,17 @@ sudo nixos-install --flake .#YOUR_HOSTNAME
 Once that is done you will be prompted to set a new root password. "root" is basically just a user that is assigned to your computer, so really just ***The*** admin user. You will rarely ever be prompted to use this password, maybe never, but it is the key to your system so **don't forget it**. After that is done simply type `reboot` and hit enter.
 
 > [!IMPORTANT]
-> If you get any errors, read the middle line where the error is actually displayed and trace the file destination (usually down at the bottom), but remember to add all changes to git before trying to install again.
+> If you get any errors, read the middle line where the error is actually displayed and trace the file destination (usually down at the bottom.
+
+### Initial setup
+
+Once you've booted into your system log into your user account, the password is `Null&Nix1312`. Open your terminal emulator (Alacritty) and change your password by typing in the following:
+
+```shell
+passwd
+```
+
+If you are on wifi you'll have to reconnect. You can either use `nmcli` again or if you are on GNOME you can use the panel in the top right corner.
 
 ### Home manager bootstrapping
 
@@ -192,14 +197,25 @@ Once you've booted into your system and logged in to your user account open any 
 home-get
 ```
 
-The use Yazi to navigate to the new repository and open the flake.nix file there. The only thing you have to do is go down to the `let ... in` block and change the `username` and `email` variables to their correct values, save and exit and then run:
+This will clone the repository and open the flake.nix file there. The only thing you have to do is go down to the `let ... in` block and change the `username` and `email` variables to their correct values, save and exit and then run:
 
 ```
 home-install
 ```
 
-If you open a new terminal instance, you will be placed into a fish shell. If you do not wish to use fish as your shell, go to `modules/shells/bash.nix` and comment out the `bash.profileExtra`
+Once it's done, you can close alacritty. Log out and log in again and then type:
 
+```
+hms
+```
+
+this will then expand to:
+
+```shell
+home-manager switch --flake ~/Home-manager
+```
+
+Run the command and then you should have everything set up.
 
 # Configuration
 
@@ -217,6 +233,10 @@ The `modules` directory just has files that are imported to every config file. T
 
 The `library` directory just contains snippets of nix code (expressions) that you create and want to reuse. All files get imported in the flake.nix and are thus available anywhere.
 
+### Default config file
+
+
+
 ### Packages & programs
 
 NixOS is a Linux distribution based on the nix package manager, so how do you install packages? You simply write them down inside a list in a .nix file.
@@ -225,18 +245,18 @@ If you open `configs/template.nix` and scroll a bit down, you'll see a commented
 
 ```nix
 {
- #====<< System packages >>====================================================>
+  #====<< System packages >>===================================================>
   services.flatpak.enable = false;       # See "flatpaks" for more info.
   /* Below is where all the sytem-wide packages are installed.
   Go to https://search.nixos.org/packages to search for programs. */
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [ 
-   #==<< Terminal Programs >>==========>
+    #==<< Terminal Programs >>=========>
     zellij    # User friendly terminal multiplexer.
     helix     # No nonsense terminal modal text editor.
     yazi      # Batteries included terminal file manager.
     btop      # Better top, a resource monitoring tool.
-   #==<< Other >>======================>
+    #==<< Other >>=====================>
     alacritty
     git       # Best learn to use git. it *WILL* make your life easier.
   ];
@@ -307,7 +327,7 @@ Some other useful commands are:
 
 # Flakes
 
-If you have been using NixOS or used it before, you'll undoubtedly have heard people mention "flakes". In fact I have mentioned them a lot in the text leading up to this chapter. But what are flakes? The name isn't exactly descriptive and everyone seams to describe flakes in different ways? Why would you even want to use flakes?
+If you have been using NixOS or used it before, you'll undoubtedly have heard people mention "flakes". In fact I have mentioned them a lot in the text leading up to this chapter. But what are flakes? The name isn't exactly descriptive and everyone seams to describe flakes in different ways? And why would you even want to use flakes?
 
 ### What do flakes even do?
 
@@ -315,9 +335,9 @@ Flakes in their most common usage are just version pinning for packages. They re
 
 Flakes also have other features, in fact they have quite a lot of features, maybe even to many. One thing they do is that they do not allow the use of any file that isn't being tracked by git, making sure that the configuration can be recreated with only the repository. But this means having certain files that contain host specific options that isn't tracked by git is no longer an option. But flakes provide a solution to that with another feature.
 
-Flakes provide a way to create multiple predefined configurations
+Flakes provide a way to create multiple predefined configurations with `nixosConfigurations` in the `outputs` function. This is an attribute set of hostnames that correspond to different config files to control all your different devices.
 
-This is essentially what flakes are, an *input-output* control centre where you can version all your inputs and packages and manage all your different hosts. An example of a minimal flake would be:
+This is essentially what flakes are, an *input-output* control scheme where you can version all your inputs and packages and manage all your different hosts and shells. An example of a minimal operational flake would be:
 
 ```nix
 {
@@ -328,8 +348,10 @@ This is essentially what flakes are, an *input-output* control centre where you 
   };
 
   outputs = { nixpkgs }: {
-    nixosConfigurations.<HOST> = nixpkgs.lib.nixSystem {
-      modules = [ configuration.nix ];
+    nixosConfigurations = {
+      "your-hostname" = nixpkgs.lib.nixSystem {
+        modules = [ ./configuration.nix ];
+      };
     };
   };
 }
@@ -337,19 +359,42 @@ This is essentially what flakes are, an *input-output* control centre where you 
 
 ### Inputs
 
-The inputs attribute set is what controls what goes into the `flake.lock`
+The `inputs` attribute set is what controls what goes into the `flake.lock`. The `.lock` file is what specifies what version your packages use. `inputs` can have any number attributes, but needs at least one `nixpkgs` to specify what version (branch) you want to use as the default for your packages.
 
 ```nix
 {
-  inputs = {};
+  inputs = {
+    #====<< Core Nixpkgs >>====================================================>
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
+    #====<< DEs & Compositors >>===============================================>
+    nixos-cosmic.url = "github:lilyinstarlight/nixos-cosmic";
+    nixos-cosmic.inputs.nixpkgs.follows = "nixpkgs";
+  };
 }
 ```
 
-inputs can be used to use both the unstable and stable channels
+`<input>.inputs.nixpkgs.follows` can be used to make the `nixpkgs` input of the flake you are referencing use the same commit as your `nixpkgs`. This way you don't have many different versions of your packages taking up space in your disk.
 
-To access inputs in the configuration the `@inputs` argument is used
+To access inputs in the configuration the `@inputs` argument is used in the `outputs` function like so:
 
-then you need to specify the system
+```nix
+outputs = { self, nixpkgs, ... }@inputs:
+```
+
+With this we don't have to put each and every input into the argument set, but can instead just reference them in the `inputs` set. To use an example, many flakes provide a `nixosModules` output that imports a bunch of options for you to use, so to access them we would normally import them with just the name of the input + the module, but using the inputs argument we do it like so:
+
+```nix
+{ pkgs, inputs, ... }: {
+  imports = [ inputs.<inputName>.nixosModules.default ];
+}
+```
+
+then you need to specify the system.
+
+<!--
+það þarf að skoða meira hvernig er hægt að gera arch neutral pkgs of system
+--->
 
 ### Outputs
 
@@ -379,6 +424,8 @@ Middle of the road, use as little as possible, do not use pkgs or modules.
 # Home-manager
 
 ### Purpose
+
+### User management
 
 ### Environment & shell
 

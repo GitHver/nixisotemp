@@ -6,9 +6,10 @@ let
   inherit (builtins) listToAttrs;
 
   makeUsers =
-  { userpaths,
-    userrules,
-    normalUser ? true }:
+  { userpaths
+  , userrules
+  , normalUser ? true
+  }:
   let
     users = forEach userpaths (user: import user);
   in
