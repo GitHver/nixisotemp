@@ -33,6 +33,8 @@ in {
     splashImage = null;
   };
 
+  boot.supportedFilesystems = [ "bcachefs" ];
+  boot.kernelPackages = pkgs.linuxPackages_latest
   # boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_10;
 
   #====<< Luks incryption >>===================================================>
