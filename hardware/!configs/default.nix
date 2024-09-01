@@ -19,12 +19,11 @@ in
 
     #====<< Network config >>====================================================>
     networking = {
-      hostName = hostname; # The name of your computer on the network.
+      hostName = hostname;          # The name of your computer on the network.
       networkmanager.enable = true; # Networkmanager handles wifi and ethernet.
       #wireless.enable = true;      # Unneccesary, Comes packaged with most DEs.
-      firewall = {
-        # If you're having trouble with connection
-        enable = true; # permissions, you can disable the firewall
+      firewall = {                    # If you're having trouble with connection
+        enable = true;                # permissions, you can disable the firewall
         #allowedTCPPorts = [ ... ];   # or open some ports here
         #allowedUDPPorts = [ ... ];   # or here.
       };
