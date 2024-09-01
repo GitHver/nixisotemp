@@ -60,7 +60,7 @@ in {
           sudo mv ./hardware-configuration.nix ./${default-directory}
           sudo rm ./configuration.nix
         '';
-        install = "sudo nixos-install --flake .#your-hostname --accept-flake-config";
+        install = "sudo nixos-install --flake .#your-hostname";
         instant = ''
           sudo git clone https://github.com/GitHver/${repository}.git ./${repository}
           cd ${repository}
@@ -73,7 +73,7 @@ in {
           sudo mv ./hardware-configuration.nix ./${default-directory}
           sudo rm ./configuration.nix
 
-          sudo nixos-install --flake .#your-hostname --accept-flake-config
+          sudo nixos-install --flake .#your-hostname
         '';
       };
 
