@@ -43,7 +43,7 @@ in {
     environment.shellAliases =
       let
         repository = "nixisotemp";
-        default-directory = "./hardware/default";
+        default-directory = "hardware/your-hostname";
       in
       {
         yy = "sudo -E yazi";
@@ -53,12 +53,27 @@ in {
           sudo rm -rf .git
         '';
         mount-disko = ''
-          sudo nix run github:nix-community/disko -- --mode disko ${default-directory}/disko.nix
+          sudo nix run github:nix-community/disko -- --mode disko ./${default-directory}/disko.nix
           sudo nixos-generate-config --no-filesystems --root /mnt
           sudo cp -r ~/${repository}/. /mnt/etc/nixos
           cd /mnt/etc/nixos
-          sudo mv ./hardware-configuration.nix ${default-directory}
+          sudo mv ./hardware-configuration.nix ./${default-directory}
           sudo rm ./configuration.nix
+        '';
+        install = "sudo nixos-install .#your-hostname --accept-flake-config";
+        instant = ''
+          sudo git clone https://github.com/GitHver/${repository}.git ./${repository}
+          cd ${repository}
+          sudo rm -rf .git
+
+          sudo nix run github:nix-community/disko -- --mode disko ./${default-directory}/disko.nix
+          sudo nixos-generate-config --no-filesystems --root /mnt
+          sudo cp -r ~/${repository}/. /mnt/etc/nixos
+          cd /mnt/etc/nixos
+          sudo mv ./hardware-configuration.nix ./${default-directory}
+          sudo rm ./configuration.nix
+
+          sudo nixos-install .#your-hostname --accept-flake-config
         '';
       };
 
