@@ -55,6 +55,8 @@ let
   ylib = inputs.nypkgs.lib.${system};
   alib = lib // ylib // plib;
 in {
+  
+  formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
 
   nixosConfigurations = {
   /* These are example configurations provided to begin using flakes.
