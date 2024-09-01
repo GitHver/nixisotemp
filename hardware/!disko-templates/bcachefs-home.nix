@@ -25,11 +25,19 @@
             };
           };
           root = {
+            size = "120G";
+            content = {
+              type = "filesystem";
+              format = "ext4";
+              mountpoint = "/";
+            };
+          };
+          home = {
             size = "100%";
             content = {
               type = "filesystem";
               format = "bcachefs";
-              mountpoint = "/";
+              mountpoint = "/home";
             };
           };
         }; # partitions
