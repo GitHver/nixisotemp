@@ -12,7 +12,7 @@ in
     #description = "Steam client and permissions";
   };
 
-  config = mkIf cnfg.enable { 
+  config = mkIf cnfg.enable {
     programs.steam = {
       enable = true;
       # Open ports in the firewall for Steam Remoteplay

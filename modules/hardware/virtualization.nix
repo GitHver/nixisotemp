@@ -12,11 +12,11 @@ in
     # description = "QEMU virtual machines";
   };
 
-  config = mkIf cnfg.enable { 
-    environment.systemPackages = with pkgs; [ 
-     #==<< QEMU >>=======================>
+  config = mkIf cnfg.enable {
+    environment.systemPackages = with pkgs; [
+      #==<< QEMU >>=======================>
       qemu
-      quickemu 
+      quickemu
       (pkgs.writeShellScriptBin "qemu-system-x86_64-uefi" ''
         qemu-system-x86_64 \
           -bios ${pkgs.OVMF.fd}/FV/OVMF.fd \

@@ -13,7 +13,7 @@
             content = {
               type = "filesystem";
               format = "vfat";
-              mountpoint = "/boot"; 
+              mountpoint = "/boot";
             };
           };
           plainSwap = {
@@ -29,7 +29,7 @@
             content = {
               type = "filesystem";
               format = "ext4";
-              mountpoint = "/"; 
+              mountpoint = "/";
             };
           };
           home = {
@@ -37,7 +37,7 @@
             content = {
               type = "filesystem";
               format = "bcachefs";
-              mountpoint = "/home"; 
+              mountpoint = "/home";
             };
           };
         }; # partitions

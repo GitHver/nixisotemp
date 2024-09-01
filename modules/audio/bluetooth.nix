@@ -1,16 +1,17 @@
 { pkgs, lib, config, ... }:
 
 let
-  cnfg = config.bluetooth; 
-in with lib; {
+  cnfg = config.bluetooth;
+in
+with lib; {
 
   options.bluetooth.enable = mkOption {
     type = types.bool;
     default = false;
   };
-  
+
   config = mkIf cnfg.enable {
-  
+
     services.blueman.enable = true;
     hardware.bluetooth = {
       enable = true;

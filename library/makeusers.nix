@@ -6,13 +6,13 @@ let
   inherit (builtins) listToAttrs;
 
   makeUsers =
-  { userpaths
-  , userrules
-  , normalUser ? true
-  }:
-  let
-    users = forEach userpaths (user: import user);
-  in
+    { userpaths
+    , userrules
+    , normalUser ? true
+    }:
+    let
+      users = forEach userpaths (user: import user);
+    in
     listToAttrs (forEach users
       (user: nameValuePair user.un {
         isSystemUser = !normalUser;
@@ -29,4 +29,5 @@ let
       })
     );
 
-in { inherit makeUsers; }
+in
+{ inherit makeUsers; }

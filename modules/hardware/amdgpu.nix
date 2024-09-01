@@ -12,9 +12,9 @@ in
     # description = "AMD GPU drivers and RocM support";
   };
 
-  config = mkIf cnfg.enable { 
+  config = mkIf cnfg.enable {
 
-   #====<< AMD Drivers >>========================================================>
+    #====<< AMD Drivers >>========================================================>
     boot.initrd.kernelModules = [ "amdgpu" ];
     # Usually some other configuration...
     hardware.graphics.extraPackages = with pkgs; [
@@ -31,7 +31,7 @@ in
       #driSupport32Bit = true;
     };
     systemd.tmpfiles.rules = [
-       "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages_5.clr}"
+      "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages_5.clr}"
     ];
     # environment.systemPackages = with pkgs; [
     #   rocmPackages

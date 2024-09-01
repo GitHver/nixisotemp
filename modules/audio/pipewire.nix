@@ -3,14 +3,15 @@
 with lib;
 let
   cnfg = config.pipewire;
-in {
+in
+{
 
   options.pipewire.enable = mkOption {
     type = types.bool;
     default = true;
   };
 
-  config = mkIf cnfg.enable { 
+  config = mkIf cnfg.enable {
 
     #sound.enable = true;
     hardware.pulseaudio.enable = false;

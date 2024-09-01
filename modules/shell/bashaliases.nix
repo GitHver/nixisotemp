@@ -3,7 +3,8 @@
 let
   inherit (patt) system-path;
   home-path = "~/.config/home-manager";
-in {
+in
+{
 
   programs.bash.shellAliases = {
     home-get = ''

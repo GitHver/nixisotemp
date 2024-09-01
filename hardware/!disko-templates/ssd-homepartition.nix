@@ -13,13 +13,17 @@
             content = {
               type = "filesystem";
               format = "vfat";
-              mountpoint = "/boot"; };};
+              mountpoint = "/boot";
+            };
+          };
           root = {
             size = "100%";
             content = {
               type = "filesystem";
               format = "ext4";
-              mountpoint = "/"; };};
+              mountpoint = "/";
+            };
+          };
           plainSwap = {
             size = "20G";
             content = {

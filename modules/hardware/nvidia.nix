@@ -12,7 +12,7 @@ in
     # description = "NVIDIA GPU Drivers";
   };
 
-  config = mkIf cnfg.enable { 
+  config = mkIf cnfg.enable {
 
     hardware.graphics = {
       enable = true;
@@ -20,12 +20,12 @@ in
     };
 
     # Load nvidia driver for Xorg and Wayland
-    services.xserver.videoDrivers = ["nvidia"];
+    services.xserver.videoDrivers = [ "nvidia" ];
 
     hardware.nvidia = {
 
       package = config.boot.kernelPackages.nvidiaPackages.stable;
-      open = false;   # Currently alpha-quality/buggy, so false is currently the recommended setting.
+      open = false; # Currently alpha-quality/buggy, so false is currently the recommended setting.
 
       # Enable the Nvidia settings menu,
       # accessible via `nvidia-settings`.
