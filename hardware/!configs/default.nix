@@ -15,7 +15,11 @@ in
       # desktopManager.cosmic.cachix.enable = false;
     };
     gnome.enable = true;
-    services.xserver.displayManager.gdm.enable = true;
+    # services.xserver.displayManager.gdm.enable = true;
+    services.xserver.displayManager.lightdm = {
+      enable = true;
+      background = ./../../assets/nixos-loginscreen-gruv.jpg;
+    };
 
     #====<< Network config >>====================================================>
     networking = {
