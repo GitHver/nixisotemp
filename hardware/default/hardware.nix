@@ -1,4 +1,4 @@
-{ inputs, alib, ... }:
+{ pkgs, inputs, alib, ... }:
 
 let
   inherit (alib) umport;
@@ -32,6 +32,8 @@ in {
     # efiInstallAsRemovable = true;
     splashImage = null;
   };
+
+  # boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_10;
 
   #====<< Luks incryption >>===================================================>
   # if you are using encryption on your drives, you should put it here

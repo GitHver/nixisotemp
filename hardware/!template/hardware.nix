@@ -1,9 +1,8 @@
-{ inputs, alib, ... }:
+{ pkgs, inputs, alib, ... }:
 
 let
   inherit (alib) umport;
-in
-{
+in {
 
   #====<< Import all device specific modules >>================================>
   imports = [
@@ -24,7 +23,7 @@ in
     in one thing: messing with the boot-loader. You don't want to leave your
     system in an unbootable state, so make sure you know what you are doing when
     rebuilding any changes here. Best to first use a virtual machine or a
-  "throw-away"/secondary computer. */
+    "throw-away"/secondary computer. */
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.grub = {
     enable = true;
@@ -33,6 +32,8 @@ in
     # efiInstallAsRemovable = true;
     splashImage = null;
   };
+
+  # boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_10;
 
   #====<< Luks incryption >>===================================================>
   # if you are using encryption on your drives, you should put it here

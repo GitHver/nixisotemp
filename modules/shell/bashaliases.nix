@@ -13,15 +13,15 @@ in
       cd  ${home-path}
       $EDITOR flake.nix
     '';
-    # Incase you already have a home configuration
-    home-init = ''
-      nix shell nixpkgs#home-manager --command home-manager switch --flake ${home-path}
-    '';
     home-install = ''
       nix shell nixpkgs#home-manager --command home-manager switch --flake ${home-path}
       git init
       git add .
       git commit -m 'initial commit'
+    '';
+    # Incase you already have a home configuration
+    home-init = ''
+      nix shell nixpkgs#home-manager --command home-manager switch --flake ${home-path}
     '';
   };
 }
