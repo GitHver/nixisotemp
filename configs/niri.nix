@@ -13,6 +13,7 @@ in
   services.waylan-utils.enable = true;
   programs.niri.enable = true;
   programs.niri.package = pkgs.niri-stable;
+  niri-flake.cache.enable = false;
   nixpkgs.overlays = [ inputs.niri.overlays.niri ];
 
   #====<< Network config >>====================================================>
