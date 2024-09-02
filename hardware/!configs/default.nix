@@ -1,4 +1,4 @@
-{ pkgs, alib, patt, hostname, ... }:
+{ pkgs, inputs, alib, patt, hostname, ... }:
 
 let
   inherit (patt) pkgs-stable;
@@ -7,19 +7,19 @@ in
   config = {
 
     #====<< Desktop >>===========================================================>
-    services = {
-      xserver.enable = true;
-      xserver.exportConfiguration = true;
-      # displayManager.cosmic-greeter.enable = true;
-      # desktopManager.cosmic.enable = true;
-      # desktopManager.cosmic.cachix.enable = false;
-    };
-    gnome.enable = true;
-    # services.xserver.displayManager.gdm.enable = true;
+    services.xserver.enable = true;
+    services.xserver.exportConfiguration = true;
     services.xserver.displayManager.lightdm = {
       enable = true;
-      background = ./../../assets/nixos-loginscreen-gruv.jpg;
+      background = ./../../assets/loginscreen-gruvbox.jpg;
     };
+    programs.niri.enable = true;
+    programs.niri.package = pkgs.niri-stable;
+    nixpkgs.overlays = [ inputs.niri.overlays.niri ];
+    # services.displayManager.cosmic-greeter.enable = true;
+    # services.desktopManager.cosmic.enable = true;
+    # gnome.enable = true;
+    # services.xserver.displayManager.gdm.enable = true;
 
     #====<< Network config >>====================================================>
     networking = {
@@ -28,23 +28,23 @@ in
       #wireless.enable = true;      # Unneccesary, Comes packaged with most DEs.
       firewall = {                    # If you're having trouble with connection
         enable = true;                # permissions, you can disable the firewall
-        #allowedTCPPorts = [ ... ];   # or open some ports here
+        #allowedTCPPorts = [ ... ];   # or open some ports here,
         #allowedUDPPorts = [ ... ];   # or here.
       };
     };
 
     #====<< Localization & internationalization >>===============================>
     time.timeZone = "Atlantic/Reykjavik";
-    i18n.defaultLocale = "en_GB.UTF-8"; # Set default localization.
-    extraLocaleSettings = "is_IS.UTF-8"; # Set main localization.
-    console.keyMap = "is-latin1"; # Sets the console keymap.
+    i18n.defaultLocale = "en_GB.UTF-8";   # Set default localization.
+    extraLocaleSettings = "is_IS.UTF-8";  # Set main localization.
+    console.keyMap = "is-latin1";         # Sets the console keymap.
     services.xserver.xkb = {
-      layout = "is"; # Set the keymap for Xserver.
-      options = "caps:escape"; # Modification options.
+      layout = "is";            # Set the keymap for Xserver.
+      options = "caps:escape";  # Modification options.
     };
 
     #====<< Nix specific settings >>=============================================>
-    system.stateVersion = "24.11"; # What version of Nix to use
+    system.stateVersion = "24.11"; # What version of NixOS configs to use.
     programs.nix-ld.enable = true; # Nix-ld is mostly for developers.
     programs.nix-ld.libraries = with pkgs; [ ]; # doesn't hurt to have it though!
     nix.settings = {
@@ -60,14 +60,15 @@ in
     nixpkgs.config.allowUnfree = true;
     environment.systemPackages = (with pkgs; [
       #==<< Programs >>==================>
-      micro
-      btop
-      git # Best learn to use git. it *WILL* make your life easier.
-    ]) ++ (with pkgs-stable; [ ]);
+      alacritty   # Fast terminal emulator writen in rust
+      micro       # Easy to use terminal text editor
+      btop        # Terminal resource monitoring tool
+      git         # Best learn to use git. it *WILL* make your life easier.
+    ]) ++ (with pkgs-stable; [ ]); # packages to use the sable channel.
 
     #====<< Miscellaneous >>=====================================================>
-    xdg.portal.enable = true; # XDG Desktop portal (for nix and flatpaks)
-    services.printing.enable = true; # Printer protocols
+    xdg.portal.enable = true; # XDG Desktop portal (for nix and flatpaks).
+    services.printing.enable = true; # Printer protocols.
 
   };
 } ################ End of variable & config scope. ###########################
