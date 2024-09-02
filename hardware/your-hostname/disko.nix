@@ -25,7 +25,7 @@
             content = {
               type = "btrfs";
               mountpoint = "/";
-              extraArgs = [ "L" "nixos" "-f" ];
+              extraArgs = [ "-L" "nixos" "-f" ];
               subvolumes = {
                 "/nix" = {
                   mountpoint = "/nix";
