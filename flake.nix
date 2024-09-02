@@ -81,7 +81,7 @@
       #==<< Custom ISO image >>==================================================>
       ISO = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
-        modules = [ ./hardware/${"!configs"}/ISO-image.nix ];
+        modules = [ ./configs/ISO-image.nix ];
       };
 
     };
