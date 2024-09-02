@@ -1,12 +1,13 @@
 { pkgs, lib, config, ... }:
 
-with lib;
 let
-  cnfg = config.wayland;
+  inherit (lib) mkOption mkIf types;
+  name = "wayland-utils";
+  cnfg = config.services.${name};
 in
 
 {
-  options.wayland.enable = mkOption {
+  options.services.${name}.enable = mkOption {
     type = types.bool;
     default = true;
   };

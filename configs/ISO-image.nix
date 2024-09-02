@@ -6,7 +6,7 @@ in {
   #====<< Imports >>===========================================================>
   imports = [
     "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix"
-    ./../../modules/other/localization.nix
+    ./../modules/localization.nix
   ];
   config = {
 
@@ -51,6 +51,9 @@ in {
           sudo git clone https://github.com/GitHver/${repository}.git ./${repository}
           cd ${repository}
           sudo rm -rf .git
+        '';
+        mount-disko-n = ''
+          sudo nix run github:nix-community/disko -- --mode disko ./${default-directory}/disko.nix
         '';
         mount-disko = ''
           sudo nix run github:nix-community/disko -- --mode disko ./${default-directory}/disko.nix
