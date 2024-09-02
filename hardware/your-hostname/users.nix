@@ -9,16 +9,13 @@ in
   users.mutableUsers = true; # Allows for imparative user management.
   users.users =
     let
-      t1 = makeUsers {
+      admins = makeUsers {
         userpaths = umport { path = ./users; };
         userrules = [ "wheel" "networkmanager" ];
-      };
-      # t2 = makeUsers {
-      #   userpaths  = umport { path = ./users; };
-      #   userrules = [ "networkmanager" ]; };
-    in
-    recursiveMerge [
-      t1
-      # t2 
-    ];
+      }; /*
+      guests = makeUsers {
+        userpaths  = umport { path = ./users; };
+        userrules = [ "networkmanager" ]; }; */
+    in admins # ++ guests
+  ;
 }

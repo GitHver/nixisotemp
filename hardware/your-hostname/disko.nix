@@ -17,21 +17,38 @@
           };
         };
 
-        root = {
+        luks = {
           size = "100%";
           content = {
-            type = "filesystem";
-            format = "ext4";
-            mountpoint = "/";
-          };
-        };
-
-        plainSwap = {
-          size = "8G";
-          content = {
-            type = "swap";
-            discardPolicy = "both";
-            resumeDevice = false;
+            type = "luks";
+            name = "crypted";
+            content = {
+              type = "btrfs";
+              mountpoint = "/";
+              extraArgs = [ "L" "nixos" "-f" ];
+              subvolumes = {
+                "/nix" = {
+                  mountpoint = "/nix";
+                  mountOptions = [ "noatime" "nodatacow" ];
+                };
+                "/rootfs" = {
+                  mountpoint = "/";
+                  mountOptions = [ "noatime" "compress=zstd" ];
+                };
+                "/home" = {
+                  mountpoint = "/home";
+                  mountOptions = [ "noatime" "compress=zstd" ];
+                };
+                "/swap" = {
+                  mountpoint = "/.swapvol";
+                  swap.swapfile.size = "20G";
+                };
+                # "/persist" = {
+                #   mountpoint = "/persist";
+                #   mountOptions = [ "noatime" "compress=zstd" ];
+                # };
+              };
+            };
           };
         };
 
