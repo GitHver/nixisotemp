@@ -49,6 +49,7 @@ in
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = (with pkgs; [
     #==<< Programs >>==================>
+    alacritty
     btop        # Terminal resource monitoring tool
     git         # Best learn to use git. it *WILL* make your life easier.
   ]) ++ (with pkgs-stable; [ ]); # packages to use the stable channel.
