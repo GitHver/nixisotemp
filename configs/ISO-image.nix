@@ -44,6 +44,7 @@ in {
       let
         repository = "nixisotemp";
         default-directory = "hardware/your-hostname";
+        mount-dir = "mnt/rootfs";
       in
       {
         yy = "sudo -E yazi";
@@ -57,9 +58,9 @@ in {
         '';
         mount-disko = ''
           sudo nix run github:nix-community/disko -- --mode disko ./${default-directory}/disko.nix
-          sudo nixos-generate-config --no-filesystems --root /mnt
-          sudo cp -r ~/${repository}/. /mnt/etc/nixos
-          cd /mnt/etc/nixos
+          sudo nixos-generate-config --no-filesystems --root /${mount-dir}
+          sudo cp -r ~/${repository}/. /${mount-dir}/etc/nixos
+          cd /${mount-dir}/etc/nixos
           sudo mv ./hardware-configuration.nix ./${default-directory}
           sudo rm ./configuration.nix
         '';
@@ -70,9 +71,9 @@ in {
           sudo rm -rf .git
 
           sudo nix run github:nix-community/disko -- --mode disko ./${default-directory}/disko.nix
-          sudo nixos-generate-config --no-filesystems --root /mnt
-          sudo cp -r ~/${repository}/. /mnt/etc/nixos
-          cd /mnt/etc/nixos
+          sudo nixos-generate-config --no-filesystems --root /${mount-dir}
+          sudo cp -r ~/${repository}/. /${mount-dir}/etc/nixos
+          cd /${mount-dir}/etc/nixos
           sudo mv ./hardware-configuration.nix ./${default-directory}
           sudo rm ./configuration.nix
 
