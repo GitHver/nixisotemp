@@ -2,7 +2,7 @@
 
 let
   inherit (alib) umport;
-  DE = "niri";
+  DE = "everything";
 in {
 
   #====<< Import all device specific modules >>================================>

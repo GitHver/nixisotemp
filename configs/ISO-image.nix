@@ -65,7 +65,7 @@ in {
           sudo rm ./configuration.nix
         '';
         install = "sudo nixos-install --flake .#your-hostname";
-        instant = ''
+        instalt = ''
           sudo git clone https://github.com/GitHver/${repository}.git ./${repository}
           cd ${repository}
           sudo rm -rf .git

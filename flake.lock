@@ -632,11 +632,11 @@
         "xwayland-satellite": "xwayland-satellite"
       },
       "locked": {
-        "lastModified": 1725366425,
-        "narHash": "sha256-9NYmzDVT+umuQs7A3X8HyKggVDI9Ysfg/x9ZylHaxLc=",
+        "lastModified": 1725380275,
+        "narHash": "sha256-UvKevrDwv1H8x3wXTjINvropf7xKNcXrOiIYQBMpgAw=",
         "owner": "sodiboo",
         "repo": "niri-flake",
-        "rev": "77bd1c1f856b1620ab9a6f34eccdc51029a27076",
+        "rev": "9157009f30a0d5fcc57717eb86c5047e99709e87",
         "type": "github"
       },
       "original": {

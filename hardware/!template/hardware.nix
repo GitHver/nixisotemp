@@ -2,6 +2,7 @@
 
 let
   inherit (alib) umport;
+  DE = "everything";
 in {
 
   #====<< Import all device specific modules >>================================>
@@ -10,7 +11,7 @@ in {
     ./disko.nix
     ./users.nix
     inputs.disko.nixosModules.disko
-    ./../${"!configs"}/default.nix
+    ./../../configs/${DE}.nix
   ] ++ umport { path = ./../../modules; recursive = true; };
 
   #====<< Hardware Options >>==================================================>
@@ -39,14 +40,8 @@ in {
   # select a specific version like: pkgs.linuxKernel.packages.linux_6_3;
   boot.kernelPackages = pkgs.linuxPackages_latest;
   # boot.supportedFilesystems = [ "bcachefs" ];
-
-  #====<< Luks incryption >>===================================================>
-  # # if you are using encryption on your drives, you should put it here
-  # # it should look something like this:
-  # boot.initrd.secrets = { "/crypto_keyfile.bin" = null; };  # Setup keyfile
-  # # Enable swap on luks
-  # boot.initrd.luks.devices."luks-a-bunch-of-numbers-and-letters" = {
-  #   device  = "/dev/disk/by-uuid/a-bunch-of-numbers-and-letters";
-  #   keyFile = "/crypto_keyfile.bin";
-  # };
+  # Swap with hibernation
+  # https://wiki.archlinux.org/title/Power_management/Suspend_and_hibernate#Acquire_swap_file_offset
+  # boot.kernelParams = [ "resume_offset=533760" ];
+  # boot.resumeDevice = "/dev/disk/by-label/nixos";
 }

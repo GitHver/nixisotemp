@@ -14,7 +14,7 @@ in
         userrules = [ "wheel" "networkmanager" ];
       }; /*
       guests = makeUsers {
-        userpaths  = umport { path = ./users; };
+        userpaths  = umport { path = ./guests; };
         userrules = [ "networkmanager" ]; }; */
     in admins # ++ guests
   ;

@@ -6,11 +6,12 @@
 
 let
   inherit (lib) mkOption mkIf types;
-  cfg = config.gnome;
+  name = "gnome";
+  cfg = config.services.desktopManager.${name};
 in
 {
 
-  options.gnome.enable = mkOption {
+  options.services.desktopManager.gnome.enable = mkOption {
     type = types.bool;
     default = false;
   };
@@ -18,7 +19,7 @@ in
   config = mkIf cfg.enable {
     #====<< Gnome Environment >>===============================================>
     services.xserver.desktopManager.gnome.enable = true; # GNOME Desktop Environment.
-    services.gnome.core-utilities.enable = true; # Disables Gnome apps
+    services.gnome.core-utilities.enable = false; # Disables Gnome apps
     programs.dconf.enable = true;
     environment.systemPackages = (with pkgs; [
       gnome-console

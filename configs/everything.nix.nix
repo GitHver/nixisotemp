@@ -6,15 +6,29 @@ in
 { config = {
 
   #====<< Desktop >>===========================================================>
-  services.xserver.enable = true;
-  services.desktopManager.gnome.enable = true;
-  services.xserver.displayManager.gdm.enable = true;
+  services.xserver = {
+    enable = true;
+    excludePackages = [ pkgs.xterm ];
+  };
+  services.displayManager = {
+    lightdm.enable = true;
+    # cosmic-greeter.enable = true;
+  };
+  services.desktopManager = {
+    gnome.enable = true;
+    # cosmic.enable = true;
+  };
+
+  #====<< Niri Wayland compositor >>===========================================>
+  # programs.niri.enable = true;
+  # programs.niri.package = pkgs.niri-stable;
+  # niri-flake.cache.enable = false;
+  # nixpkgs.overlays = [ inputs.niri.overlays.niri ];
 
   #====<< Network config >>====================================================>
   networking = {
     hostName = hostname;          # The name of your computer on the network.
     networkmanager.enable = true; # Networkmanager handles wifi and ethernet.
-    #wireless.enable = true;      # Unneccesary, Comes packaged with most DEs.
     firewall = {                    # If you're having trouble with connection
       enable = true;                # permissions, you can disable the firewall
       #allowedTCPPorts = [ ... ];   # or open some ports here,
@@ -58,5 +72,6 @@ in
   #====<< Miscellaneous >>=====================================================>
   xdg.portal.enable = true; # XDG Desktop portal (for nix and flatpaks).
   services.printing.enable = true; # Printer protocols.
+  services.libinput.enable = true;
 
 };} ################ End of variable & config scope. ###########################
