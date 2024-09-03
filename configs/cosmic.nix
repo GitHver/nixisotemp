@@ -8,7 +8,7 @@ in
   #====<< Desktop >>===========================================================>
   services.displayManager.cosmic-greeter.enable = true;
   services.desktopManager.cosmic.enable = true;
-  services.wayland-utils.enable = true;
+  services.desktopManager.cosmic.apps-excl = true;
 
   #====<< Network config >>====================================================>
   networking = {
