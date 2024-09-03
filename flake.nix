@@ -1,12 +1,12 @@
-{
-  ############################ Initial scope ###################################
+{ ############################ Initial scope ###################################
 
   description = ''
     SputNix flake!
   '';
 
   nixConfig = {
-    extra-substituters = [ "https://cache.nixos.org/"
+    extra-substituters = [
+      /**/"https://cache.nixos.org/"
       "https://nix-community.cachix.org"
       "https://cosmic.cachix.org/"
       "https://niri.cachix.org"
@@ -44,7 +44,7 @@
 
   outputs = { self, nixpkgs, ... }@inputs: let
     system = "x86_64-linux";
-    pkgs = nixpkgs.legacyPackages.${system};
+    # pkgs = nixpkgs.legacyPackages.${system};
     patt = {
       system-path = "/etc/nixos";
       pkgs-stable = inputs.nixpkgs-stable.legacyPackages.${system};

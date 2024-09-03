@@ -8,7 +8,7 @@ in
   #====<< Desktop >>===========================================================>
   services.displayManager.cosmic-greeter.enable = true;
   services.desktopManager.cosmic.enable = true;
-  services.waylan-utils.enable = true;
+  services.wayland-utils.enable = true;
 
   #====<< Network config >>====================================================>
   networking = {
@@ -51,10 +51,10 @@ in
     #==<< Programs >>==================>
     btop        # Terminal resource monitoring tool
     git         # Best learn to use git. it *WILL* make your life easier.
-  ]) ++ (with pkgs-stable; [ ]); # packages to use the sable channel.
+  ]) ++ (with pkgs-stable; [ ]); # packages to use the stable channel.
 
   #====<< Miscellaneous >>=====================================================>
-  xdg.portal.enable = true; # XDG Desktop portal (for nix and flatpaks).
-  services.printing.enable = true; # Printer protocols.
+  xdg.portal.enable = true;         # XDG Desktop portal.
+  services.printing.enable = true;  # Printer protocols.
 
 };} ################ End of variable & config scope. ###########################

@@ -632,11 +632,11 @@
         "xwayland-satellite": "xwayland-satellite"
       },
       "locked": {
-        "lastModified": 1725274101,
-        "narHash": "sha256-8bjV4CYDnAb/iLPZlYYRqbMndPRvPNuXz6glCSIQj5o=",
+        "lastModified": 1725364211,
+        "narHash": "sha256-h8l+wV04pnT/+Afl9v6FzUZGpJ4dFqPpDUvKsy78IdI=",
         "owner": "sodiboo",
         "repo": "niri-flake",
-        "rev": "a886f09f68a95ecc9851f0c3d689adaca03c426e",
+        "rev": "aac54203ab23eb4506a3687a151fa8654f6d0810",
         "type": "github"
       },
       "original": {
@@ -665,11 +665,11 @@
     "niri-unstable": {
       "flake": false,
       "locked": {
-        "lastModified": 1725271845,
-        "narHash": "sha256-tuydYSid9TtQF48d2hm/aTY18bKh+cQ/S4c5Jpa9Zpo=",
+        "lastModified": 1725360684,
+        "narHash": "sha256-9RCJGMBVQou8SQ3nmK+KnLSKTsPkNdA1e1B+JZwyl4g=",
         "owner": "YaLTeR",
         "repo": "niri",
-        "rev": "4b7c16b04a7c80f5f9b6fcbc4a1d8c9448dffbdb",
+        "rev": "6b013a08fc67417f84ad79b7a2e91c41f6141ec7",
         "type": "github"
       },
       "original": {
@@ -760,11 +760,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1725323307,
-        "narHash": "sha256-daoce7So8nzSDtyW9aYRH9FWAyT/2MFMVdq6c74yK5k=",
+        "lastModified": 1725324093,
+        "narHash": "sha256-mEwfIJggxnEJH8WJecdP/SphfBrVZp6YCHzKwnJlgLs=",
         "owner": "lilyinstarlight",
         "repo": "nixos-cosmic",
-        "rev": "455413895b6ec950b7f0062c591d3903af35cbab",
+        "rev": "19a893c14d87f1b6a7e775b22ee84f08b32ea20e",
         "type": "github"
       },
       "original": {

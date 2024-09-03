@@ -29,7 +29,7 @@
               subvolumes = {
                 "/nix" = {
                   mountpoint = "/nix";
-                  mountOptions = [ "noatime" "nodatacow" ];
+                  mountOptions = [ "noatime" "compress=zstd" ]; #"nodatacow" 
                 };
                 "/rootfs" = {
                   mountpoint = "/";
