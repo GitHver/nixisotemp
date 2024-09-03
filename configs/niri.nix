@@ -5,12 +5,15 @@ let
 in
 { config = {
 
-  #====<< Desktop >>===========================================================>
+  #====<< Services >>===========================================================>
   services = {
     xserver.enable = true;
     displayManager.lightdm.enable = true;
+    libinput.enable = true;
+    openssh.enable = false;
   };
-  services.waylan-utils.enable = true;
+
+  #====<< Niri Wayland compositor >>===========================================>
   programs.niri.enable = true;
   programs.niri.package = pkgs.niri-stable;
   niri-flake.cache.enable = false;
@@ -20,7 +23,6 @@ in
   networking = {
     hostName = hostname;          # The name of your computer on the network.
     networkmanager.enable = true; # Networkmanager handles wifi and ethernet.
-    #wireless.enable = true;      # Unneccesary, Comes packaged with most DEs.
     firewall = {                    # If you're having trouble with connection
       enable = true;                # permissions, you can disable the firewall
       #allowedTCPPorts = [ ... ];   # or open some ports here,

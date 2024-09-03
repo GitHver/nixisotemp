@@ -2,6 +2,7 @@
 
 let
   inherit (alib) umport;
+  DE = "niri";
 in {
 
   #====<< Import all device specific modules >>================================>
@@ -10,7 +11,7 @@ in {
     ./disko.nix
     ./users.nix
     inputs.disko.nixosModules.disko
-    ./../../configs/cosmic.nix
+    ./../../configs/${DE}.nix
   ] ++ umport { path = ./../../modules; recursive = true; };
 
   #====<< Hardware Options >>==================================================>
