@@ -16,14 +16,15 @@ in
   };
   services.desktopManager = {
     gnome.enable = true;
-    # cosmic.enable = true;
+    cosmic.enable = true;
   };
+  bluetooth.enable = true;
 
   #====<< Niri Wayland compositor >>===========================================>
-  # programs.niri.enable = true;
-  # programs.niri.package = pkgs.niri-stable;
-  # niri-flake.cache.enable = false;
-  # nixpkgs.overlays = [ inputs.niri.overlays.niri ];
+  programs.niri.enable = true;
+  programs.niri.package = pkgs.niri-stable;
+  niri-flake.cache.enable = false;
+  nixpkgs.overlays = [ inputs.niri.overlays.niri ];
 
   #====<< Network config >>====================================================>
   networking = {
@@ -64,7 +65,6 @@ in
   environment.systemPackages = (with pkgs; [
     #==<< Programs >>==================>
     alacritty   # Fast terminal emulator writen in rust
-    micro       # Easy to use terminal text editor
     btop        # Terminal resource monitoring tool
     git         # Best learn to use git. it *WILL* make your life easier.
   ]) ++ (with pkgs-stable; [ ]); # packages to use the sable channel.

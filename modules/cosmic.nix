@@ -14,7 +14,7 @@ in
 
   imports = [ inputs.nixos-cosmic.nixosModules.default ];
 
-  options.services.desktopManager.cosmic.apps-excl = mkOption {
+  options.services.desktopManager.cosmic.apps-excl.enable = mkOption {
     type = types.bool;
     default = false;
   };

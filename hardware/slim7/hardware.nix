@@ -2,7 +2,6 @@
 
 let
   inherit (alib) umport;
-  DE = "everything";
 in {
 
   #====<< Import all device specific modules >>================================>
@@ -11,10 +10,12 @@ in {
     ./disko.nix
     ./users.nix
     inputs.disko.nixosModules.disko
-    ./../../configs/${DE}.nix
+    ./../configuration.nix
   ] ++ umport { path = ./../../modules; recursive = true; };
 
   #====<< Hardware Options >>==================================================>
+  # hardware.enableRedistributableFirmware = true;
+  hardware.enableAllFirmware = true;
   amdgpu.enable = false;
   nvidia.enable = false;
   qemuvm.enable = false;
@@ -38,7 +39,7 @@ in {
   # Uncommenting the below sets your kernel to the lates release. By default
   # the kernel is updated to the latest version deemed stable. You can also
   # select a specific version like: pkgs.linuxKernel.packages.linux_6_3;
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  # boot.kernelPackages = pkgs.linuxPackages_latest;
   # boot.supportedFilesystems = [ "bcachefs" ];
   # Swap with hibernation
   # https://wiki.archlinux.org/title/Power_management/Suspend_and_hibernate#Acquire_swap_file_offset

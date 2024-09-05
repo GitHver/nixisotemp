@@ -25,9 +25,9 @@ in
       gamescope
 
       brightnessctl
-      clightd
-      wl-gammactl
-      wl-gammarelay-rs
+      # clightd
+      # wl-gammactl
+      # wl-gammarelay-rs
       wlr-randr
     ];
     # programs.light.brightnessKeys = {
