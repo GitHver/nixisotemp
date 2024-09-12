@@ -2,23 +2,14 @@
 
 let
   inherit (patt) pkgs-stable;
-in
-{ config = {
+in { config = {
 
-  #====<< Desktop >>===========================================================>
-  services.xserver = {
-    enable = true;
-    excludePackages = [ pkgs.xterm ];
+  #====<< System Services >>===================================================>
+  services = {
+    displayManager.cosmic-greeter.enable = true;
+    libinput.enable = true;
+    pipewire.full = true;
   };
-  services.displayManager = {
-    lightdm.enable = true;
-    # cosmic-greeter.enable = true;
-  };
-  services.desktopManager = {
-    gnome.enable = true;
-    cosmic.enable = true;
-  };
-  bluetooth.enable = true;
 
   #====<< Niri Wayland compositor >>===========================================>
   programs.niri.enable = true;
@@ -26,42 +17,11 @@ in
   niri-flake.cache.enable = false;
   nixpkgs.overlays = [ inputs.niri.overlays.niri ];
 
-  #====<< Network config >>====================================================>
-  networking = {
-    hostName = hostname;          # The name of your computer on the network.
-    networkmanager.enable = true; # Networkmanager handles wifi and ethernet.
-    firewall = {                    # If you're having trouble with connection
-      enable = true;                # permissions, you can disable the firewall
-      #allowedTCPPorts = [ ... ];   # or open some ports here,
-      #allowedUDPPorts = [ ... ];   # or here.
-    };
-  };
-
-  #====<< Localization & internationalization >>===============================>
-  time.timeZone = "Atlantic/Reykjavik";
-  i18n.defaultLocale = "en_GB.UTF-8";   # Set default localization.
-  extraLocaleSettings = "is_IS.UTF-8";  # Set main localization.
-  console.keyMap = "is-latin1";         # Sets the console keymap.
-  services.xserver.xkb = {
-    layout = "is";            # Set the keymap for Xserver.
-    options = "caps:escape";  # Modification options.
-  };
-
-  #====<< Nix specific settings >>=============================================>
-  system.stateVersion = "24.11"; # What version of NixOS configs to use.
-  programs.nix-ld.enable = true; # Nix-ld is mostly for developers.
-  programs.nix-ld.libraries = with pkgs; [ ]; # doesn't hurt to have it though!
-  nix.settings = {
-    allowed-users = [ "root" "@wheel" ]; # Note: the wheel group is for admins.
-    trusted-users = [ "root" "@wheel" ];
-    experimental-features = [ "flakes" "nix-command" ];
-  };
-
   #====<< System packages >>===================================================>
   services.flatpak.enable = false; # See "flatpaks" for more info.
   # Below is where all the sytem-wide packages are installed.
   # Go to https://search.nixos.org/packages to search for programs.
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.allowUnfree = false;
   environment.systemPackages = (with pkgs; [
     #==<< Programs >>==================>
     alacritty   # Fast terminal emulator writen in rust
@@ -69,9 +29,37 @@ in
     git         # Best learn to use git. it *WILL* make your life easier.
   ]) ++ (with pkgs-stable; [ ]); # packages to use the sable channel.
 
+  #====<< Localization & internationalization >>===============================>
+  localization = {
+    language   = "en_GB";
+    formatting = "is_IS";
+    timezone   = "Atlantic/Reykjavik";
+  };
+
+  #====<< Keyboard >>==========================================================>
+  console.useXkbConfig = true;
+  services.xserver.xkb = {
+    layout  = "is";           # Set the language keymap for XKeyboard.
+    variant = "";             # Any special layout you use like colemak, dvorak.
+    model   = "pc104";        # The keyboard model. default is 104 key.
+    options = "caps:escape";  # Here, Capslock is an additional escape. 
+  };
+
+  #====<< Nix specific settings >>=============================================>
+  system.stateVersion = "24.11"; # What version of NixOS configs to use.
+  programs.nix-ld.enable = true;              # Nix-ld is for dynamically
+  programs.nix-ld.libraries = with pkgs; [ ]; # linked libraries.
+  nix.settings = {
+    allowed-users = [ "*" ];  # This is the default, all users allowed.
+    trusted-users = [ "root" "@wheel" ];  # `@` denotes a group.
+    experimental-features = [ "flakes" "nix-command" ];
+  };
+
   #====<< Miscellaneous >>=====================================================>
   xdg.portal.enable = true; # XDG Desktop portal (for nix and flatpaks).
   services.printing.enable = true; # Printer protocols.
-  services.libinput.enable = true;
 
 };} ################ End of variable & config scope. ###########################
+  # time.timeZone = "Atlantic/Reykjavik";
+  # i18n.defaultLocale = "en_GB.UTF-8"; # System language.
+  # i18n.formatting    = "is_IS.UTF-8"; # Units, date format, currency, etc.

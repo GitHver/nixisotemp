@@ -1,27 +1,33 @@
-{ lib, config, ... }:
+{ lib
+, config
+, ...
+}:
 
-with lib;
 let
-  cnfg = config.steam-client;
-in
+  inherit (lib) mkOption mkIf types;
+  name = "steam-full";
+  cfg = config.programs.${name};
+in {
 
-{
-  options.steam-client.enable = mkOption {
+  options.programs.${name}.enable = mkOption {
     type = types.bool;
     default = false;
-    #description = "Steam client and permissions";
+    description = "Steam client with all permissions";
   };
 
-  config = mkIf cnfg.enable {
+  config = mkIf cfg.enable {
     programs.steam = {
       enable = true;
-      # Open ports in the firewall for Steam Remoteplay
+      # Open ports in the firewall for Steam Remotepla.
       remotePlay.openFirewall = true;
-      # Open ports in the firewall for Steam server
+      # Open ports in the firewall for Steam server.
       dedicatedServer.openFirewall = true;
-      # For better game tuning
+      # Opens ports to allow file (game) transfers on your local network.
+      localNetworkGameTransfers.openFirewall = true;
+      # Valve's micro compositor. Runs inside your primary compositor.
       gamescopeSession.enable = true;
     };
   };
+
 }
 

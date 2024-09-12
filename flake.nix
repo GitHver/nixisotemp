@@ -19,25 +19,25 @@
   };
 
   inputs = {
-    #====<< Core Nixpkgs >>======================================================>
+    #====<< Core Nixpkgs >>====================================================>
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
 
-    #====<< Extension utils >>===================================================>
+    #====<< Extension utils >>=================================================>
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
 
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
-    #====<< DEs & Compositors >>=================================================>
+    #====<< DEs & Compositors >>===============================================>
     nixos-cosmic.url = "github:lilyinstarlight/nixos-cosmic";
     nixos-cosmic.inputs.nixpkgs.follows = "nixpkgs";
 
     niri.url = "github:sodiboo/niri-flake";
     niri.inputs.nixpkgs.follows = "nixpkgs";
 
-    #====<< Libraries and utilities >>===========================================>
+    #====<< Libraries and utilities >>=========================================>
     nypkgs.url = "github:yunfachi/nypkgs";
     nypkgs.inputs.nixpkgs.follows = "nixpkgs";
   };
@@ -62,25 +62,22 @@
     alib = lib // ylib // plib;
   in {
 
-    formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
-
+    /* These are example configurations provided to begin using flakes.
+    Rename each configuration to the hostnanme of the hardware each uses */
     nixosConfigurations = {
-      /* These are example configurations provided to begin using flakes.
-      Rename each configuration to the hostnanme of the hardware each uses */
 
-      #==<< Desktop configuration >>=============================================>
-      your-hostname = let hostname = "your-hostname"; in
-        nixpkgs.lib.nixosSystem {
-          modules = [ ./hardware/${hostname}/hardware.nix ];
-          specialArgs = { inherit inputs patt alib hostname; };
-        };
+      #==<< Desktop configuration >>===========================================>
+      your-hostname = let hostname = "your-hostname"; in lib.nixosSystem {
+        modules = [ ./hardware/${hostname}/hardware.nix ];
+        specialArgs = { inherit inputs patt alib hostname; };
+      };
 
       # Using the following command, a result directory will be made
       # with a custom ISO in the 'result/iso' directory.
       # $ nix build \.#nixosConfigurations.ISO.config.system.build.isoImage
       # put your packages you want on the ISO in `hardware/!configs/ISO-image.nix`
-      #==<< Custom ISO image >>==================================================>
-      ISO = nixpkgs.lib.nixosSystem {
+      #==<< Custom ISO image >>================================================>
+      ISO = lib.nixosSystem {
         specialArgs = { inherit inputs; };
         modules = [ ./hardware/ISO-image.nix ];
       };
@@ -91,5 +88,6 @@
       "<name>" = derivation;
       }
     */
-  };
-} ################ End of Output and inital scope ############################
+    formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
+
+};} ################ End of Output and inital scope ##############################

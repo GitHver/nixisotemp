@@ -1,7 +1,7 @@
 {
   disko.devices.disk = {
   
-    main-disk = {
+    main = {
       device = "/dev/nvme0n1";
       type = "disk";
       content = {
@@ -15,22 +15,22 @@
               type = "filesystem";
               format = "vfat";
               mountpoint = "/boot";
-            };
-          };
+            }; # boot contents
+          }; # boot partition
 
-          luks = {
+          root = { # rename this to `luks` and uncomment all `luks` lines
             size = "100%";
-            content = {
-              type = "luks";
-              name = "crypted";
+            # content = {
+            #   type = "luks";
+            #   name = "crypted";
               content = {
                 type = "btrfs";
                 mountpoint = "/";
-                extraArgs = [ "L" "nixos" "-f" ];
+                extraArgs = [ "-L" "nixos" "-f" ];
                 subvolumes = {
                   "/nix" = {
                     mountpoint = "/nix";
-                    mountOptions = [ "noatime" "nodatacow" ];
+                    mountOptions = [ "noatime" "compress=zstd" ];
                   };
                   "/rootfs" = {
                     mountpoint = "/";
@@ -42,20 +42,21 @@
                   };
                   "/swap" = {
                     mountpoint = "/.swapvol";
-                    swap.swapfile.size = "20G";
+                    mountOptions = [ "nodatacow" ];
+                    swap.swapfile.size = "8G";
                   };
                   # "/persist" = {
                   #   mountpoint = "/persist";
                   #   mountOptions = [ "noatime" "compress=zstd" ];
                   # };
-                };
-              };
-            };
-          };
+                }; # subvolumes
+              }; # btrfs content
+            # }; # luks content
+          }; # root partition
 
-        };
-      };
-    };
+        }; # partitions
+      }; # content
+    }; # main
 
     # secondary = {
     #   device = "/dev/sda";
@@ -70,12 +71,12 @@
     #           type = "filesystem";
     #           format = "bcachefs";
     #           mountpoint = "/cache";
-    #         };
-    #       };
+    #         }; # bcache content
+    #       }; # bcachefs partition
           
     #     }; # partitions
     #   }; # content
-    # };
+    # }; # secondary drive
     
   };
 }

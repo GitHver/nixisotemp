@@ -1,17 +1,21 @@
-{ pkgs, lib, config, ... }:
+{ pkgs
+, lib
+, config
+, ...
+}:
 
-with lib;
 let
-  cnfg = config.pipewire;
+  inherit (lib) mkOption mkIf types;
+  cfg = config.services.pipewire;
 in
 {
 
-  options.pipewire.enable = mkOption {
+  options.services.pipewire.full = mkOption {
     type = types.bool;
     default = true;
   };
 
-  config = mkIf cnfg.enable {
+  config = mkIf cfg.full {
 
     #sound.enable = true;
     hardware.pulseaudio.enable = false;

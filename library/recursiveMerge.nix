@@ -1,8 +1,9 @@
-{ lib, ... }:
+{ lib
+, ...
+}:
 
-
-with lib; let
-
+with lib;
+let
   recursiveMerge = attrList:
     let
       f = attrPath:
@@ -17,8 +18,7 @@ with lib; let
     in
     f [ ] attrList;
 
-in
-{ inherit recursiveMerge; }
+in { inherit recursiveMerge; }
 
 /*
   https://stackoverflow.com/questions/54504685/nix-function-to-merge-attributes-records-recursively-and-concatenate-arrays/54505212

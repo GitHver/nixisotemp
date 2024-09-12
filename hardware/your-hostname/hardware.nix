@@ -1,4 +1,4 @@
-{ pkgs, inputs, alib, ... }:
+{ pkgs, inputs, alib, hostname, ... }:
 
 let
   inherit (alib) umport;
@@ -15,10 +15,24 @@ in {
 
   #====<< Hardware Options >>==================================================>
   # hardware.enableRedistributableFirmware = true;
-  hardware.enableAllFirmware = true;
+  # hardware.enableAllFirmware = true;
   amdgpu.enable = false;
   nvidia.enable = false;
-  qemuvm.enable = false;
+
+  #====<< Heavy programs >>====================================================>
+  qemuvm.enable = false;       # The QEMU virtual machine.
+  steam-client.enable = false; # Steam module with all permissions.
+
+  #====<< Linux kernel options >>==============================================>
+  # Uncommenting the below sets your kernel to the lates release. By default
+  # the kernel is updated to the latest version deemed stable. You can also
+  # select a specific version like: pkgs.linuxKernel.packages.linux_6_3;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+  # boot.supportedFilesystems = [ "bcachefs" ];
+  # Swap with hibernation
+  # https://wiki.archlinux.org/title/Power_management/Suspend_and_hibernate#Acquire_swap_file_offset
+  # boot.kernelParams = [ "resume_offset=533760" ];
+  # boot.resumeDevice = "/dev/disk/by-label/nixos";
 
   #====<< Bootloader >>========================================================>
   # Be VERY careful when changing this, Nix is unbreakable in everything except
@@ -35,14 +49,24 @@ in {
     splashImage = null;
   };
 
-  #====<< Linux kernel options >>==============================================>
-  # Uncommenting the below sets your kernel to the lates release. By default
-  # the kernel is updated to the latest version deemed stable. You can also
-  # select a specific version like: pkgs.linuxKernel.packages.linux_6_3;
-  # boot.kernelPackages = pkgs.linuxPackages_latest;
-  # boot.supportedFilesystems = [ "bcachefs" ];
-  # Swap with hibernation
-  # https://wiki.archlinux.org/title/Power_management/Suspend_and_hibernate#Acquire_swap_file_offset
-  # boot.kernelParams = [ "resume_offset=533760" ];
-  # boot.resumeDevice = "/dev/disk/by-label/nixos";
+  #====<< Network config >>====================================================>
+  bluetooth.enable = true;
+  networking = {
+    hostName = hostname;          # The name of your computer on the network.
+    networkmanager.enable = true; # Networkmanager handles wifi and ethernet.
+    firewall = {                # If you're having trouble with connection
+      enable = true;            # permissions, you can disable the firewall
+      allowedTCPPorts = [ ];    # or open some ports here,
+      allowedUDPPorts = [ ];    # or here.
+    };
+  };
+
+  #====<< Hardware packages >>=================================================>
+  # Below is where all the sytem-wide packages are installed.
+  # Go to https://search.nixos.org/packages to search for programs.
+  nixpkgs.config.allowUnfree = false;
+  environment.systemPackages = (with pkgs; [
+    #==<< hardware interfacing >>==================>
+    brightnessctl
+  ]);
 }
