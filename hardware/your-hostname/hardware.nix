@@ -22,8 +22,8 @@ in {
   nvidia.enable = false;
 
   #====<< Heavy programs >>====================================================>
-  qemuvm.enable = true;       # The QEMU virtual machine.
-  programs.steam-full.enable = true; # Steam module with all permissions.
+  qemuvm.enable = false;       # The QEMU virtual machine.
+  programs.steam-full.enable = false; # Steam module with all permissions.
 
   #====<< Linux kernel options >>==============================================>
   # Uncommenting the below sets your kernel to the lates release. By default

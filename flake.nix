@@ -31,11 +31,11 @@
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
     #====<< DEs & Compositors >>===============================================>
-    nixos-cosmic.url = "github:lilyinstarlight/nixos-cosmic";
-    nixos-cosmic.inputs.nixpkgs.follows = "nixpkgs";
+    # nixos-cosmic.url = "github:lilyinstarlight/nixos-cosmic";
+    # nixos-cosmic.inputs.nixpkgs.follows = "nixpkgs";
 
-    niri.url = "github:sodiboo/niri-flake";
-    niri.inputs.nixpkgs.follows = "nixpkgs";
+    # niri.url = "github:sodiboo/niri-flake";
+    # niri.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = { self, nixpkgs, ... }@inputs:
