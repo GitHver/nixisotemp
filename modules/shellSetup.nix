@@ -1,16 +1,29 @@
-{ pkgs, patt, hostname, ... }:
+{ pkgs
+, patt
+, hostname
+, ...
+}:
 
 let
   inherit (patt) system-path;
   home-path = "~/.config/home-manager";
-in
-{
+in {
+
   #====<< Home-manager install script >>=======================================>
   environment.shellAliases = {
+    nix-perms = /*bash*/''
+      sudo chown -R $USER /etc/nixos
+      chgrp -R wheel /etc/nixos
+      chmod -R g+w /etc/nixos
+      cd /etc/nixos
+      git init
+      git add .
+      git commit -m 'initial commit'
+    '';
     home-get = /*bash*/''
       git clone https://github.com/GitHver/nixisotemphome.git ${home-path}
       rm -rf ${home-path}/.git
-      cd  ${home-path}
+      cd ${home-path}
       $EDITOR flake.nix
     '';
     home-install = /*bash*/''
@@ -24,4 +37,5 @@ in
       nix shell nixpkgs#home-manager --command home-manager switch --flake ${home-path}
     '';
   };
+
 }

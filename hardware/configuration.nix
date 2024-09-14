@@ -1,33 +1,32 @@
-{ pkgs, inputs, alib, patt, hostname, ... }:
+{ pkgs, inputs, lib, patt, hostname, ... }:
 
 let
-  inherit (patt) pkgs-stable;
+  # inherit (patt) pkgs-stable;
 in { config = {
 
   #====<< System Services >>===================================================>
   services = {
-    displayManager.cosmic-greeter.enable = true;
+    desktopManager.gnome.enable = true;
     libinput.enable = true;
     pipewire.full = true;
+    xserver = {
+      enable = true;
+      excludePackages = [ pkgs.xterm ];
+    };
   };
-
-  #====<< Niri Wayland compositor >>===========================================>
-  programs.niri.enable = true;
-  programs.niri.package = pkgs.niri-stable;
-  niri-flake.cache.enable = false;
-  nixpkgs.overlays = [ inputs.niri.overlays.niri ];
 
   #====<< System packages >>===================================================>
   services.flatpak.enable = false; # See "flatpaks" for more info.
   # Below is where all the sytem-wide packages are installed.
   # Go to https://search.nixos.org/packages to search for programs.
-  nixpkgs.config.allowUnfree = false;
+  nixpkgs.config.allowUnfree = true;
   environment.systemPackages = (with pkgs; [
     #==<< Programs >>==================>
-    alacritty   # Fast terminal emulator writen in rust
+    # alacritty   # Fast terminal emulator writen in rust
     btop        # Terminal resource monitoring tool
     git         # Best learn to use git. it *WILL* make your life easier.
-  ]) ++ (with pkgs-stable; [ ]); # packages to use the sable channel.
+  ]); 
+  # ++ (with pkgs-stable; [ ]); # packages to use the sable channel.
 
   #====<< Localization & internationalization >>===============================>
   localization = {
@@ -42,7 +41,7 @@ in { config = {
     layout  = "is";           # Set the language keymap for XKeyboard.
     variant = "";             # Any special layout you use like colemak, dvorak.
     model   = "pc104";        # The keyboard model. default is 104 key.
-    options = "caps:escape";  # Here, Capslock is an additional escape. 
+    options = "caps:escape";  # Here, Capslock is an additional escape key. 
   };
 
   #====<< Nix specific settings >>=============================================>
@@ -60,6 +59,3 @@ in { config = {
   services.printing.enable = true; # Printer protocols.
 
 };} ################ End of variable & config scope. ###########################
-  # time.timeZone = "Atlantic/Reykjavik";
-  # i18n.defaultLocale = "en_GB.UTF-8"; # System language.
-  # i18n.formatting    = "is_IS.UTF-8"; # Units, date format, currency, etc.

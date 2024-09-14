@@ -1,12 +1,15 @@
-{ pkgs, lib, config, ... }:
+{ pkgs
+, lib
+, config
+, ...
+}:
 
 let
   inherit (lib) mkOption mkIf types;
   name = "wayland-utils";
   cnfg = config.services.${name};
-in
+in {
 
-{
   options.services.${name}.enable = mkOption {
     type = types.bool;
     default = true;
@@ -17,15 +20,23 @@ in
     environment.variables.NIXOS_OZONE_WL = "1";
     environment.systemPackages = with pkgs; [
       wl-clipboard
-      # wayland-utils
+      wayland-utils
       xwayland-satellite
-      cage
 
-      # wlr-randr
+      cage
+      libsecret
+      gamescope
+
+      brightnessctl
+      # clightd
+      # wl-gammactl
+      # wl-gammarelay-rs
+      wlr-randr
     ];
     # programs.light.brightnessKeys = {
     #   enable = true;
     #   step  = 5;
     # };
   };
+
 }

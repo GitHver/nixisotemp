@@ -1,12 +1,14 @@
 { config
 , lib
+, patt
 , ...
 }:
 
 let
   inherit (lib) mkOption;
+  inherit (patt) language formatting timezone;
   # name = "formatting";
-  cfg = config.language;
+  cfg = config.localization;
 in {
 
   options.localization = {

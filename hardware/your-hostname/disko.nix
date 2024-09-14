@@ -1,8 +1,13 @@
+let
+  disktype =
+    "nvme0n1";
+    # "sda";
+in
 {
   disko.devices.disk = {
-  
+
     main = {
-      device = "/dev/nvme0n1";
+      device = "/dev/${disktype}";
       type = "disk";
       content = {
         type = "gpt";
@@ -15,10 +20,10 @@
               type = "filesystem";
               format = "vfat";
               mountpoint = "/boot";
-            }; # boot contents
-          }; # boot partition
+            };
+          };
 
-          root = { # rename this to `luks` and uncomment all `luks` lines
+          luks = {
             size = "100%";
             # content = {
             #   type = "luks";
@@ -50,13 +55,13 @@
                   #   mountOptions = [ "noatime" "compress=zstd" ];
                   # };
                 }; # subvolumes
-              }; # btrfs content
-            # }; # luks content
+              # }; # btrfs content
+            }; # luks content
           }; # root partition
 
         }; # partitions
-      }; # content
-    }; # main
+      }; # disk content
+    }; # main disk
 
     # secondary = {
     #   device = "/dev/sda";
@@ -71,12 +76,12 @@
     #           type = "filesystem";
     #           format = "bcachefs";
     #           mountpoint = "/cache";
-    #         }; # bcache content
-    #       }; # bcachefs partition
-          
+    #         };
+    #       };
+
     #     }; # partitions
     #   }; # content
-    # }; # secondary drive
-    
+    # };
+
   };
 }

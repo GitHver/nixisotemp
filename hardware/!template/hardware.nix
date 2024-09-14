@@ -1,7 +1,7 @@
-{ pkgs, inputs, alib, hostname, ... }:
+{ pkgs, inputs, lib, hostname, ... }:
 
 let
-  inherit (alib) umport;
+  inherit (lib.filesystem) listFilesRecursive;
 in {
 
   #====<< Import all device specific modules >>================================>
@@ -11,7 +11,9 @@ in {
     ./users.nix
     inputs.disko.nixosModules.disko
     ./../configuration.nix
-  ] ++ umport { path = ./../../modules; recursive = true; };
+  ] 
+  # ++ listFilesRecursive ./../../modules
+  ;
 
   #====<< Hardware Options >>==================================================>
   # hardware.enableRedistributableFirmware = true;
@@ -20,8 +22,8 @@ in {
   nvidia.enable = false;
 
   #====<< Heavy programs >>====================================================>
-  qemuvm.enable = false;       # The QEMU virtual machine.
-  steam-client.enable = false; # Steam module with all permissions.
+  qemuvm.enable = true;       # The QEMU virtual machine.
+  programs.steam-full.enable = true; # Steam module with all permissions.
 
   #====<< Linux kernel options >>==============================================>
   # Uncommenting the below sets your kernel to the lates release. By default
@@ -41,6 +43,7 @@ in {
   # rebuilding any changes here. Best to first use a virtual machine with:
   # $ sudo nixos-rebuild build-wm-with-bootloader
   boot.loader.efi.canTouchEfiVariables = true;
+  # boot.loader.systemd-boot.enable = true;
   boot.loader.grub = {
     enable = true;
     device = "nodev";
@@ -60,13 +63,4 @@ in {
       allowedUDPPorts = [ ];    # or here.
     };
   };
-
-  #====<< Hardware packages >>=================================================>
-  # Below is where all the sytem-wide packages are installed.
-  # Go to https://search.nixos.org/packages to search for programs.
-  nixpkgs.config.allowUnfree = false;
-  environment.systemPackages = (with pkgs; [
-    #==<< hardware interfacing >>==================>
-    brightnessctl
-  ]);
 }

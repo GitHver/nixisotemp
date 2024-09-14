@@ -1,9 +1,13 @@
-{ pkgs, lib, config, ... }:
+{ pkgs
+, lib
+, config
+, ...
+}:
 
 let
+  inherit (lib) mkOption mkIf types;
   cnfg = config.bluetooth;
-in
-with lib; {
+in {
 
   options.bluetooth.enable = mkOption {
     type = types.bool;
@@ -11,7 +15,6 @@ with lib; {
   };
 
   config = mkIf cnfg.enable {
-
     services.blueman.enable = true;
     hardware.bluetooth = {
       enable = true;
@@ -25,6 +28,6 @@ with lib; {
       bluetuith
       #blueman
     ];
-
   };
+
 }

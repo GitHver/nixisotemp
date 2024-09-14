@@ -91,7 +91,7 @@ in {
   environment.systemPackages = with pkgs; [
     #==<< Base utils >>================>
     # util-linux
-    # git
+    git
     # gitui
     #==<< Partition utils >>===========>
     disko

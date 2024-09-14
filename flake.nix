@@ -36,51 +36,86 @@
 
     niri.url = "github:sodiboo/niri-flake";
     niri.inputs.nixpkgs.follows = "nixpkgs";
-
-    #====<< Libraries and utilities >>=========================================>
-    nypkgs.url = "github:yunfachi/nypkgs";
-    nypkgs.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, ... }@inputs: let
+  outputs = { self, nixpkgs, ... }@inputs:
+
+  let
+    inherit (self) outputs;
     system = "x86_64-linux";
     # pkgs = nixpkgs.legacyPackages.${system};
     patt = {
       system-path = "/etc/nixos";
       pkgs-stable = inputs.nixpkgs-stable.legacyPackages.${system};
+      language   = "en_GB";
+      formatting = "is_IS";
+      timezone   = "Atlantic/Reykjavik";
+      keyboard   = "is";
     };
     plib = {
       makeUsers = (import ./library/makeusers.nix {
         inherit (nixpkgs) lib;
       }).makeUsers;
-      recursiveMerge = (import ./library/recursiveMerge.nix {
-        inherit (nixpkgs) lib;
-      }).recursiveMerge;
     };
-    lib = nixpkgs.lib;
-    ylib = inputs.nypkgs.lib.${system};
-    alib = lib // ylib // plib;
+    lib = nixpkgs.lib // plib;
+    template = (host: nixpkgs.lib.nixosSystem {
+      modules = [ ./hardware/${host}/hardware.nix ] ++ outputs.nixosModules.default;
+      specialArgs = {
+        hostname = host;
+        inherit inputs patt lib;
+      };
+    });
   in {
 
-    /* These are example configurations provided to begin using flakes.
-    Rename each configuration to the hostnanme of the hardware each uses */
+    formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
+
+    nixosModules.default = lib.filesystem.listFilesRecursive ./modules;
+
     nixosConfigurations = {
+      /* These are example configurations provided to begin using flakes.
+      Rename each configuration to the hostnanme of the hardware each uses */
+
+      # forEach hosts (host: host = (template host));
 
       #==<< Desktop configuration >>===========================================>
-      your-hostname = let hostname = "your-hostname"; in lib.nixosSystem {
-        modules = [ ./hardware/${hostname}/hardware.nix ];
-        specialArgs = { inherit inputs patt alib hostname; };
-      };
+      your-hostname = let hostname = "your-hostname"; in
+        nixpkgs.lib.nixosSystem {
+          modules = [ ./hardware/${hostname}/hardware.nix ]
+          ++ outputs.nixosModules.default;
+          specialArgs = { inherit inputs patt lib hostname; };
+        };
 
       # Using the following command, a result directory will be made
       # with a custom ISO in the 'result/iso' directory.
       # $ nix build \.#nixosConfigurations.ISO.config.system.build.isoImage
       # put your packages you want on the ISO in `hardware/!configs/ISO-image.nix`
       #==<< Custom ISO image >>================================================>
-      ISO = lib.nixosSystem {
+      ISO = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
         modules = [ ./hardware/ISO-image.nix ];
       };
+
+/*
+
+  hardwareDirList = readDir ./hardware;
+  Hosts = removeAttrs hardwareDirList [ "!template" ] ++ [ "ISO" ];
+
+  filter (hasSuffix "hardware.nix" (toString paths)) 
+
+  listOfAllPaths
+
+  template = host: nixpkgs.lib.nixosSystem {
+    modules = [ ./hardware/${host}/hardware.nix ] ++ outputs.nixosModules.default;
+    specialArgs = {
+      hostname = host;
+      inherit inputs patt lib;
+    };
+  };
+
+  listToAttrs (forEach hosts (host: nameValuePair host (config host)));
+
+*/
+
 
     };
     /*
@@ -88,6 +123,8 @@
       "<name>" = derivation;
       }
     */
-    formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
-
-};} ################ End of Output and inital scope ##############################
+  };
+} ################ End of Output and inital scope ##############################
+      # recursiveMerge = (import ./library/recursiveMerge.nix {
+      #   inherit (nixpkgs) lib;
+      # }).recursiveMerge;

@@ -1,19 +1,21 @@
-{ alib, ... }:
+{ lib, ... }:
 
 let
-  inherit (alib) makeUsers recursiveMerge umport;
-in{
+  inherit (lib) makeUsers recursiveMerge;
+  inherit (lib.filesystem) listFilesRecursive;
+in
+{
+
   #====<< User management >>====================================================>
   users.mutableUsers = true; # Allows for imparative user management.
   users.users =
     let
       admins = makeUsers {
-        userpaths = umport { path = ./users; };
-        userrules = [ "wheel" "networkmanager" ];
-      }; /*
+        userpaths = listFilesRecursive ./users; 
+        userrules = [ "wheel" "networkmanager" ]; };
       guests = makeUsers {
-        userpaths  = umport { path = ./guests; };
-        userrules = [ "networkmanager" ]; }; */
-    in admins  #// guests
+        userpaths = listFilesRecursive ./guests;
+        userrules = [ "networkmanager" ]; };
+    in admins // guests
   ;
 }

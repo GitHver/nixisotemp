@@ -7,8 +7,7 @@
 let
   inherit (lib) mkOption mkIf types;
   cfg = config.services.pipewire;
-in
-{
+in {
 
   options.services.pipewire.full = mkOption {
     type = types.bool;
@@ -16,7 +15,6 @@ in
   };
 
   config = mkIf cfg.full {
-
     #sound.enable = true;
     hardware.pulseaudio.enable = false;
     security.rtkit.enable = true;
