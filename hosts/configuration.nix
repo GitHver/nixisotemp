@@ -4,13 +4,15 @@
 
   #====<< System Services >>===================================================>
   services = {
-    desktopManager.gnome.enable = true;
-    libinput.enable = true;
+    desktopManager.cosmic.enable = true;
+    displayManager.cosmic-greeter.enable = true;
     pipewire.full = true;
-    xserver = {
-      enable = true;
-      excludePackages = [ pkgs.xterm ];
-    };
+    # desktopManager.gnome.enable = true;
+    # libinput.enable = true;
+    # xserver = {
+    #   enable = true;
+    #   excludePackages = [ pkgs.xterm ];
+    # };
   };
 
   #====<< System packages >>===================================================>

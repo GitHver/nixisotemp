@@ -18,6 +18,8 @@
     #====<< Extension utils >>=================================================>
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
+    nixos-cosmic.url = "github:lilyinstarlight/nixos-cosmic";
+    nixos-cosmic.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   #====<< Outputs Field >>=====================================================>
@@ -88,7 +90,10 @@
     attribute set to give you access to all your modules anwhere. */
     nixosModules = rec {
       default = { imports = listFilesRecursive ./modules; };
-      inputModules = [ inputs.disko.nixosModules.default ];
+      inputModules = [
+        inputs.disko.nixosModules.default
+        inputs.nixos-cosmic.nixosModules.default
+      ];
       full = [ default ] ++ inputModules;
       hostModules = (host: [
         ./hosts/${host}/hardware.nix
@@ -145,9 +150,11 @@
     extra-substituters = [
       /**/"https://cache.nixos.org/"
       "https://nix-community.cachix.org"
+      "https://cosmic.cachix.org/"
     ];
     extra-trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE="
     ];
   };
 

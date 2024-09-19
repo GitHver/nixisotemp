@@ -1,6 +1,4 @@
-{ pkgs, inputs, lib, hostname, ... }:
-
-{
+{ pkgs, host, ... }: {
   #====<< Bootloader >>========================================================>
   # Be VERY careful when changing this, Nix is unbreakable in everything except
   # in one thing: messing with the boot-loader. You don't want to leave your
@@ -25,8 +23,8 @@
   # Swap with hibernation. run:
   # sudo btrfs inspect-internal map-swapfile -r /.swapvol/swapfile
   # and put the given number as the resume_offset below.
-  boot.kernelParams = [ "resume_offset=533760" ];
-  boot.resumeDevice = "/dev/disk/by-label/nixos";
+  # boot.kernelParams = [ "resume_offset=533760" ];
+  # boot.resumeDevice = "/dev/disk/by-label/nixos";
 
   #====<< Hardware Options >>==================================================>
   # hardware.enableRedistributableFirmware = true;
@@ -41,7 +39,7 @@
   #====<< Network config >>====================================================>
   bluetooth.enable = true;
   networking = {
-    hostName = hostname;          # The name of your computer on the network.
+    hostName = host;          # The name of your computer on the network.
     networkmanager.enable = true; # Networkmanager handles wifi and ethernet.
     firewall = {                # If you're having trouble with connection
       enable = true;            # permissions, you can disable the firewall

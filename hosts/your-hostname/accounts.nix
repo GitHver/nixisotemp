@@ -6,16 +6,15 @@ let
 in {
   #====<< User management >>====================================================>
   users.mutableUsers = true; # Allows for imparative user management.
-  users.users =
-    let
-      admins = makeUsers {
-        userpaths = listFilesRecursive ./users; 
-        userrules = [ "wheel" "networkmanager" ]; };
-      guests = makeUsers {
-        userpaths = listFilesRecursive ./guests;
-        userrules = [ "networkmanager" ]; };
-    in admins
-    # // guests
-    # // any-other-group
-    ;
+  users.users =  let
+    admins = makeUsers {
+      userpaths = listFilesRecursive ./users; 
+      userrules = [ "wheel" "networkmanager" ]; };
+    guests = makeUsers {
+      userpaths = listFilesRecursive ./guests;
+      userrules = [ "networkmanager" ]; };
+  in admins
+  # // guests
+  # // any-other-group
+  ;
 }
