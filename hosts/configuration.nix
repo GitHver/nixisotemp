@@ -1,18 +1,16 @@
-{ pkgs, ...}:
-
-{ config = {
+{ pkgs, ... }: { config = {
 
   #====<< System Services >>===================================================>
   services = {
-    desktopManager.cosmic.enable = true;
-    displayManager.cosmic-greeter.enable = true;
+    # desktopManager.cosmic.enable = true;
+    # displayManager.cosmic-greeter.enable = true;
     pipewire.full = true;
-    # desktopManager.gnome.enable = true;
-    # libinput.enable = true;
-    # xserver = {
-    #   enable = true;
-    #   excludePackages = [ pkgs.xterm ];
-    # };
+    libinput.enable = true;
+    desktopManager.gnome.enable = true;
+    xserver = {
+      enable = true;
+      excludePackages = [ pkgs.xterm ];
+    };
   };
 
   #====<< System packages >>===================================================>
