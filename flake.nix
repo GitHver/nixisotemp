@@ -109,16 +109,25 @@
     list of all the hostnames for your hosts (determined by the names of the
     directories in the `/hosts` directory) and creates an attribute set for
     each host in the list. */
-    nixosConfigurations = genAttrs hostnames (host: nixosSystem {
+    nixosConfigurations = (genAttrs hostnames (host: nixosSystem {
       specialArgs = { inherit inputs lib host; };
       modules = flatten [
         (outputs.nixosModules.hostModules host)
         outputs.nixosModules.full
       ];
-    });
-      # attrsFromList (forEach hostnames (host: {
-      # "${host}" = nixosSystem {
-    # }));
+    })) #;
+
+    #====<< ISO image >>=======================================================>
+    # Using the following command, a result directory will be made
+    # with a custom ISO in the 'result/iso' directory.
+    # $ nix build \.#nixosConfigurations.ISO.config.system.build.isoImage
+    # put your packages you want on the ISO in the `hosts/ISO-image.nix` file
+    // { ISO = nixosSystem {
+      specialArgs = { inherit inputs lib; };
+      modules = [
+        ./hosts/ISO-image.nix
+      ];
+    };};
 
     #====<< Packages >>========================================================>
     /* Here is where you define your custom packages. You can package anything

@@ -33,6 +33,7 @@
 
   #====<< Nix specific settings >>=============================================>
   system.stateVersion = "24.11"; # What version of Nix to use
+  nix.channel.enable = false;
   nix.settings = {
     allowed-users = [ "*" ]; # Note: the wheel group is for admins.
     trusted-users = [ "root" "@wheel" ];
@@ -42,7 +43,7 @@
   #=====<< Shell aliases >>====================================================>
   environment.shellAliases = let
     repository = "nixisotemp";
-    default-directory = "hardware/your-hostname";
+    default-directory = "hosts/your-hostname";
     mount-dir = "mnt/rootfs";
   in {
     yy = "sudo -E yazi";
