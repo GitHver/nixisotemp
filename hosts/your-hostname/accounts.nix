@@ -1,11 +1,9 @@
 { lib, ... }:
 
 let
-  inherit (lib) makeUsers recursiveMerge;
+  inherit (lib) makeUsers;
   inherit (lib.filesystem) listFilesRecursive;
-in
-{
-
+in {
   #====<< User management >>====================================================>
   users.mutableUsers = true; # Allows for imparative user management.
   users.users =
@@ -16,6 +14,8 @@ in
       guests = makeUsers {
         userpaths = listFilesRecursive ./guests;
         userrules = [ "networkmanager" ]; };
-    in admins // guests
-  ;
+    in admins
+    # // guests
+    # // any-other-group
+    ;
 }

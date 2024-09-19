@@ -1,8 +1,6 @@
-{ pkgs, alib, modulesPath, ... }:
+{ pkgs, lib, modulesPath, ... }:
 
-let
-in {
-
+{
   #====<< Imports >>===========================================================>
   imports = [
     "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix"

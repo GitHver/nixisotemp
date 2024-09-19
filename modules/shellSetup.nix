@@ -1,11 +1,11 @@
 { pkgs
-, patt
+# , patt
 , hostname
 , ...
 }:
 
 let
-  inherit (patt) system-path;
+  # inherit (patt) system-path;
   home-path = "~/.config/home-manager";
 in {
 

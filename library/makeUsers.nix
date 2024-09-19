@@ -1,18 +1,14 @@
-{ lib
-, ...
-}:
+{ lib }:
 
 let
-  inherit (lib) nameValuePair;
+  inherit (lib) nameValuePair listToAttrs;
   inherit (lib.lists) forEach;
-  inherit (builtins) listToAttrs;
 
   makeUsers =
   { userpaths
   , userrules
   , normalUser ? true
-  }:
-  let
+  }: let 
     users = forEach userpaths (user: import user);
   in
   listToAttrs (forEach users
@@ -21,7 +17,8 @@ let
       isNormalUser = normalUser;
       description = "${user.dn}";
       extraGroups = userrules;
-      initialHashedPassword = "$y$j9T$exX8G.UG6FWPaovI79bjC.$sJUZr3BYq6LUK0B0bN4VJ2mfpgZpFTFHVXsZAib6mxB";
+      initialHashedPassword = 
+  "$y$j9T$exX8G.UG6FWPaovI79bjC.$sJUZr3BYq6LUK0B0bN4VJ2mfpgZpFTFHVXsZAib6mxB";
       /* password is: Null&Nix1312 The reason that the password is in a
       hashed format is because this way you can have your git repository
       public without exposing the default password of new users. To make a
@@ -36,4 +33,4 @@ let
     })
   );
 
-in { inherit makeUsers; }
+in makeUsers

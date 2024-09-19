@@ -1,8 +1,6 @@
-{ pkgs, inputs, lib, patt, hostname, ... }:
+{ pkgs, ...}:
 
-let
-  # inherit (patt) pkgs-stable;
-in { config = {
+{ config = {
 
   #====<< System Services >>===================================================>
   services = {
@@ -26,7 +24,7 @@ in { config = {
     btop        # Terminal resource monitoring tool
     git         # Best learn to use git. it *WILL* make your life easier.
   ]); 
-  # ++ (with pkgs-stable; [ ]); # packages to use the sable channel.
+  # ++ (with pkgs-stable; [ ]); # packages to use the stable channel.
 
   #====<< Localization & internationalization >>===============================>
   localization = {
@@ -48,10 +46,17 @@ in { config = {
   system.stateVersion = "24.11"; # What version of NixOS configs to use.
   programs.nix-ld.enable = true;              # Nix-ld is for dynamically
   programs.nix-ld.libraries = with pkgs; [ ]; # linked libraries.
+  nix.channel.enable = false;
   nix.settings = {
     allowed-users = [ "*" ];  # This is the default, all users allowed.
     trusted-users = [ "root" "@wheel" ];  # `@` denotes a group.
     experimental-features = [ "flakes" "nix-command" ];
+    auto-optimise-store = true;
+  };
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 7d";
   };
 
   #====<< Miscellaneous >>=====================================================>

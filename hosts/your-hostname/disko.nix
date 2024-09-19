@@ -48,7 +48,7 @@ in
                   "/swap" = {
                     mountpoint = "/.swapvol";
                     mountOptions = [ "nodatacow" ];
-                    swap.swapfile.size = "8G";
+                    swap.swapfile.size = "20G";
                   };
                   # "/persist" = {
                   #   mountpoint = "/persist";
