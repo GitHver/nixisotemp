@@ -67,7 +67,7 @@ With this we don't have to put each and every input into the argument set, but c
 then you need to specify the system.
 
 <!--
-það þarf að skoða meira hvernig er hægt að gera arch neutral pkgs of system
+það þarf að skoða meira hvernig er hægt að gera arch neutral pkgs af system
 --->
 
 ### Outputs
@@ -81,6 +81,8 @@ dev shells
 other (pkgs, modules, overlays)
 
 ### Flake automation
+
+Library, let bindings
 
 Less is more. if automation is more, then it is less
 

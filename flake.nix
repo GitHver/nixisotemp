@@ -27,8 +27,8 @@
     inherit (self) outputs;
     lib = nixpkgs.lib // outputs.lib;
     #====<< Used functions >>==========>
-    inherit (lib) nixosSystem namesOfDirsIn attrsFromList genAttrs;
-    inherit (lib.lists) forEach;
+    inherit (lib) nixosSystem namesOfDirsIn genAttrs;
+    inherit (lib.lists) flatten;
     inherit (lib.filesystem) listFilesRecursive;
     #====<< Host information >>========>
     hostnames = namesOfDirsIn ./hosts;
@@ -56,24 +56,6 @@
       alejandra         # The uncompromising Nix code formatter
     ));
 
-    #====<< Packages >>========================================================>
-    /* Here is where you define your custom packages. You can package anything
-    you want, but should only keep personal packages in this repository as it
-    is better to keep papackages you want to be publicaly accessable in a
-    seperate repository and eventually added to the offical nixpkgs repo. */
-    # pkgs = supportedSystems (system:
-    #   import ./pkgs system
-    # );
-
-    #====<< Applications >>====================================================>
-    /* Applications differ from packages by that they can be started with:
-    `nix run .#<name-of-application>`. As you can only "run" applications,
-    other packages like theme sets or program extensions like plugins cannot
-    be applications. Other than that they are identical. */
-    # apps = supportedSystems (system:
-    #   import ./apps system
-    # );
-
     #====<< Nix Development Shells >>==========================================>
     /* Development shells `nix develop` are ephemeral environments where you
     can get access to packages that are only available in the initialized shell
@@ -98,38 +80,58 @@
     /* When programming in any language, you will want to avoid writing
     repetitive lines and definitions. Here you can define your own custom Nix
     library accessable to others who reference your flake. */
-    lib = import ./library lib;
+    lib = import ./library { inherit lib; };
 
     #====<< NixOS Modules >>===================================================>
     /* This creates an attributeset where the default attribute is a list of
     all paths to modules. This can then be referenced with the `outputs`
     attribute set to give you access to all your modules anwhere. */
-    nixosModules.default = listFilesRecursive ./modules;
+    nixosModules = rec {
+      default = { imports = listFilesRecursive ./modules; };
+      inputModules = [ inputs.disko.nixosModules.default ];
+      full = [ default ] ++ inputModules;
+      hostModules = (host: [
+        ./hosts/${host}/hardware.nix
+        ./hosts/${host}/accounts.nix
+        ./hosts/${host}/disko.nix
+        ./hosts/${host}/hardware-configuration.nix
+        ./hosts/configuration.nix
+      ]);
+    };
 
     #====<< NixOS Configurations >>============================================>
     /* Here are all your different configurations. The function below takes a
     list of all the hostnames for your hosts (determined by the names of the
     directories in the `/hosts` directory) and creates an attribute set for
     each host in the list. */
-    nixosConfigurations = attrsFromList (forEach hostnames (host: {
-      "${host}" = nixosSystem {
-        modules = let
-          dir = "hosts/${host}";
-        in [
-          ./${dir}/hardware.nix
-          ./${dir}/accounts.nix
-          ./${dir}/disko.nix
-          ./${dir}/hardware-configuration.nix
-          ./hosts/configuration.nix
-          inputs.disko.nixosModules.default
-        ] ++
-          outputs.nixosModules.default;
-        specialArgs = {
-          hostname = host;
-          inherit inputs lib;
-        };
-      };
-    }));
+    nixosConfigurations = genAttrs hostnames (host: nixosSystem {
+      specialArgs = { inherit inputs lib host; };
+      modules = flatten [
+        (outputs.nixosModules.hostModules host)
+        outputs.nixosModules.full
+      ];
+    });
+      # attrsFromList (forEach hostnames (host: {
+      # "${host}" = nixosSystem {
+    # }));
+
+    #====<< Packages >>========================================================>
+    /* Here is where you define your custom packages. You can package anything
+    you want, but should only keep personal packages in this repository as it
+    is better to keep papackages you want to be publicaly accessable in a
+    seperate repository and eventually added to the offical nixpkgs repo. */
+    # pkgs = supportedSystems (system:
+    #   import ./pkgs system
+    # );
+
+    #====<< Applications >>====================================================>
+    /* Applications differ from packages by that they can be started with:
+    `nix run .#<name-of-application>`. As you can only "run" applications,
+    other packages like theme sets or program extensions like plugins cannot
+    be applications. Other than that they are identical. */
+    # apps = supportedSystems (system:
+    #   import ./apps system
+    # );
 
     #====<< Literally Anything >>==============================================>
     /* The ouputs set can contain anything you want, the above are just things

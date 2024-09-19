@@ -128,7 +128,7 @@ Now save and exit the template file.
 And with that you can now start the installation with:
 
 ```shell
-install
+sudo nixos-install --flake .#<your-hostname>
 ```
 
 After it is done evaluating the configuration you will be asked if you want to trust cache substituters for your packages. These are ditributers of pre-built binaries so that you don't have to compile everything yourself. If you want to compile the packages yourself, just press `n`, but *beware* that it could take you up to **10** hours depending on your hardware and connection.
