@@ -15,4 +15,4 @@
 
 # Next
 
-[Configuration](./configuration)
+[Configuration](./configuration.md)

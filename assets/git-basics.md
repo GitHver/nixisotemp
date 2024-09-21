@@ -67,4 +67,4 @@ This should be well enough for most everything you will need to do with git. The
 
 # Next
 
-[Configuration](./configuration)
+[Configuration](./configuration.md)

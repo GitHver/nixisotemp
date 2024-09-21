@@ -157,4 +157,4 @@ Some other useful commands are:
 
 # Next
 
-[Flakes](./flakes)
+[Flakes](./flakes.md)

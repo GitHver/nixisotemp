@@ -204,4 +204,4 @@ Now you can use `Super`+`D` to open Fuzzel to launch applications.
 
 # Next
 
-If you don't know Git you should read [Git basics](./git-basics) next. Else read [Configuration](./configuration)
+If you don't know Git you should read [Git basics](./git-basics.md) next. Else read [Configuration](./configuration.md)

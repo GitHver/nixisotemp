@@ -49,4 +49,4 @@ press `alt`+`n` to create a new pane, you use `alt`+(`←↓↑→` or `HJKL`) t
 
 # Next
 
-[Installation](./installation)
+[Installation](./installation.md)

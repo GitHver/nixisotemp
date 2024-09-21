@@ -19,4 +19,4 @@
 
 # Next
 
-[More Resources](./more-resources)
+[More Resources](./more-resources.md)
