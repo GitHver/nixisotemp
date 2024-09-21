@@ -121,8 +121,8 @@ You can immediately see that this is a bit different from the minimal example us
 ```nix
 {
   nixosConfigurations = {
-    "john" = nixosSystem {...}
-    "mike" = nixosSystem {...}
+    "john" = nixosSystem {...};
+    "mike" = nixosSystem {...};
   }
 }
 ```
