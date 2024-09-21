@@ -18,14 +18,14 @@ This is essentially what flakes are; an *input-output* control scheme where you 
 ```nix
 {
   description = ''
-	My flake!
+    My flake!
   '';
   inputs = {
     nixpkgs = {
-	  type = "github";
-	  owner = "NixOS";
-	  repo = "nixpkgs";
-	};
+      type = "github";
+      owner = "NixOS";
+      repo = "nixpkgs";
+    };
   };
   outputs = { nixpkgs }: {
     nixosConfigurations = {
