@@ -1,12 +1,14 @@
-{ lib, config, ... }:
+{ lib
+, config
+, ...
+}:
 
-with lib;
 let
-  cnfg = config.nvidia;
-in
+  inherit (lib) mkOption mkIf types;
+  cnfg = config.hardware.nvidia;
+in {
 
-{
-  options.nvidia.enable = mkOption {
+  options.hardware.nvidia.enable = mkOption {
     type = types.bool;
     default = false;
     # description = "NVIDIA GPU Drivers";

@@ -9,27 +9,26 @@ If use `cd /ect/nixos` or `zn` you will go into the directory containing the con
 ```
 .
 ├── assets
-│  ├── loginscreen-light.jpg
+│  ├── docs.md
+│  ├── '...'.md
 │  └── loginscreen.jpg
-├── hardware
-│  ├── !template
-│  │  ├── users
-│  │  │  └── user.nix
-│  │  ├── disko.nix
-│  │  ├── hardware.nix
-│  │  └── users.nix
-│  ├── a4h2o
-│  │  ├── users
-│  │  │  └── user.nix
+├── hosts
+│  ├── your-hostname
+│  │  ├── admins
+│  │  │  └── your-name.nix
+│  │  ├── guests
+│  │  │  └── guest-user.nix
+│  │  ├── accounts.nix
 │  │  ├── disko.nix
 │  │  ├── hardware-configuration.nix
-│  │  ├── hardware.nix
-│  │  └── users.nix
-│  ├── ISO-image.nix
-│  └── configuration.nix
+│  │  └── hardware-tuning.nix
+│  ├── configuration.nix
+│  └── ISO-image.nix
 ├── library
-│  ├── makeusers.nix
-│  └── recursiveMerge.nix
+|  ├── default.nix
+|  ├── makeUsers.nix
+|  ├── updateAttrs.nix
+│  └── getDirNames.nix
 ├── modules
 │  ├── hardware
 │  │  ├── amdgpu.nix
@@ -40,13 +39,13 @@ If use `cd /ect/nixos` or `zn` you will go into the directory containing the con
 │  └── module3.nix
 ├── flake.lock
 ├── flake.nix
-├── license.txt
+├── license.md
 └── readme.md
 ```
 
 The root of the repository contains the *flake* files that are used to control the output of the commands you use to change and update your system. From the `flake.nix` file, all other files are eventually imported for evaluation.
 
-The `hardware` directory contains all hardware specific settings and configurations such as; Graphic drivers, Disk partitions, available users and anything that needs special settings to accommodate hardware limitations.
+The `hosts` directory contains all hardware specific settings and configurations such as; Graphic drivers, Disk partitions, available users and anything that needs special settings to accommodate hardware limitations.
 
 The `modules` directory just has files that are imported to every config file. They are made of the *options-config* syntax that specifies an available option and what it does. With this you can have reusable parts that can be used to enable/disable predefined settings. All files are imported recursively, so the directory names and structure don't matter and are just for organisation.
 
@@ -128,7 +127,13 @@ Since this config uses flakes, in order to update your system/packages, you'll n
 nix flake update <input> /path/to/flake
 ```
 
-The `<input>` option is used to specify which input to update, If it is dropped, all inputs will be updates and such the entire system. The path is the path to the `flake.lock` you want to update, dropping it searches the current directory for a flake. You will still need to run a `nixos-rebuild` command to download and apply the updates to your system.
+The `<input>` option is used to specify which input to update, If it is dropped, all inputs will be updated and such the entire system. The path is the path to the `flake.lock` you want to update, dropping it searches the current directory for a flake. You will still need to run a `nixos-rebuild switch` command to download and apply the updates to your system.
+
+You can do this is one command with:
+
+```shell
+sudo nixos-rebuild --recreate-lock-file switch
+```
 
 When updating the system, all old packages are kept, otherwise you wouldn't be able to rollback to previous configs. To delete old generations you no longer wish to keep, use:
 
@@ -138,8 +143,18 @@ sudo nix-collect-garbage -d
 
 This deletes all old generations and packages used by them. If you want to keep some generations, you can replace the `-d` flag with `--delete-older-than <period>`, where period can be: `3d`, `21d`, `365d`, etc.
 
+Now you can use these as they are, but there is also a Fish shell function I have provided that makes a `nix os` command available to bring all your commands under the `nix` command. options include:
+
+- `nix os` - `switch`, `boot`, `test`, etc. Just like the normal `nixos-rebuild` command
+- `nix os rollback` is the  same as `nixos-rebuild --rollback switch`
+- `nix os upgrade` is the same as `nixos-rebuild --recreate-lock-file switch`
+
 Some other useful commands are:
 
 - `nix shell`. This command creates ephemeral environments with any package you specify either on the command-line with `nixpkgs#<package>`, or in a `shell.nix` file in the current directory.
 - `nix repl`. This a repl command for Nix that allows you to test out nix expressions and code. Type `:q` to quit. Learn more [here](https://nix.dev/manual/nix/2.24/command-ref/new-cli/nix3-repl.html).
 - `nix fmt`. The Nix formatter. formats your Nix code to a unified convention.
+
+# Next
+
+[Flakes](./flakes)

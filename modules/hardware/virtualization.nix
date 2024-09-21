@@ -1,12 +1,15 @@
-{ pkgs, lib, config, ... }:
+{ pkgs
+, lib
+, config
+, ...
+}:
 
-with lib;
 let
-  cnfg = config.qemuvm;
-in
+  inherit (lib) mkOption mkIf types;
+  cnfg = config.programs.qemuvm;
+in {
 
-{
-  options.qemuvm.enable = mkOption {
+  options.programs.qemuvm.enable = mkOption {
     type = types.bool;
     default = false;
     # description = "QEMU virtual machines";
@@ -24,4 +27,5 @@ in
       '')
     ];
   };
+
 }

@@ -37,7 +37,7 @@ press `alt`+`n` to create a new pane, you use `alt`+(`←↓↑→` or `HJKL`) t
 
 #### grep - ripgrep
 
-#### fuzzy finder
+#### fuzzy finder - fzf
 
 ### Others
 
@@ -46,3 +46,7 @@ press `alt`+`n` to create a new pane, you use `alt`+(`←↓↑→` or `HJKL`) t
 #### btop
 
 #### pipes
+
+# Next
+
+[Installation](./installation)

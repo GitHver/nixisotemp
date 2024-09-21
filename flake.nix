@@ -18,6 +18,7 @@
     #====<< Extension utils >>=================================================>
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
+    #====<< Cosmic Desktop >>==================================================>
     nixos-cosmic.url = "github:lilyinstarlight/nixos-cosmic";
     nixos-cosmic.inputs.nixpkgs.follows = "nixpkgs";
   };
@@ -44,12 +45,7 @@
     #====<< Nix Code Formatter >>==============================================>
     /* This defines the formatter that is used when you run `nix fmt`. Since
     this calls the formatters package, you'll need to define which architecture
-    package is used so different computers can fetch the right package.
-    NOTE that this repositroy is not formatted with any formatter, but by hand.
-    This is because I try to present everything in the most outsider friendly
-    way, as this is your own personal repo, where you don't have to conform to
-    conventions or work with others. Once you get more familiar with Nix, you
-    should start using formatters and follow best practices. */
+    package is used so different computers can fetch the right package. */
     formatter = genForAllSystems (system: let
       pkgs = import nixpkgs { inherit system; };
     in (with pkgs;    # Choose any of the formatters below. Only one!
@@ -58,51 +54,11 @@
       alejandra         # The uncompromising Nix code formatter
     ));
 
-    #====<< Nix Development Shells >>==========================================>
-    /* Development shells `nix develop` are ephemeral environments where you
-    can get access to packages that are only available in the initialized shell
-    (like `nix shell`), but here you can go through execution stages manually to
-    better test and verify packages. Packages from dev shells are also cached
-    after initialization so that later calls are instant. */
-    devShells = genForAllSystems (system: let
-      pkgs = import nixpkgs { inherit system; }; 
-    in {
-      "helloShell" = import ./shells/helloShell.nix { inherit pkgs; };
-      # "other" = import ./shells/otherShell.nix { inherit pkgs; };
-    });
-
-    #====<< Overlays >>========================================================>
-    /* Overlays are perhaps the most powerful feature Nix has. You can use them
-    to overlay overrides to existing packages in the with custom options. This
-    alloes you to apply your own patches or build flags with out needing to
-    maintain a fork of nixpkgs or adding a third party repository. */
-    # overlays = import ./overlays;
-
     #====<< Nix Expression Library >>==========================================>
     /* When programming in any language, you will want to avoid writing
     repetitive lines and definitions. Here you can define your own custom Nix
     library accessable to others who reference your flake. */
     lib = import ./library { inherit lib; };
-
-    #====<< NixOS Modules >>===================================================>
-    /* This creates an attributeset where the default attribute is a list of
-    all paths to modules. This can then be referenced with the `outputs`
-    attribute set to give you access to all your modules anwhere. */
-    nixosModules = rec {
-      default = { imports = listFilesRecursive ./modules; };
-      inputModules = [
-        inputs.disko.nixosModules.default
-        inputs.nixos-cosmic.nixosModules.default
-      ];
-      full = [ default ] ++ inputModules;
-      hostModules = (host: [
-        ./hosts/${host}/hardware.nix
-        ./hosts/${host}/accounts.nix
-        ./hosts/${host}/disko.nix
-        ./hosts/${host}/hardware-configuration.nix
-        ./hosts/configuration.nix
-      ]);
-    };
 
     #====<< NixOS Configurations >>============================================>
     /* Here are all your different configurations. The function below takes a
@@ -122,12 +78,44 @@
     # with a custom ISO in the 'result/iso' directory.
     # $ nix build \.#nixosConfigurations.ISO.config.system.build.isoImage
     # put your packages you want on the ISO in the `hosts/ISO-image.nix` file
-    // { ISO = nixosSystem {
-      specialArgs = { inherit inputs lib; };
-      modules = [
-        ./hosts/ISO-image.nix
+    // {
+      ISO = nixosSystem {
+        specialArgs = { inherit inputs lib; };
+        modules = [ ./hosts/ISO-image.nix ];
+      };
+    };
+
+    #====<< NixOS Modules >>===================================================>
+    /* This creates an attributeset where the default attribute is a list of
+    all paths to modules. This can then be referenced with the `outputs`
+    attribute set to give you access to all your modules anwhere. */
+    nixosModules = rec {
+      default = { imports = listFilesRecursive ./modules; };
+      inputModules = [
+        inputs.disko.nixosModules.default
+        inputs.nixos-cosmic.nixosModules.default
       ];
-    };};
+      full = [ default ] ++ inputModules;
+      hostModules = (host: [
+        ./hosts/${host}/hardware.nix
+        ./hosts/${host}/accounts.nix
+        ./hosts/${host}/disko.nix
+        ./hosts/${host}/hardware-configuration.nix
+      ]);
+    };
+
+    #====<< Nix Development Shells >>==========================================>
+    /* Development shells `nix develop` are ephemeral environments where you
+    can get access to packages that are only available in the initialized shell
+    (like `nix shell`), but here you can go through execution stages manually to
+    better test and verify packages. Packages from dev shells are also cached
+    after initialization so that later calls are instant. */
+    devShells = genForAllSystems (system: let
+      pkgs = import nixpkgs { inherit system; }; 
+    in {
+      "helloShell" = import ./shells/helloShell.nix { inherit pkgs; };
+      # "other" = import ./shells/otherShell.nix { inherit pkgs; };
+    });
 
     #====<< Packages >>========================================================>
     /* Here is where you define your custom packages. You can package anything
@@ -147,6 +135,13 @@
     #   import ./apps system
     # );
 
+    #====<< Overlays >>========================================================>
+    /* Overlays are perhaps the most powerful feature Nix has. You can use them
+    to overlay overrides to existing packages in the with custom options. This
+    alloes you to apply your own patches or build flags with out needing to
+    maintain a fork of nixpkgs or adding a third party repository. */
+    # overlays = import ./overlays;
+
     #====<< Literally Anything >>==============================================>
     /* The ouputs set can contain anything you want, the above are just things
     mapped by the Nix command or just convention (which you should follow!),
@@ -157,7 +152,6 @@
 
   nixConfig = {
     extra-substituters = [
-      /**/"https://cache.nixos.org/"
       "https://nix-community.cachix.org"
       "https://cosmic.cachix.org/"
     ];
@@ -168,8 +162,3 @@
   };
 
 } ################ End of Output and inital scope ##############################
-    # Using the following command, a result directory will be made
-    # with a custom ISO in the 'result/iso' directory.
-    # $ nix build \.#nixosConfigurations.ISO.config.system.build.isoImage
-    # put your packages you want on the ISO in `hardware/!configs/ISO-image.nix`
-

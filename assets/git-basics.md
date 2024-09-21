@@ -64,3 +64,7 @@ Once you have a remote repository, you can use `git push` to push all changes yo
 ### More documentation
 
 This should be well enough for most everything you will need to do with git. There are some more things such as notes and tags, advanced shortcut commands and some general concepts on how version control works under the hood, but for now this should suffice. If you ever need to learn anything more, simply checkout the [git documentation](https://git-scm.com/docs/git) or just search up a git cheat sheet if you need a refresher on available commands.
+
+# Next
+
+[Configuration](./configuration)

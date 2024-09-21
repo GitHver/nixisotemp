@@ -21,16 +21,16 @@
   environment.systemPackages = (with pkgs; [
     #==<< Programs >>==================>
     # alacritty   # Fast terminal emulator writen in rust
-    btop        # Terminal resource monitoring tool
+    # btop        # Terminal resource monitoring tool
     git         # Best learn to use git. it *WILL* make your life easier.
   ]); 
   # ++ (with pkgs-stable; [ ]); # packages to use the stable channel.
 
   #====<< Localization & internationalization >>===============================>
   localization = {
-    language   = "en_GB";
-    formatting = "is_IS";
-    timezone   = "Atlantic/Reykjavik";
+    language   = "en_GB"; # The system language.
+    formatting = "en_GB"; # Formatting: metrics, currency, date/time, etc.
+    timezone   = "Europe/London";
   };
 
   #====<< Keyboard >>==========================================================>
@@ -46,7 +46,8 @@
   system.stateVersion = "24.11"; # What version of NixOS configs to use.
   programs.nix-ld.enable = true;              # Nix-ld is for dynamically
   programs.nix-ld.libraries = with pkgs; [ ]; # linked libraries.
-  nix.channel.enable = false;
+  documentation.nixos.enable = false;
+  # nix.channel.enable = false;
   nix.settings = {
     allowed-users = [ "*" ];  # This is the default, all users allowed.
     trusted-users = [ "root" "@wheel" ];  # `@` denotes a group.

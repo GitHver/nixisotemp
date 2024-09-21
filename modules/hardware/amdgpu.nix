@@ -1,11 +1,14 @@
-{ pkgs, lib, config, ... }:
+{ pkgs
+, lib
+, config
+, ...
+}:
 
-with lib;
 let
-  cnfg = config.amdgpu;
-in
+  inherit (lib) mkOption mkIf types;
+  cnfg = config.hardware.amdgpu;
+in {
 
-{
   options.amdgpu.enable = mkOption {
     type = types.bool;
     default = false;
