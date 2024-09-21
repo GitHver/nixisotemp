@@ -257,4 +257,4 @@ As you might have noticed, 'Flakes' are and experimental feature and are subject
 
 # Next
 
-[Home-manager](./home-manager)
+[Home-manager](./home-manager.md)
