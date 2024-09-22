@@ -14,9 +14,9 @@ in {
     guests = makeUsers {
       userpaths = listFilesRecursive ./guests;
       userrules = [ "networkmanager" ]; };
-    in admins
-    # // guests
-    # // any-other-group
-    ;
+  in admins
+  # // guests
+  # // any-other-group
+  ;
 
 }

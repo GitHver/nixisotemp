@@ -64,7 +64,10 @@
     // {
       ISO = nixosSystem {
         specialArgs = { inherit inputs lib; };
-        modules = [ ./hosts/ISO-image.nix ];
+        modules = flatten [
+          ./hosts/ISO-image.nix
+          outputs.nixosModules.full
+        ];
       };
     };
 
