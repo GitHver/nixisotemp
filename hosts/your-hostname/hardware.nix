@@ -1,6 +1,13 @@
 { pkgs, host, ... }:
 
-{ imports = [ ./../configuration.nix ];
+{
+  #====<< Imported files >>====================================================>
+  imports = [
+    ./accounts.nix
+    ./disko.nix
+    ./hardware-configuration.nix
+    ./../configuration.nix
+  ];
 
   #====<< Bootloader >>========================================================>
   # Be VERY careful when changing this, Nix is unbreakable in everything except

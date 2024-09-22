@@ -6,16 +6,16 @@
 
 let
   inherit (lib) mkOption mkIf types;
-  cnfg = config.hardware.amdgpu;
+  cfg = config.hardware.amdgpu;
 in {
 
-  options.amdgpu.enable = mkOption {
+  options.hardware.amdgpu.enable = mkOption {
     type = types.bool;
     default = false;
     # description = "AMD GPU drivers and RocM support";
   };
 
-  config = mkIf cnfg.enable {
+  config = mkIf cfg.enable {
 
     #====<< AMD Drivers >>========================================================>
     boot.initrd.kernelModules = [ "amdgpu" ];

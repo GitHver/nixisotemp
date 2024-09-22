@@ -44,14 +44,15 @@
   in {
 
     #====<< NixOS Configurations >>============================================>
-    /* Here are all your different configurations. The function below takes a
-    list of all the hostnames for your hosts (determined by the names of the
-    directories in the `/hosts` directory) and creates an attribute set for
-    each host in the list. */
+    # Here are all your different configurations. The function below takes a
+    # list of all the hostnames for your hosts (determined by the names of the
+    # directories in the `/hosts` directory) and creates an attribute set for
+    # each host in the list.
     nixosConfigurations = (genAttrs hostnames (host: nixosSystem {
       specialArgs = { inherit inputs lib host; };
       modules = flatten [
-        (outputs.nixosModules.hostModules host)
+        ./hosts/${host}/hardware.nix
+        # (outputs.nixosModules.hostModules host)
         outputs.nixosModules.full
       ];
     })) #;
@@ -72,34 +73,34 @@
     };
 
     #====<< NixOS Modules >>===================================================>
-    /* This creates an attributeset where the default attribute is a list of
-    all paths to modules. This can then be referenced with the `outputs`
-    attribute set to give you access to all your modules anwhere. */
+    # This creates an attributeset where the default attribute is a list of
+    # all paths to modules. This can then be referenced with the `outputs`
+    # attribute set to give you access to all your modules anwhere.
     nixosModules = rec {
       default = { imports = listFilesRecursive ./modules; };
+      full = [ default ] ++ inputModules;
       inputModules = [
         inputs.disko.nixosModules.default
         inputs.nixos-cosmic.nixosModules.default
       ];
-      full = [ default ] ++ inputModules;
-      hostModules = (host: [
-        ./hosts/${host}/hardware.nix
-        ./hosts/${host}/accounts.nix
-        ./hosts/${host}/disko.nix
-        ./hosts/${host}/hardware-configuration.nix
-      ]);
+      # hostModules = (host: [
+      #   ./hosts/${host}/hardware.nix
+      #   ./hosts/${host}/accounts.nix
+      #   ./hosts/${host}/disko.nix
+      #   ./hosts/${host}/hardware-configuration.nix
+      # ]);
     };
 
     #====<< Nix Expression Library >>==========================================>
-    /* When programming in any language, you will want to avoid writing
-    repetitive lines and definitions. Here you can define your own custom Nix
-    library accessable to others who reference your flake. */
+    # When programming in any language, you will want to avoid writing
+    # repetitive lines and definitions. Here you can define your own custom Nix
+    # library accessable to others who reference your flake.
     lib = import ./library { inherit lib; };
 
     #====<< Nix Code Formatter >>==============================================>
-    /* This defines the formatter that is used when you run `nix fmt`. Since
-    this calls the formatters package, you'll need to define which architecture
-    package is used so different computers can fetch the right package. */
+    # This defines the formatter that is used when you run `nix fmt`. Since this
+    # calls the formatters package, you'll need to define which architecture
+    # package is used so different computers can fetch the right package.
     formatter = genForAllSystems (system: let
       pkgs = import nixpkgs { inherit system; };
     in (with pkgs;    # Choose any of the formatters below. Only one!
@@ -109,12 +110,12 @@
     ));
 
     #====<< Literally Anything >>==============================================>
-    /* The ouputs set can contain anything you want, the above are just things
-    mapped by the Nix command or just convention (which you should follow!),
-    but if you need some thing else, you can just create an attribute for it. */
+    # The ouputs set can contain anything you want, the above are just things
+    # mapped by the Nix command or just convention (which you should follow!),
+    # but if you need some thing else, you can just create an attribute for it.
     anyName = "anything";
 
-  };
+  }; ############### The end of the `outputs` scope ############################
 
   nixConfig = {
     extra-substituters = [
@@ -127,4 +128,4 @@
     ];
   };
 
-} ################ End of Output and inital scope ##############################
+} ################## End of the inital scope ###################################
