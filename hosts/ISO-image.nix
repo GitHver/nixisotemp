@@ -8,6 +8,11 @@
   ];
   config = {
 
+  services = {
+    desktopManager.cosmic.enable = true;
+    displayManager.cosmic-greeter.enable = true;
+  };
+
   #====<< Network config >>====================================================>
   networking = {
     hostName = "nixos"; # The name of your computer.

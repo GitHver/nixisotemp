@@ -2,15 +2,11 @@
 
   #====<< System Services >>===================================================>
   services = {
-    # desktopManager.cosmic.enable = true;
-    # displayManager.cosmic-greeter.enable = true;
+    # The Cosmic desktop environment. Made in Rust. Made for the future.
+    desktopManager.cosmic.enable = true;
+    displayManager.cosmic-greeter.enable = true;
+    # Full sound support.
     pipewire.full = true;
-    libinput.enable = true;
-    desktopManager.gnome.enable = true;
-    xserver = {
-      enable = true;
-      excludePackages = [ pkgs.xterm ];
-    };
   };
 
   #====<< System packages >>===================================================>
@@ -20,11 +16,9 @@
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = (with pkgs; [
     #==<< Programs >>==================>
-    # alacritty   # Fast terminal emulator writen in rust
-    # btop        # Terminal resource monitoring tool
     git         # Best learn to use git. it *WILL* make your life easier.
-  ]); 
-  # ++ (with pkgs-stable; [ ]); # packages to use the stable channel.
+    # btop        # Terminal resource monitoring tool
+  ]);
 
   #====<< Localization & internationalization >>===============================>
   localization = {
@@ -44,8 +38,8 @@
 
   #====<< Nix specific settings >>=============================================>
   system.stateVersion = "24.11"; # What version of NixOS configs to use.
-  programs.nix-ld.enable = true;              # Nix-ld is for dynamically
-  programs.nix-ld.libraries = with pkgs; [ ]; # linked libraries.
+  # programs.nix-ld.enable = true;              # Nix-ld is for dynamically
+  # programs.nix-ld.libraries = with pkgs; [ ]; # linked libraries.
   documentation.nixos.enable = false;
   # nix.channel.enable = false;
   nix.settings = {
@@ -62,6 +56,6 @@
 
   #====<< Miscellaneous >>=====================================================>
   xdg.portal.enable = true; # XDG Desktop portal (for nix and flatpaks).
-  services.printing.enable = true; # Printer protocols.
+  services.printing.enable = false; # Enable for printer protocol support.
 
 };} ################ End of variable & config scope. ###########################

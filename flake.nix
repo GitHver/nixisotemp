@@ -37,28 +37,11 @@
     hostnames = namesOfDirsIn ./hosts;
     genForAllSystems = (funct: genAttrs supportedSystems funct);
     supportedSystems = [
+      # Add systems here that need to use the formatter.
       "x86_64-linux"
       "aarch64-linux"
     ];
   in {
-
-    #====<< Nix Code Formatter >>==============================================>
-    /* This defines the formatter that is used when you run `nix fmt`. Since
-    this calls the formatters package, you'll need to define which architecture
-    package is used so different computers can fetch the right package. */
-    formatter = genForAllSystems (system: let
-      pkgs = import nixpkgs { inherit system; };
-    in (with pkgs;    # Choose any of the formatters below. Only one!
-      # nixpkgs-fmt       # The original nix formatter.
-      # nixfmt-rfc-style  # The new Nix formatter. Still under development
-      alejandra         # The uncompromising Nix code formatter
-    ));
-
-    #====<< Nix Expression Library >>==========================================>
-    /* When programming in any language, you will want to avoid writing
-    repetitive lines and definitions. Here you can define your own custom Nix
-    library accessable to others who reference your flake. */
-    lib = import ./library { inherit lib; };
 
     #====<< NixOS Configurations >>============================================>
     /* Here are all your different configurations. The function below takes a
@@ -104,43 +87,23 @@
       ]);
     };
 
-    #====<< Nix Development Shells >>==========================================>
-    /* Development shells `nix develop` are ephemeral environments where you
-    can get access to packages that are only available in the initialized shell
-    (like `nix shell`), but here you can go through execution stages manually to
-    better test and verify packages. Packages from dev shells are also cached
-    after initialization so that later calls are instant. */
-    devShells = genForAllSystems (system: let
-      pkgs = import nixpkgs { inherit system; }; 
-    in {
-      "helloShell" = import ./shells/helloShell.nix { inherit pkgs; };
-      # "other" = import ./shells/otherShell.nix { inherit pkgs; };
-    });
+    #====<< Nix Expression Library >>==========================================>
+    /* When programming in any language, you will want to avoid writing
+    repetitive lines and definitions. Here you can define your own custom Nix
+    library accessable to others who reference your flake. */
+    lib = import ./library { inherit lib; };
 
-    #====<< Packages >>========================================================>
-    /* Here is where you define your custom packages. You can package anything
-    you want, but should only keep personal packages in this repository as it
-    is better to keep papackages you want to be publicaly accessable in a
-    seperate repository and eventually added to the offical nixpkgs repo. */
-    # pkgs = supportedSystems (system:
-    #   import ./pkgs system
-    # );
-
-    #====<< Applications >>====================================================>
-    /* Applications differ from packages by that they can be started with:
-    `nix run .#<name-of-application>`. As you can only "run" applications,
-    other packages like theme sets or program extensions like plugins cannot
-    be applications. Other than that they are identical. */
-    # apps = supportedSystems (system:
-    #   import ./apps system
-    # );
-
-    #====<< Overlays >>========================================================>
-    /* Overlays are perhaps the most powerful feature Nix has. You can use them
-    to overlay overrides to existing packages in the with custom options. This
-    alloes you to apply your own patches or build flags with out needing to
-    maintain a fork of nixpkgs or adding a third party repository. */
-    # overlays = import ./overlays;
+    #====<< Nix Code Formatter >>==============================================>
+    /* This defines the formatter that is used when you run `nix fmt`. Since
+    this calls the formatters package, you'll need to define which architecture
+    package is used so different computers can fetch the right package. */
+    formatter = genForAllSystems (system: let
+      pkgs = import nixpkgs { inherit system; };
+    in (with pkgs;    # Choose any of the formatters below. Only one!
+      # nixpkgs-fmt       # The original nix formatter.
+      # nixfmt-rfc-style  # The new Nix formatter. Still under development
+      alejandra         # The uncompromising Nix code formatter
+    ));
 
     #====<< Literally Anything >>==============================================>
     /* The ouputs set can contain anything you want, the above are just things
