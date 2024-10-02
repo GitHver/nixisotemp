@@ -1,4 +1,6 @@
 { pkgs
+# , patt
+, hostname
 , ...
 }:
 
@@ -7,12 +9,9 @@ let
   home-path = "~/.config/home-manager";
 in {
 
-  #====<< Home-manager install script >>=======================================>
   environment.shellAliases = {
-    swap-offset = /*sh*/''
-      sudo btrfs inspect-internal map-swapfile -r /.swapvol/swapfile
-    '';
-    nix-perms = /*sh*/''
+    #====<< /etc/nixos setup >>================================================>
+    nix-perms = /*bash*/''
       sudo chown -R $USER /etc/nixos
       chgrp -R wheel /etc/nixos
       chmod -R g+w /etc/nixos
@@ -21,21 +20,26 @@ in {
       git add .
       git commit -m 'initial commit'
     '';
-    home-get = /*sh*/''
+    #====<< Home-manager install script >>=====================================>
+    home-get = /*bash*/''
       git clone https://github.com/GitHver/nixisotemphome.git ${home-path}
       rm -rf ${home-path}/.git
       cd ${home-path}
       $EDITOR flake.nix
     '';
-    home-install = /*sh*/''
+    home-install = /*bash*/''
       nix shell nixpkgs#home-manager --command home-manager switch --flake ${home-path}
       git init
       git add .
       git commit -m 'initial commit'
     '';
     # Incase you already have a home configuration
-    home-init = /*sh*/''
+    home-init = /*bash*/''
       nix shell nixpkgs#home-manager --command home-manager switch --flake ${home-path}
+    '';
+    #====<< Other >>===========================================================>
+    flathub-add = /*bash*/''
+      flatpak remote-add --user flathub https://dl.flathub.org/repo/flathub.flatpakrepo
     '';
   };
 

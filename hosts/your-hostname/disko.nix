@@ -1,9 +1,7 @@
 let
   disktype =
-    # "nvme0n1"
-    # "sda"
-    # "vda"
-  ;
+    "nvme0n1";
+    # "sda";
 in {
 
   disko.devices.disk = {
@@ -25,7 +23,7 @@ in {
             };
           };
 
-          root = { # rename to `luks` if using encryption
+          luks = {
             size = "100%";
             # content = {
             #   type = "luks";
@@ -49,8 +47,8 @@ in {
                   };
                   "/swap" = {
                     mountpoint = "/.swapvol";
-                    mountOptions = [ "nodatacow" ];
-                    swap.swapfile.size = "8G";
+                    # mountOptions = [ "nodatacow" ];
+                    swap.swapfile.size = "20G";
                   };
                 }; # subvolumes
               }; # btrfs content

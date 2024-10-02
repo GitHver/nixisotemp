@@ -11,12 +11,12 @@ in {
 
   options.services.pipewire.full = mkOption {
     type = types.bool;
-    default = true;
+    default = false;
   };
 
   config = mkIf cfg.full {
-    #sound.enable = true;
-    hardware.pulseaudio.enable = false;
+    # sound.enable = true;
+    # hardware.pulseaudio.enable = false;
     security.rtkit.enable = true;
     services.pipewire = {
       enable = true;

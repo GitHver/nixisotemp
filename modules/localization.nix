@@ -23,17 +23,17 @@ in {
   };
 
   config = {
-    i18n.defaultLocale = "${cfg.language}" + ".UTF-8";
+    i18n.defaultLocale  = "${cfg.language}";
     i18n.extraLocaleSettings = {
-      LC_ADDRESS        = "${cfg.language}" + ".UTF-8";
-      LC_IDENTIFICATION = "${cfg.language}" + ".UTF-8";
-      LC_MEASUREMENT    = "${cfg.language}" + ".UTF-8";
-      LC_MONETARY       = "${cfg.language}" + ".UTF-8";
-      LC_NAME           = "${cfg.language}" + ".UTF-8";
-      LC_NUMERIC        = "${cfg.language}" + ".UTF-8";
-      LC_PAPER          = "${cfg.language}" + ".UTF-8";
-      LC_TELEPHONE      = "${cfg.language}" + ".UTF-8";
-      LC_TIME           = "${cfg.language}" + ".UTF-8";
+      LC_ADDRESS        = "${cfg.formatting}";
+      LC_IDENTIFICATION = "${cfg.formatting}";
+      LC_MEASUREMENT    = "${cfg.formatting}";
+      LC_MONETARY       = "${cfg.formatting}";
+      LC_NAME           = "${cfg.formatting}";
+      LC_NUMERIC        = "${cfg.formatting}";
+      LC_PAPER          = "${cfg.formatting}";
+      LC_TELEPHONE      = "${cfg.formatting}";
+      LC_TIME           = "${cfg.formatting}";
     };
     time.timeZone = "${cfg.timezone}";
   };

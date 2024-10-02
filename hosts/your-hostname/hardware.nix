@@ -16,16 +16,24 @@
   # rebuilding any changes here. Best to first use a virtual machine with:
   # $ sudo nixos-rebuild build-wm-with-bootloader
   boot.loader = {
+    # This is needed for EFI systems.
     efi.canTouchEfiVariables = true;
+    # Systemd boot is a simple bootloader with minimal configuration.
     systemd-boot = {
       enable = true;
+      configurationLimit = 30;
+      consoleMode = "max";
+      netbootxyz.enable = true;
+      memtest86.enable = true;
     };
-    # grub = {
-    #   enable = true;
-    #   device = "nodev";
-    #   efiSupport = true;
-    #   splashImage = null;
-    # };
+    # GRUB is a featurefull bootloader with extensive customization.
+    grub = {
+      enable = false;
+      device = "nodev";
+      efiSupport = true;
+      efiInstallAsRemovable = false;
+      splashImage = null; # Removes the NixOS logo image.
+    };
   };
 
   #====<< Linux kernel options >>==============================================>
@@ -33,7 +41,7 @@
     # By default the kernel is updated to the latest version deemed stable. Here
     # it is set to the latest release. Uncomment the line below to go use the
     # stable kernel. You can also select a specific version of the kernel like:
-    # pkgs.linuxKernel.kernels.linux_6_1;
+    # `pkgs.linuxKernel.kernels.linux_6_1`
     kernelPackages = pkgs.linuxPackages_latest;
     # Hibernation. run: `swap-offset` and put the number as the resume_offset.
     # kernelParams = [ "resume_offset=533760" ];
@@ -48,14 +56,14 @@
     nvidia.enable = false;
   };
 
-  #====<< Heavy programs >>====================================================>
+  #====<< Heavy / privileged programs >>=======================================>
   programs = {
-    qemuvm.enable = false;       # The QEMU virtual machine.
+    qemuvm.enable = false;     # The QEMU virtual machine.
     steam-full.enable = false; # Steam module with all permissions.
   };
 
   #====<< Network config >>====================================================>
-  bluetooth.enable = true;
+  # bluetooth.enable = true;
   networking = {
     hostName = host;          # The name of your computer on the network.
     networkmanager.enable = true; # Networkmanager handles wifi and ethernet.

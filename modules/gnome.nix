@@ -26,7 +26,6 @@ in {
     environment.gnome.excludePackages = (with pkgs; [
       gnome-tour # you don't need this
     ]);
-    services.xserver.displayManager.gdm.enable = true;
   };
 
 }
