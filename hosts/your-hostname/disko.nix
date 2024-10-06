@@ -1,9 +1,9 @@
 let
   disktype =
-    "nvme0n1";
-    # "sda";
+    # "sda"
+    # "nvme0n1"
+    ;
 in {
-
   disko.devices.disk = {
 
     main = {
@@ -23,7 +23,7 @@ in {
             };
           };
 
-          luks = {
+          root = {
             size = "100%";
             # content = {
             #   type = "luks";
@@ -35,7 +35,7 @@ in {
                 subvolumes = {
                   "/nix" = {
                     mountpoint = "/nix";
-                    mountOptions = [ "noatime" "compress=zstd" ];
+                    mountOptions = [ "noatime" "compress=zstd" ]; # "nodatacow"
                   };
                   "/rootfs" = {
                     mountpoint = "/";
@@ -47,17 +47,16 @@ in {
                   };
                   "/swap" = {
                     mountpoint = "/.swapvol";
-                    # mountOptions = [ "nodatacow" ];
-                    swap.swapfile.size = "20G";
+                    swap.swapfile.size = "8G";
                   };
-                }; # subvolumes
-              }; # btrfs content
-            # }; # luks content
-          }; # root partition
+                }; # Subvolumes
+              }; # Content
+            # }; # LUKS content
+          }; # Main partition
 
-        }; # partitions
-      }; # disk content
-    }; # main disk
+        }; # Partitions
+      }; # Content
+    }; # Main Drive
 
     # secondary = {
     #   device = "/dev/sda";
@@ -72,12 +71,12 @@ in {
     #           type = "filesystem";
     #           format = "bcachefs";
     #           mountpoint = "/cache";
-    #         };
-    #       };
+    #         }; # Bcache content
+    #       }; # Bcache partition
 
-    #     }; # partitions
-    #   }; # content
-    # };
+    #     }; # Partitions
+    #   }; # Content
+    # }; # Secondary drive
 
   };
 }

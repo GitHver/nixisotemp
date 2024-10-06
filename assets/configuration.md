@@ -9,20 +9,27 @@ If use `cd /ect/nixos` or `zn` you will go into the directory containing the con
 ```
 .
 ├── assets
-│  ├── text.md
+│  ├── loginscreen-light.jpg
 │  └── loginscreen.jpg
 ├── hardware
-│  ├── ISO-x86
-│  │  ├── hardware.nix
-│  │  └── install-script.nix
-│  ├── your-hostname
+│  ├── !template
 │  │  ├── users
 │  │  │  └── user.nix
-│  │  ├── accounts.nix
+│  │  ├── disko.nix
+│  │  ├── hardware.nix
+│  │  └── users.nix
+│  ├── a4h2o
+│  │  ├── users
+│  │  │  └── user.nix
 │  │  ├── disko.nix
 │  │  ├── hardware-configuration.nix
-│  │  └── hardware.nix
+│  │  ├── hardware.nix
+│  │  └── users.nix
+│  ├── ISO-image.nix
 │  └── configuration.nix
+├── library
+│  ├── makeusers.nix
+│  └── recursiveMerge.nix
 ├── modules
 │  ├── hardware
 │  │  ├── amdgpu.nix
@@ -33,7 +40,7 @@ If use `cd /ect/nixos` or `zn` you will go into the directory containing the con
 │  └── module3.nix
 ├── flake.lock
 ├── flake.nix
-├── license.md
+├── license.txt
 └── readme.md
 ```
 
@@ -43,8 +50,7 @@ The `hardware` directory contains all hardware specific settings and configurati
 
 The `modules` directory just has files that are imported to every config file. They are made of the *options-config* syntax that specifies an available option and what it does. With this you can have reusable parts that can be used to enable/disable predefined settings. All files are imported recursively, so the directory names and structure don't matter and are just for organisation.
 
-The `assets` directory just contains the documentation and any other assets you might need for the setup, like an image for GRUB splash screen.
-
+The `library` directory just contains snippets of nix code (expressions) that you create and want to reuse. All files get imported in the flake.nix and are thus available anywhere.
 
 ### Default config file
 
@@ -65,8 +71,12 @@ If you open `configs/template.nix` and scroll a bit down, you'll see a commented
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [ 
     #==<< Terminal Programs >>=========>
-    git   # Best learn to use git. it *WILL* make your life easier.
-    btop  # Better top, a resource monitoring tool.
+    zellij    # User friendly terminal multiplexer.
+    helix     # No nonsense terminal modal text editor.
+    yazi      # Batteries included terminal file manager.
+    btop      # Better top, a resource monitoring tool.
+    #==<< Other >>=====================>
+    git       # Best learn to use git. it *WILL* make your life easier.
   ];
 }
 ```
@@ -82,8 +92,6 @@ The default module is fairly minimal, especially if you have no desktop environm
 To find packages, go to https://search.nixos.org/packages. Here you can search for package in either the unstable channel, or the current stable channel. You can also search for `options`, which are nix expressions you can put into your nix config files. Try searching for `users` to see options containing anything with users, or `programs` to see all options to provided programs.
 
 ### Module system
-
-**TBA**
 
 ### Commands
 
@@ -120,7 +128,7 @@ Since this config uses flakes, in order to update your system/packages, you'll n
 nix flake update <input> /path/to/flake
 ```
 
-The `<input>` option is used to specify which input to update, If it is dropped, all inputs will be updated and such the entire system. The path is the path to the `flake.lock` you want to update, dropping it searches the current directory for a flake. You will still need to run a `nixos-rebuild switch` command to download and apply the updates to your system.
+The `<input>` option is used to specify which input to update, If it is dropped, all inputs will be updates and such the entire system. The path is the path to the `flake.lock` you want to update, dropping it searches the current directory for a flake. You will still need to run a `nixos-rebuild` command to download and apply the updates to your system.
 
 When updating the system, all old packages are kept, otherwise you wouldn't be able to rollback to previous configs. To delete old generations you no longer wish to keep, use:
 
@@ -130,18 +138,8 @@ sudo nix-collect-garbage -d
 
 This deletes all old generations and packages used by them. If you want to keep some generations, you can replace the `-d` flag with `--delete-older-than <period>`, where period can be: `3d`, `21d`, `365d`, etc.
 
-Now you can use these as they are, but there is also a Fish shell function I have provided that makes a `nix os` command available to bring all your commands under the `nix` command. options include:
-
-- `nix os` - `switch`, `boot`, `test`, etc. Just like the normal `nixos-rebuild` command
-- `nix os rollback` is the  same as `nixos-rebuild --rollback switch`
-- `nix os upgrade` is the same as `nix flake update` + `nixos-rebuild switch`
-
 Some other useful commands are:
 
 - `nix shell`. This command creates ephemeral environments with any package you specify either on the command-line with `nixpkgs#<package>`, or in a `shell.nix` file in the current directory.
 - `nix repl`. This a repl command for Nix that allows you to test out nix expressions and code. Type `:q` to quit. Learn more [here](https://nix.dev/manual/nix/2.24/command-ref/new-cli/nix3-repl.html).
-- `nix help`. Get general help about Nix. You can also but in a specific sub command to learn more about it.
-
-# Next
-
-[Flakes](./flakes.md)
+- `nix fmt`. The Nix formatter. formats your Nix code to a unified convention.

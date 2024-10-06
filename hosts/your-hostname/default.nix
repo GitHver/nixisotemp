@@ -1,6 +1,10 @@
 { pkgs, host, ... }:
 
-{
+let
+  consolefontsize = "32";
+  grubfontsize = consolefontsize;
+in {
+
   #====<< Imported files >>====================================================>
   imports = [
     ./accounts.nix
@@ -15,25 +19,18 @@
   # system in an unbootable state, so make sure you know what you are doing when
   # rebuilding any changes here. Best to first use a virtual machine with:
   # $ sudo nixos-rebuild build-wm-with-bootloader
-  boot.loader = {
-    # This is needed for EFI systems.
-    efi.canTouchEfiVariables = true;
-    # Systemd boot is a simple bootloader with minimal configuration.
-    systemd-boot = {
-      enable = true;
-      configurationLimit = 30;
-      consoleMode = "max";
-      netbootxyz.enable = true;
-      memtest86.enable = true;
-    };
-    # GRUB is a featurefull bootloader with extensive customization.
-    grub = {
-      enable = false;
-      device = "nodev";
-      efiSupport = true;
-      efiInstallAsRemovable = false;
-      splashImage = null; # Removes the NixOS logo image.
-    };
+  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.grub = {
+    enable = true;
+    device = "nodev";
+    efiSupport = true;
+    font = "${pkgs.terminus_font}/share/fonts/terminus/ter-u${grubfontsize}b.otb";
+    splashImage = null; # Removes the NixOS logo image.
+  };
+  console = {
+    earlySetup = true;
+    font = "ter-i${consolefontsize}b";
+    packages = [ pkgs.terminus_font ];
   };
 
   #====<< Linux kernel options >>==============================================>
@@ -46,11 +43,12 @@
     # Hibernation. run: `swap-offset` and put the number as the resume_offset.
     # kernelParams = [ "resume_offset=533760" ];
     # resumeDevice = "/dev/disk/by-label/nixos";
+    # initrd.systemd.enable = true;
   };
 
   #====<< Hardware Options >>==================================================>
   hardware = {
-    enableRedistributableFirmware = true;
+    enableRedistributableFirmware = false;
     enableAllFirmware = false;
     amdgpu.enable = false;
     nvidia.enable = false;
@@ -59,11 +57,10 @@
   #====<< Heavy / privileged programs >>=======================================>
   programs = {
     qemuvm.enable = false;     # The QEMU virtual machine.
-    steam-full.enable = false; # Steam module with all permissions.
+    steam.full.enable = false; # Steam module with all permissions.
   };
 
   #====<< Network config >>====================================================>
-  # bluetooth.enable = true;
   networking = {
     hostName = host;          # The name of your computer on the network.
     networkmanager.enable = true; # Networkmanager handles wifi and ethernet.
@@ -74,3 +71,23 @@
     };
   };
 }
+
+      # font = "${pkgs.tamzen}/share/fonts/misc/Tamzen10x20r.otb"; # (pf2/otb/ttf) Invalid font breaks TTY resolution
+      # fontSize = 30; # Size should match bitmap font size
+      # gfxpayloadEfi = "3840x1600x32"; # TTY resolution (grub > videoinfo)
+      # gfxmodeEfi = "auto"; # Grub resolution (overridden by console mode)
+      # extraConfig = "
+      #   terminal_input console
+      #   terminal_output console
+      # ";
+    # # Systemd boot is a simple bootloader with minimal configuration.
+    # systemd-boot = {
+    #   enable = false;
+    #   editor = false;
+    #   consoleMode = "max";
+    #   configurationLimit = 30;
+    #   # netbootxyz.enable = true;
+    #   # memtest86.enable = true;
+    # };
+    # Menu settings
+    # memtest86.enable = true;

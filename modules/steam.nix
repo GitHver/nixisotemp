@@ -1,15 +1,15 @@
 { lib
 , config
+, options
 , ...
 }:
 
 let
   inherit (lib) mkOption mkIf types;
-  name = "steam-full";
-  cfg = config.programs.${name};
+  cfg = config.programs.steam.full;
 in {
 
-  options.programs.${name}.enable = mkOption {
+  options.programs.steam.full.enable = mkOption {
     type = types.bool;
     default = false;
     description = "Steam client with all permissions";

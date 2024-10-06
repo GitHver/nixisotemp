@@ -1,16 +1,15 @@
 { pkgs, ... }:
 
-{ config = {
+let
+  experimental = false;
+in { config = {
 
   #====<< System Services >>===================================================>
   services = {
     # The COSMIC desktop environment. Wayland based & Rust made.
     displayManager.cosmic-greeter.enable = true;
     desktopManager.cosmic.enable = true;
-    # Extra utils for wayland like `cage` and `wl-clipboard`.
-    wayland-extras.enable = true;
-    # Full sound support.
-    pipewire.full = true;
+    desktopManager.cosmic.xwayland.enable = true;
   };
 
   #====<< System packages >>===================================================>
@@ -21,11 +20,32 @@
   # on your system. You should try to disable this and see what it says!
   nixpkgs.config.allowUnfree = true;
   # Below is where all the sytem-wide packages are installed.
-  # Go to https://search.nixos.org/packages to search for programs.
+  # Go to https://search.nixos.org/packages to search for packages.
   environment.systemPackages = (with pkgs; [
-    #==<< Programs >>==================>
+    #==<< Wayland utils >>=============>
+    wl-clipboard
+    xwayland-satellite
+    cage
+    #==<< Terminal >>==================>
     git         # Best learn to use git. it *WILL* make your life easier.
     btop        # Terminal resource monitoring tool
+    #==<< System management >>=========>
+    mission-center      # Resource monitoring tool
+    gnome-disk-utility  # Disk formatter
+    baobab              # Disk usage visualiser
+    gnome-connections   # Remote desktop connections
+    gnome-logs          # System logs
+    file-roller         # File extractor
+    #==<< Gnome extra >>===============>
+    evince              # Document viewer
+    loupe               # Image viewer
+    gnome-clocks        # Clock and timer util
+    gnome-font-viewer   # Font previewer
+    gnome-characters    # Special character and emoji seletor
+    gnome-calculator    # Calculator
+    # simple-scan         # Printer interfacer
+    #==<< Other >>=====================>
+    # firefox
   ]);
 
   #====<< Localization & internationalization >>===============================>
@@ -50,7 +70,10 @@
   system.stateVersion = "24.11";  # What version of NixOS configs to use.
   # Here you can specify the version of Nix you want to use. The current
   # stable is `2.18.x`. You can also use Lix instead.
-  nix.package = pkgs.nixVersions.latest;
+  nix.package = 
+    if experimental == true
+    then pkgs.nixVersions.latest
+    else pkgs.nix;
   nix.settings = {
     # Access rights to the Nix deamon. This is a list of users, but you can
     # specify groups by prefixing an entry with `@`. `*` is everyone.
@@ -58,7 +81,7 @@
     trusted-users = [ "root" "@wheel" ];
     # These are features needed for flakes to work. You can find more at:
     # https://nix.dev/manual/nix/2.24/development/experimental-features
-    experimental-features = [ "flakes" "nix-command" ];
+    experimental-features = [ "flakes" "nix-command" /*"recursive-nix"*/ ];
     # Replaces identical files with links to save space. works the same as:
     # `nix store optimise`
     auto-optimise-store = true;
@@ -71,7 +94,6 @@
   };
 
   #====<< Miscellaneous >>=====================================================>
-  # xdg.portal.enable = true; # XDG Desktop portal (for nix and flatpaks).
   documentation.nixos.enable = false; # Removes the NixOS manual application.
   services.printing.enable = false;   # Printer protocols. Enable for support.
   # Nix ld is one solution to the static binary problem. This only affects you
@@ -81,12 +103,3 @@
   programs.nix-ld.libraries = (with pkgs; [ ]);
 
 };} ###################### End of config scope. ################################
-
-    # The GNOME desktop environment. The most popular to date. 
-    # desktopManager.gnome.enable = true;
-    # The XServer. Soon to be deprecated.
-    # xserver = {
-    #   enable = true;
-    #   excludePackages = [ pkgs.xterm ];
-    # };
-    # libinput.enable = true;

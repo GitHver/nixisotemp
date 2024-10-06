@@ -26,7 +26,7 @@
   };
 
   #====<< Outputs Field >>=====================================================>
-  outputs = { self, nixpkgs, ...} @ inputs: let
+  outputs = { self, nixpkgs, ... } @ inputs: let
     #====<< Required variables >>======>
     lib = nixpkgs.lib // inputs.nixisoextras.lib;
     #====<< Used functions >>==========>
@@ -50,15 +50,15 @@
     nixosConfigurations = genAttrs hostnames (host: nixosSystem {
       specialArgs = { inherit inputs lib host; };
       modules = flatten [
-        ./hosts/${host}/hardware.nix
+        ./hosts/${host}
         self.nixosModules.full
       ];
     });
 
     #====<< NixOS Modules >>===================================================>
     # This creates an attributeset where the default attribute is a list of
-    # all paths to modules. This can then be referenced with the `outputs`
-    # attribute set to give you access to all your modules anwhere.
+    # all paths to modules. This can then be referenced with the `self`
+    # attribute to give you access to all your modules anwhere.
     nixosModules = rec {
       default = { imports = listFilesRecursive ./modules; };
       full = [ default ] ++ inputModules;
@@ -72,13 +72,12 @@
     # This defines the formatter that is used when you run `nix fmt`. Since this
     # calls the formatters package, you'll need to define which architecture
     # package is used so different computers can fetch the right package.
-    formatter = genForAllSystems (system: let
-      pkgs = import nixpkgs { inherit system; };
-    in (with pkgs;
-      nixpkgs-fmt       # The original nix formatter.
-      # nixfmt-rfc-style  # The new Nix formatter. Still under development
-      # alejandra         # The uncompromising Nix code formatter
-    ));
+    formatter = genForAllSystems (system:
+      let pkgs = import nixpkgs { inherit system; };
+      in pkgs.nixpkgs-fmt
+      or pkgs.nixfmt-rfc-style
+      or pkgs.alejandra
+    );
 
   }; ############### The end of the `outputs` scope ############################
 
