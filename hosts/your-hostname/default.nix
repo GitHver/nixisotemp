@@ -70,24 +70,5 @@ in {
       allowedUDPPorts = [ ];    # or here.
     };
   };
-}
 
-      # font = "${pkgs.tamzen}/share/fonts/misc/Tamzen10x20r.otb"; # (pf2/otb/ttf) Invalid font breaks TTY resolution
-      # fontSize = 30; # Size should match bitmap font size
-      # gfxpayloadEfi = "3840x1600x32"; # TTY resolution (grub > videoinfo)
-      # gfxmodeEfi = "auto"; # Grub resolution (overridden by console mode)
-      # extraConfig = "
-      #   terminal_input console
-      #   terminal_output console
-      # ";
-    # # Systemd boot is a simple bootloader with minimal configuration.
-    # systemd-boot = {
-    #   enable = false;
-    #   editor = false;
-    #   consoleMode = "max";
-    #   configurationLimit = 30;
-    #   # netbootxyz.enable = true;
-    #   # memtest86.enable = true;
-    # };
-    # Menu settings
-    # memtest86.enable = true;
+}

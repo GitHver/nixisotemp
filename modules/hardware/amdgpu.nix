@@ -5,18 +5,15 @@
 }:
 
 let
-  inherit (lib) mkOption mkIf types;
+  inherit (lib) mkEnableOption mkIf;
   cfg = config.hardware.amdgpu;
 in {
 
-  options.hardware.amdgpu.enable = mkOption {
-    type = types.bool;
-    default = false;
-    # description = "AMD GPU drivers and RocM support";
-  };
+  options.hardware.amdgpu.enable =
+    mkEnableOption
+    "AMD GPU drivers and RocM support";
 
   config = mkIf cfg.enable {
-
     #====<< AMD Drivers >>========================================================>
     boot.initrd.kernelModules = [ "amdgpu" ];
     hardware.graphics.enable = true;
@@ -40,4 +37,5 @@ in {
     #   #driSupport32Bit = true;
     # };
   };
+
 }

@@ -14,7 +14,6 @@
   inputs = {
     #====<< Core Nixpkgs >>====================================================>
     nixpkgs.url    = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-st.url = "github:nixos/nixpkgs/nixos-24.05";
     #====<< Extension utils >>=================================================>
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";

@@ -5,17 +5,16 @@
 }:
 
 let
-  inherit (lib) mkOption mkIf types;
-  cnfg = config.programs.qemuvm;
+  inherit (lib) mkEnableOption mkIf;
+  cfg = config.programs.qemuvm;
 in {
 
-  options.programs.qemuvm.enable = mkOption {
-    type = types.bool;
-    default = false;
-    # description = "QEMU virtual machines";
-  };
+  options.programs.qemuvm.enable =
+    mkEnableOption
+    "the QEMU virtual machine"
+  ;
 
-  config = mkIf cnfg.enable {
+  config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
       #==<< QEMU >>=======================>
       qemu

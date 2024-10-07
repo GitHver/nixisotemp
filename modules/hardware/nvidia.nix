@@ -4,17 +4,16 @@
 }:
 
 let
-  inherit (lib) mkOption mkIf types;
-  cnfg = config.hardware.nvidia;
+  inherit (lib) mkEnableOption mkIf;
+  cfg = config.hardware.nvidia;
 in {
 
-  options.hardware.nvidia.enable = mkOption {
-    type = types.bool;
-    default = false;
-    # description = "NVIDIA GPU Drivers";
-  };
+  options.hardware.nvidia.enable =
+    mkEnableOption
+    "NVIDIA GPU Drivers"
+  ;
 
-  config = mkIf cnfg.enable {
+  config = mkIf cfg.enable {
 
     hardware.graphics = {
       enable = true;
@@ -48,5 +47,7 @@ in {
       powerManagement.finegrained = false;
 
     };
+
   };
+
 }

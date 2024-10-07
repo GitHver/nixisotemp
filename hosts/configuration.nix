@@ -2,20 +2,25 @@
 
 let
   experimental = false;
+  lix = false;
 in { config = {
 
   #====<< System Services >>===================================================>
   services = {
     # The COSMIC desktop environment. Wayland based & Rust made.
-    displayManager.cosmic-greeter.enable = true;
-    desktopManager.cosmic.enable = true;
-    desktopManager.cosmic.xwayland.enable = true;
+    cosmic = {
+      enable = true;
+      greeter.enable = true;
+      xwayland.enable = true;
+    };
+    # Printer protocols. Enable for support.
+    printing.enable = false;
+    # If you want to use flatpaks for some reason, all you have to do is set the
+    # option below to true and run the command: `flathub-add`.
+    flatpak.enable = false;
   };
 
   #====<< System packages >>===================================================>
-  # If you want to use flatpaks for some reason, all you have to do is set the
-  # option below to true and run the command: `flathub-add`.
-  services.flatpak.enable = false;
   # Here you can decide if you to allow non open source packages to be installed
   # on your system. You should try to disable this and see what it says!
   nixpkgs.config.allowUnfree = true;
@@ -44,8 +49,6 @@ in { config = {
     gnome-characters    # Special character and emoji seletor
     gnome-calculator    # Calculator
     # simple-scan         # Printer interfacer
-    #==<< Other >>=====================>
-    # firefox
   ]);
 
   #====<< Localization & internationalization >>===============================>
@@ -68,34 +71,34 @@ in { config = {
 
   #====<< Nix specific settings >>=============================================>
   system.stateVersion = "24.11";  # What version of NixOS configs to use.
-  # Here you can specify the version of Nix you want to use. The current
-  # stable is `2.18.x`. You can also use Lix instead.
-  nix.package = 
-    if experimental == true
-    then pkgs.nixVersions.latest
-    else pkgs.nix;
-  nix.settings = {
-    # Access rights to the Nix deamon. This is a list of users, but you can
-    # specify groups by prefixing an entry with `@`. `*` is everyone.
-    allowed-users = [ "*" ];
-    trusted-users = [ "root" "@wheel" ];
-    # These are features needed for flakes to work. You can find more at:
-    # https://nix.dev/manual/nix/2.24/development/experimental-features
-    experimental-features = [ "flakes" "nix-command" /*"recursive-nix"*/ ];
+  nix = {
+    # What version of the Nix package manager to use. You can also use Lix.
+    package = 
+      if experimental == false || lix == false
+      then pkgs.nix
+      else if experimental == true || lix == false
+      then pkgs.nixVersions.latest
+      else pkgs.lix;
+    settings = {
+      # Access rights to the Nix deamon. This is a list of users, but you can
+      # specify groups by prefixing an entry with `@`. `*` is everyone.
+      allowed-users = [ "*" ];
+      trusted-users = [ "root" "@wheel" ];
+      # These are features needed for flakes to work. You can find more at:
+      # https://nix.dev/manual/nix/2.24/development/experimental-features
+      experimental-features = [ "flakes" "nix-command" /*"recursive-nix"*/ ];
+    };
     # Replaces identical files with links to save space. works the same as:
     # `nix store optimise`
-    auto-optimise-store = true;
-  };
-  # Automatically delete old & unused packages.
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 7d";
+    settings.auto-optimise-store = true;
+    # Automatically delete old & unused packages
+    gc.automatic = true;
+    gc.dates = "weekly";
+    gc.options = "--delete-older-than 7d";
   };
 
   #====<< Miscellaneous >>=====================================================>
   documentation.nixos.enable = false; # Removes the NixOS manual application.
-  services.printing.enable = false;   # Printer protocols. Enable for support.
   # Nix ld is one solution to the static binary problem. This only affects you
   # if you need to run random binaries from sources other than nixpkgs. Learn
   # more here: https://github.com/nix-community/nix-ld

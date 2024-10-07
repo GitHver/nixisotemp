@@ -1,24 +1,22 @@
 { lib
 , config
-, options
 , ...
 }:
 
 let
-  inherit (lib) mkOption mkIf types;
-  cfg = config.programs.steam.full;
+  inherit (lib) mkEnableOption mkIf;
+  cfg =  config.programs.steam.full;
 in {
 
-  options.programs.steam.full.enable = mkOption {
-    type = types.bool;
-    default = false;
-    description = "Steam client with all permissions";
-  };
+  options.programs.steam.full.enable =
+    mkEnableOption
+    "Steam client with all permissions"
+  ;
 
   config = mkIf cfg.enable {
     programs.steam = {
       enable = true;
-      # Open ports in the firewall for Steam Remotepla.
+      # Open ports in the firewall for Steam Remoteplay.
       remotePlay.openFirewall = true;
       # Open ports in the firewall for Steam server.
       dedicatedServer.openFirewall = true;
