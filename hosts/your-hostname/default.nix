@@ -1,7 +1,7 @@
 { pkgs, host, ... }:
 
 let
-  consolefontsize = "32";
+  consolefontsize = "16";
   grubfontsize = consolefontsize;
 in {
 
@@ -48,8 +48,8 @@ in {
 
   #====<< Hardware Options >>==================================================>
   hardware = {
-    enableRedistributableFirmware = false;
-    enableAllFirmware = false;
+    # enableRedistributableFirmware = true;
+    # enableAllFirmware = false;
     amdgpu.enable = false;
     nvidia.enable = false;
   };
