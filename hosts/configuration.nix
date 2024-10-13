@@ -1,8 +1,8 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 let
+  inherit (lib) mkDefault;
   experimental = false;
-  lix = false;
 in { config = {
 
   #====<< System Services >>===================================================>
@@ -23,7 +23,7 @@ in { config = {
   #====<< System packages >>===================================================>
   # Here you can decide if you to allow non open source packages to be installed
   # on your system. You should try to disable this and see what it says!
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.allowUnfree = mkDefault false;
   # Below is where all the sytem-wide packages are installed.
   # Go to https://search.nixos.org/packages to search for packages.
   environment.systemPackages = (with pkgs; [
@@ -33,21 +33,20 @@ in { config = {
     cage
     #==<< Terminal >>==================>
     git         # Best learn to use git. it *WILL* make your life easier.
-    btop        # Terminal resource monitoring tool
     #==<< System management >>=========>
     mission-center      # Resource monitoring tool
     gnome-disk-utility  # Disk formatter
-    baobab              # Disk usage visualiser
-    gnome-connections   # Remote desktop connections
+    # baobab              # Disk usage visualiser
+    # gnome-connections   # Remote desktop connections
     gnome-logs          # System logs
     file-roller         # File extractor
     #==<< Gnome extra >>===============>
-    evince              # Document viewer
+    # evince              # Document viewer
     loupe               # Image viewer
-    gnome-clocks        # Clock and timer util
-    gnome-font-viewer   # Font previewer
-    gnome-characters    # Special character and emoji seletor
-    gnome-calculator    # Calculator
+    # gnome-clocks        # Clock and timer util
+    # gnome-font-viewer   # Font previewer
+    # gnome-characters    # Special character and emoji selector
+    # gnome-calculator    # Calculator
     # simple-scan         # Printer interfacer
   ]);
 
@@ -74,11 +73,10 @@ in { config = {
   nix = {
     # What version of the Nix package manager to use. You can also use Lix.
     package = 
-      if experimental == false || lix == false
+      if experimental == false
       then pkgs.nix
-      else if experimental == true || lix == false
-      then pkgs.nixVersions.latest
-      else pkgs.lix;
+      else pkgs.nixVersions.latest
+    ;
     settings = {
       # Access rights to the Nix deamon. This is a list of users, but you can
       # specify groups by prefixing an entry with `@`. `*` is everyone.

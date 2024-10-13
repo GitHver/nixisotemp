@@ -48,8 +48,8 @@ in {
 
   #====<< Hardware Options >>==================================================>
   hardware = {
-    # enableRedistributableFirmware = true;
-    # enableAllFirmware = false;
+    enableRedistributableFirmware = true;
+    enableAllFirmware = false;
     amdgpu.enable = false;
     nvidia.enable = false;
   };

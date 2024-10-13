@@ -1,4 +1,6 @@
-{ ... }:
+{ host
+, ...
+}:
 
 let
   dir = "~/Nix";
@@ -7,38 +9,34 @@ let
 in {
 
   environment.shellAliases = {
-    #====<< /etc/nixos setup >>================================================>
-    nix-move = /*sh*/ ''
-      # Create the `Nix` directory and copy the contents of `/etc/nixos` into it
-      mkdir ~/Nix
-      cp -R /etc/nixos ${system-path}
-      # Remove the existing files and replace them with a symlink to the flake
-      sudo rm -rf /etc/nixos/*
-      sudo ln -s ${system-path}/flake.nix /etc/nixos/flake.nix
-    '';
-    #====<< Home-manager install script >>=====================================>
-    home-get = /*sh*/ ''
+    #====<< Full setup >>======================================================>
+    home-setup = /*sh*/ ''
+      # Create the `Nix` directory
+      mkdir ${dir}
       # Clone the repository and remove the git repo
-      git clone https://github.com/GitHver/nixisotemphome.git ${home-path}
+      git clone https://github.com/GitHver/SputNix-starter.git ${home-path}
       rm -rf ${home-path}/.git
       # Creates a symbolic link in the home-manager directory
       mkdir ~/.config/home-manager
       ln -s ${home-path}/flake.nix ~/.config/home-manager
-      # Open the flake in the editor
+      # Open the flake in the editor to change variables to their correct values
       $EDITOR ${home-path}/flake.nix
-      $EDITOR ~/Nix/home-manager/hosts/your-host.nix
-    '';
-    home-install = /*sh*/ ''
+      # Create the `hosts` drectory in the home manager repo
+      cd ${home-path}
+      mkdir hosts
+      cd
+      # Create a file with the host name of the current machine
+      echo '{
+        name = "${host}";
+        system =
+        # Choose the right architecture for this machine
+          "x86_64-linux"
+          # "aarch64-linux"
+        ;
+      }' > ${home-path}/hosts/${host}.nix
+      $EDITOR ${home-path}/hosts/${host}.nix
       # Install and run home-manager
       nix shell nixpkgs#home-manager --command home-manager switch
-    '';
-    #====<< Git repo initialization >>=========================================>
-    nix-git = /*sh*/ ''
-      # Initialize the system git repository
-      cd ${system-path}
-      git init
-      git add .
-      git commit -m 'initial commit'
       # Initialize the Home-manager git repository
       cd ${home-path}
       git init
@@ -47,36 +45,16 @@ in {
       # Go back home
       cd
     '';
-    #====<< Full setup >>======================================================>
-    nix-setup = /*sh*/ ''
-      # Create the `Nix` directory and copy the contents of `/etc/nixos` into it
-      mkdir ${dir}
+    nix-move = /*sh*/ ''
       cp -R /etc/nixos ${system-path}
       # Remove the existing files and replace them with a symlink to the flake
       sudo rm -rf /etc/nixos/*
       sudo ln -s ${system-path}/flake.nix /etc/nixos/flake.nix
-      # Clone the repository and remove the git repo
-      git clone https://github.com/GitHver/nixisotemphome.git ${home-path}
-      rm -rf ${home-path}/.git
-      # Creates a symbolic link in the home-manager directory
-      mkdir ~/.config/home-manager
-      ln -s ${home-path}/flake.nix ~/.config/home-manager
-      # Open the flake in the editor to change variables to their correct values
-      $EDITOR ${home-path}/flake.nix
-      $EDITOR ~/Nix/home-manager/hosts/your-host.nix
-      # Install and run home-manager
-      nix shell nixpkgs#home-manager --command home-manager switch
       # Initialize the system git repository
       cd ${system-path}
       git init
       git add .
       git commit -m 'initial commit'
-      # Initialize the Home-manager git repository
-      cd ${home-path}
-      git init
-      git add .
-      git commit -m 'initial commit'
-      # Go back home
       cd
     '';
     #====<< Other >>===========================================================>
@@ -86,6 +64,35 @@ in {
     flathub-add = /*sh*/ ''
       flatpak remote-add --user flathub "
       https://dl.flathub.org/repo/flathub.flatpakrepo"
+    '';
+    ssh-keygen-setup = /*sh*/ ''
+      echo '
+      copy the following and replace it with your email and then run it
+        ssh-keygen -t ed25519 -C "your@email.domain"
+      after that run:
+        ssh-setup
+      '
+    '';
+    ssh-setup = /*sh*/ ''
+      echo '
+      Host *
+        AddKeysToAgent yes
+        IdentityFile ~/.ssh/id_ed25519
+      ' > ~/.ssh/config
+
+      ssh-agent -s
+      ssh-add ~/.ssh/id_ed25519
+      echo "This is your public key:"
+      cat ~/.ssh/id_ed25519.pub'
+    '';
+    ssh-perms = /*sh*/ ''
+      chmod 644 ~/.ssh/config
+      chmod 644 ~/.ssh/known_hosts.old
+      chmod 644 ~/.ssh/id_ed25519.pub
+      chmod 600 ~/.ssh/known_hosts
+      chmod 600 ~/.ssh/id_ed25519
+      ssh-agent -s
+      ssh-add ~/.ssh/id_ed25519
     '';
   };
 

@@ -20,8 +20,8 @@
     nixisoextras.url = "github:GitHver/nixisoextras";
     nixisoextras.inputs.nixpkgs.follows = "nixpkgs";
     #====<< Cosmic Desktop >>==================================================>
-    nixos-cosmic.url = "github:lilyinstarlight/nixos-cosmic";
-    nixos-cosmic.inputs.nixpkgs.follows = "nixpkgs";
+    cosmic.url = "github:lilyinstarlight/nixos-cosmic";
+    cosmic.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   #====<< Outputs Field >>=====================================================>
@@ -37,7 +37,7 @@
     genForAllSystems = (funct: genAttrs supportedSystems funct);
     supportedSystems = [
       "x86_64-linux"
-      "aarch64-linux"
+      # "aarch64-linux"
     ];
   in {
 
@@ -63,7 +63,7 @@
       full = [ default ] ++ inputModules;
       inputModules = (with inputs; [
         disko.nixosModules.default
-        nixos-cosmic.nixosModules.default
+        cosmic.nixosModules.default
       ]);
     };
 

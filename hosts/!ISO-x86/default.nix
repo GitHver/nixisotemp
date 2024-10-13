@@ -1,15 +1,24 @@
 { pkgs, lib, modulesPath, ... }:
 
 {
-  # Using the following command, a result directory will be made
-  # with a custom ISO in the 'result/iso' directory.
-  # $ nix build \.#nixosConfigurations.ISO.config.system.build.isoImage
-  # put your packages you want on the ISO in the `hosts/ISO-image.nix` file
+    # Using the following command, a result directory will be made
+    # with a custom ISO in the 'result/iso' directory.
+    # $ nix build \.#nixosConfigurations.ISO.config.system.build.isoImage
+    # put your packages you want on the ISO in the `hosts/ISO-image.nix` file
   #====<< Imports >>===========================================================>
   imports = [
-    "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix"
+    (modulesPath + "/installer/cd-dvd/installation-cd-minimal.nix")
     ./install-script.nix
-  ]; config = {
+  ];
+
+  config = {
+
+  #====<< System Services >>===================================================>
+  services = {
+    # The COSMIC desktop environment. Wayland based & Rust made.
+    # displayManager.cosmic-greeter.enable = true;
+    # desktopManager.cosmic.enable = true;
+  };
 
   #====<< Network config >>====================================================>
   networking = {
@@ -40,7 +49,7 @@
   system.stateVersion = "24.11";  # What version of NixOS configs to use.
   # Here you can specify the version of Nix you want to use. The current
   # stable is `2.18.x`. You can also use Lix instead.
-  nix.package = pkgs.nix;
+  nix.package = pkgs.nixVersions.latest;
   nix.settings = {
     # Access rights to the Nix deamon. This is a list of users, but you can
     # specify groups by prefixing an entry with `@`. `*` is everyone.
@@ -55,6 +64,7 @@
   };
 
   #====<< Miscellaneous >>=====================================================>
+  # xdg.portal.enable = true; # XDG Desktop portal (for nix and flatpaks).
   documentation.nixos.enable = false; # Removes the NixOS manual application.
   services.printing.enable = false;   # Printer protocols. Enable for support.
   # Nix ld is one solution to the static binary problem. This only affects you
@@ -113,25 +123,6 @@
     pop-icon-theme
     pop-launcher
     cosmic-greeter
-    #==<< Wayland utils >>=============>
-    wl-clipboard
-    xwayland-satellite
-    cage
-    #==<< System management >>=========>
-    mission-center      # Resource monitoring tool
-    gnome-disk-utility  # Disk formatter
-    baobab              # Disk usage visualiser
-    gnome-connections   # Remote desktop connections
-    gnome-logs          # System logs
-    file-roller         # File extractor
-    #==<< Gnome extra >>===============>
-    evince              # Document viewer
-    loupe               # Image viewer
-    gnome-clocks        # Clock and timer util
-    gnome-font-viewer   # Font previewer
-    gnome-characters    # Special character and emoji seletor
-    gnome-calculator    # Calculator
-    # simple-scan         # Printer interfacer
   ];
 
 };}
