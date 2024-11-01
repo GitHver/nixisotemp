@@ -1,10 +1,11 @@
+# Using the following command, a result directory will be made
+# with a custom ISO in the 'result/iso' directory.
+# $ nix build \.#nixosConfigurations.ISO.config.system.build.isoImage
+# put your packages you want on the ISO in the `hosts/ISO-image.nix` file
+
 { pkgs, lib, modulesPath, ... }:
 
 {
-    # Using the following command, a result directory will be made
-    # with a custom ISO in the 'result/iso' directory.
-    # $ nix build \.#nixosConfigurations.ISO.config.system.build.isoImage
-    # put your packages you want on the ISO in the `hosts/ISO-image.nix` file
   #====<< Imports >>===========================================================>
   imports = [
     (modulesPath + "/installer/cd-dvd/installation-cd-minimal.nix")
