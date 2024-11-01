@@ -1,4 +1,5 @@
-{ host
+{ pkgs
+, host
 , ...
 }:
 
@@ -13,8 +14,9 @@ in {
     home-setup = /*sh*/ ''
       # Create the `Nix` directory
       mkdir ${dir}
+      mkdir ${home-path}
       # Clone the repository and remove the git repo
-      git clone https://github.com/GitHver/SputNix-starter.git ${home-path}
+      nix shell nixpkgs#git --command git clone https://github.com/GitHver/nixisotemphome.git ${home-path}
       rm -rf ${home-path}/.git
       # Creates a symbolic link in the home-manager directory
       mkdir ~/.config/home-manager
@@ -28,8 +30,7 @@ in {
       # Create a file with the host name of the current machine
       echo '{
         name = "${host}";
-        system =
-        # Choose the right architecture for this machine
+        system = # Choose the right architecture for this machine
           "x86_64-linux"
           # "aarch64-linux"
         ;
@@ -80,10 +81,10 @@ in {
         IdentityFile ~/.ssh/id_ed25519
       ' > ~/.ssh/config
 
-      ssh-agent -s
+      eval $(ssh-agent -s)
       ssh-add ~/.ssh/id_ed25519
       echo "This is your public key:"
-      cat ~/.ssh/id_ed25519.pub'
+      cat ~/.ssh/id_ed25519.pub
     '';
     ssh-perms = /*sh*/ ''
       chmod 644 ~/.ssh/config

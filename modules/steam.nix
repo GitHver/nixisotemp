@@ -23,7 +23,7 @@ in {
       # Opens ports to allow file (game) transfers on your local network.
       localNetworkGameTransfers.openFirewall = true;
       # Valve's micro compositor. Runs inside your primary compositor.
-      gamescopeSession.enable = true;
+      # gamescopeSession.enable = true;
     };
   };
 

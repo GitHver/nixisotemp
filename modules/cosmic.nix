@@ -4,7 +4,7 @@
 }:
 
 let
-  inherit (lib) mkOption mkEnableOption;
+  inherit (lib) mkOption mkEnableOption mkIf;
   inherit (lib.types) str;
   cfg = config.services.cosmic;
 in {
@@ -21,6 +21,7 @@ in {
       desktopManager.cosmic.xwayland.enable = cfg.xwayland.enable;
       displayManager.cosmic-greeter.enable = cfg.greeter.enable;
     };
+    environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = mkIf cfg.enable 1;
   };
 
 }

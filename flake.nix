@@ -13,7 +13,7 @@
 
   inputs = {
     #====<< Core Nixpkgs >>====================================================>
-    nixpkgs.url    = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     #====<< Extension utils >>=================================================>
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
@@ -22,6 +22,9 @@
     #====<< Cosmic Desktop >>==================================================>
     cosmic.url = "github:lilyinstarlight/nixos-cosmic";
     cosmic.inputs.nixpkgs.follows = "nixpkgs";
+    #====<< Other >>===========================================================>
+    xremap.url = "github:xremap/nix-flake";
+    xremap.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   #====<< Outputs Field >>=====================================================>
@@ -47,7 +50,7 @@
     # directories in the `/hosts` directory) and creates an attribute set for
     # each host in the list.
     nixosConfigurations = genAttrs hostnames (host: nixosSystem {
-      specialArgs = { inherit inputs lib host; };
+      specialArgs = { inherit lib inputs host; };
       modules = flatten [
         ./hosts/${host}
         self.nixosModules.full
@@ -64,6 +67,7 @@
       inputModules = (with inputs; [
         disko.nixosModules.default
         cosmic.nixosModules.default
+        xremap.nixosModules.default
       ]);
     };
 

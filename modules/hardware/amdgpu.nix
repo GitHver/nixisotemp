@@ -17,17 +17,17 @@ in {
     #====<< AMD Drivers >>========================================================>
     boot.initrd.kernelModules = [ "amdgpu" ];
     hardware.graphics.enable = true;
-    hardware.graphics.extraPackages = with pkgs; [
-      rocmPackages_5.rocm-runtime
-      rocmPackages_5.rocminfo
-      amdvlk
-      rocmPackages_5.clr.icd
-      rocmPackages_5.rocm-smi
-    ];
-    nixpkgs.config.rocmSupport = true;
-    systemd.tmpfiles.rules = [
-      "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages_5.clr}"
-    ];
+    # hardware.graphics.extraPackages = with pkgs; [
+    #   rocmPackages_5.rocm-runtime
+    #   rocmPackages_5.rocminfo
+    #   amdvlk
+    #   rocmPackages_5.clr.icd
+    #   rocmPackages_5.rocm-smi
+    # ];
+    # nixpkgs.config.rocmSupport = true;
+    # systemd.tmpfiles.rules = [
+    #   "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages_5.clr}"
+    # ];
     # environment.systemPackages = with pkgs; [
     #   rocmPackages
     # ];

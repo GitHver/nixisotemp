@@ -2,7 +2,6 @@
 
 let
   consolefontsize = "16";
-  grubfontsize = consolefontsize;
 in {
 
   #====<< Imported files >>====================================================>
@@ -10,7 +9,7 @@ in {
     ./accounts.nix
     ./disko.nix
     ./hardware-configuration.nix
-    ./../configuration.nix
+    ./../../configs/configuration.nix
   ];
 
   #====<< Bootloader >>========================================================>
@@ -20,12 +19,11 @@ in {
   # rebuilding any changes here. Best to first use a virtual machine with:
   # $ sudo nixos-rebuild build-wm-with-bootloader
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.grub = {
+  boot.loader.systemd-boot = {
     enable = true;
-    device = "nodev";
-    efiSupport = true;
-    font = "${pkgs.terminus_font}/share/fonts/terminus/ter-u${grubfontsize}b.otb";
-    splashImage = null; # Removes the NixOS logo image.
+    configurationLimit = 20;
+    consoleMode = "0";
+    memtest86.enable = true;
   };
   console = {
     earlySetup = true;
@@ -48,8 +46,8 @@ in {
 
   #====<< Hardware Options >>==================================================>
   hardware = {
-    enableRedistributableFirmware = true;
-    enableAllFirmware = false;
+    # enableRedistributableFirmware = true;
+    # enableAllFirmware = false;
     amdgpu.enable = false;
     nvidia.enable = false;
   };

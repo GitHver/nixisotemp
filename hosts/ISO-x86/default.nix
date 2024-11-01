@@ -44,6 +44,19 @@
     model   = "pc104";        # The keyboard model. default is 104 key.
     options = "caps:escape";  # Here, Capslock is an additional escape key. 
   };
+  services.xremap.config.keymap = [
+    { name = "orvar";
+    remap = {
+      "M-h" = "LEFT";
+      "M-J" = "DOWN";
+      "M-K" = "UP";
+      "M-L" = "RIGHT";
+      "M-SHIFT-h" = "HOME";
+      "M-SHIFT-J" = "PAGEDOWN";
+      "M-SHIFT-K" = "PAGEUP";
+      "M-SHIFT-L" = "END";
+    };}
+  ];
 
   #====<< Nix specific settings >>=============================================>
   system.stateVersion = "24.11";  # What version of NixOS configs to use.
