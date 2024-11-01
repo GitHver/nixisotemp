@@ -89,7 +89,7 @@ in {
     '';
     #====<< Other >>===========================================================>
     swap-offset = /*sh*/ ''
-      sudo btrfs inspect-internal map-swapfile -r /.swapvol/swapfile
+      sudo btrfs inspect-internal map-swapfile -r /.swap/swapfile
     '';
     flathub-add = /*sh*/ ''
       flatpak remote-add --user flathub "
