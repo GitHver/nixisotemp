@@ -83,17 +83,16 @@ in {
     '';
     symbolic-link = /**/ ''
       mkdir ~/.config/home-manager
-      ln -s ~/Nix/home-manager/flake.nix ~/.config/home-manager/flake.nix
+      ln -s ${home-path}/flake.nix ~/.config/home-manager/flake.nix
       sudo rm -rf /etc/nixos/*
-      sudo ln -s ~/Nix/nixos-system/flake.nix /etc/nixos/flake.nix
+      sudo ln -s ${system-path}/flake.nix /etc/nixos/flake.nix
     '';
     #====<< Other >>===========================================================>
     swap-offset = /*sh*/ ''
       sudo btrfs inspect-internal map-swapfile -r /.swap/swapfile
     '';
     flathub-add = /*sh*/ ''
-      flatpak remote-add --user flathub "
-      https://dl.flathub.org/repo/flathub.flatpakrepo"
+      flatpak remote-add --user flathub "https://dl.flathub.org/repo/flathub.flatpakrepo"
     '';
     ssh-keygen-setup = /*sh*/ ''
       echo '

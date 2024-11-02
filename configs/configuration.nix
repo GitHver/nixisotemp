@@ -9,7 +9,6 @@ in { config = {
   services = {
     # The COSMIC desktop environment. Wayland based & Rust made.
     cosmic.enable = true;
-    cosmic.xwayland.enable = true;
     cosmic.greeter.enable = true;
     # Printer protocols. Enable for support.
     printing.enable = false;
@@ -23,26 +22,13 @@ in { config = {
   # on your system. You should try to disable this and see what it says!
   nixpkgs.config.allowUnfree = mkDefault false;
   # This adds `~/.local/bin` to the PATH variable, allowing you to have a place
-  # to put unpatched executables to like scripts.
+  # to put unpatched executables like scripts.
   environment.localBinInPath = true;
   # Below is where all the sytem-wide packages are installed.
   # Go to https://search.nixos.org/packages to search for packages.
   environment.systemPackages = (with pkgs; [
-    #==<< System management >>=========>
     mission-center      # Resource monitoring tool
-    gnome-disk-utility  # Disk formatter
-    # baobab              # Disk usage visualiser
-    # gnome-connections   # Remote desktop connections
-    gnome-logs          # System logs
-    file-roller         # File extractor
-    #==<< Gnome extra >>===============>
-    # evince              # Document viewer
-    loupe               # Image viewer
-    # gnome-clocks        # Clock and timer util
-    # gnome-font-viewer   # Font previewer
-    # gnome-characters    # Special character and emoji selector
-    gnome-calculator    # Calculator
-    # simple-scan         # Printer interfacer
+    # some-package
   ]);
 
   #====<< Localization & internationalization >>===============================>
@@ -62,19 +48,6 @@ in { config = {
     model   = "pc104";        # The keyboard model. default is 104 key.
     options = "caps:escape";  # Here, Capslock is an additional escape key. 
   };
-  services.xremap.config.keymap = [
-    { name = "orvar";
-    remap = {
-      "M-h" = "LEFT";
-      "M-J" = "DOWN";
-      "M-K" = "UP";
-      "M-L" = "RIGHT";
-      "M-SHIFT-h" = "HOME";
-      "M-SHIFT-J" = "PAGEDOWN";
-      "M-SHIFT-K" = "PAGEUP";
-      "M-SHIFT-L" = "END";
-    };}
-  ];
 
   #====<< Nix specific settings >>=============================================>
   system.stateVersion = "24.11";  # What version of NixOS configs to use.

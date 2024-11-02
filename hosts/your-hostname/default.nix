@@ -1,8 +1,4 @@
-{ pkgs, host, ... }:
-
-let
-  consolefontsize = "16";
-in {
+{ pkgs, host, ... }: {
 
   #====<< Imported files >>====================================================>
   imports = [
@@ -10,6 +6,7 @@ in {
     ./disko.nix
     ./hardware-configuration.nix
     ./../../configs/configuration.nix
+    ./../../configs/keymap.nix
   ];
 
   #====<< Bootloader >>========================================================>
@@ -25,11 +22,16 @@ in {
     consoleMode = "0";
     memtest86.enable = true;
   };
-  # console = {
-  #   earlySetup = true;
-  #   font = "ter-i${consolefontsize}b";
-  #   packages = [ pkgs.terminus_font ];
-  # };
+
+  #====<< Misc options >>======================================================>
+  nixnixpkgs.config.allowUnfree = false;
+  console = {
+    earlySetup = true;
+    font = 
+    let fontsize = "16";
+    in "ter-i${fontsize}b";
+    packages = [ pkgs.terminus_font ];
+  };
 
   #====<< Linux kernel options >>==============================================>
   boot = {
@@ -38,7 +40,7 @@ in {
     # stable kernel. You can also select a specific version of the kernel like:
     # `pkgs.linuxKernel.kernels.linux_6_1`
     kernelPackages = pkgs.linuxPackages_latest;
-    initrd.systemd.enable = true;
+    initrd.systemd.enable = false;
   };
 
   #====<< Hardware Options >>==================================================>
