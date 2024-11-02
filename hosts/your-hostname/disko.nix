@@ -1,13 +1,20 @@
 let
+  # The type of disk your system has.
   disktype =
     # "sda"
     # "nvme0n1"
   ;
+  # The size of the swap file. Uncomment the `/swap` subvolume to enable swap.
+  # If you want hibernation then this needs to be larger than the size of your
+  # RAM. Beware; changing the size after installation is not intuitive.
+  swapsize = "8G";
+  # This is needed for hibernation. After boot, Run `swap-offset` and put the
+  # number here. The option that uses this variable is at the bottom of the file
+  # and needs to be uncommented for hibernation to work.
+  resume-offset = "533760";
 in {
-  # ZRAM creates a block device in you RAM that works as swap. It compresses all
-  # the contents moved there, effectively increasing your RAM size at the cost
-  # of some processing power. https://nixos.wiki/wiki/Swap#Enable_zram_swap
-  zramSwap.enable = false;
+
+  #====<< Main Disk >>=========================================================>
   # This is the main disk, arbitrarily named "mainDisk". This disk will contain
   # all the contents needed to boot into a working NixOS system. If you want
   # another disk to be itegrated into your system you can do so by adding
@@ -51,9 +58,10 @@ in {
                   mountpoint = "/home";
                   mountOptions = [ "compress=zstd" ];
                 };
-                "/swap" = { # Swap. For extra RAM or hibernation.
-                  mountpoint = "/.swap";
-                };
+                # "/swap" = { # Swap. For extra RAM or hibernation.
+                #   mountpoint = "/.swap";
+                #   swap.swapfile.size = swapsize;
+                # };
               }; # Subvolumes
             }; # Content
           # }; # LUKS content
@@ -61,4 +69,14 @@ in {
       }; # Partitions
     }; # Content
   }; # Main Drive
+
+  #====<< Other options >>=====================================================>
+  # ZRAM creates a block device in you RAM that works as swap. It compresses all
+  # the contents moved there, effectively increasing your RAM size at the cost
+  # of some processing power. https://nixos.wiki/wiki/Swap#Enable_zram_swap
+  zramSwap.enable = true;
+  # uncomment the below if you want to use hibernation.
+  # boot.kernelParams = [ "resume_offset=${resume-offset}" ];
+  # boot.resumeDevice = "/dev/disk/by-label/nixos";
+
 }

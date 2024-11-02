@@ -25,11 +25,11 @@ in {
     consoleMode = "0";
     memtest86.enable = true;
   };
-  console = {
-    earlySetup = true;
-    font = "ter-i${consolefontsize}b";
-    packages = [ pkgs.terminus_font ];
-  };
+  # console = {
+  #   earlySetup = true;
+  #   font = "ter-i${consolefontsize}b";
+  #   packages = [ pkgs.terminus_font ];
+  # };
 
   #====<< Linux kernel options >>==============================================>
   boot = {
@@ -38,10 +38,7 @@ in {
     # stable kernel. You can also select a specific version of the kernel like:
     # `pkgs.linuxKernel.kernels.linux_6_1`
     kernelPackages = pkgs.linuxPackages_latest;
-    # Hibernation. run: `swap-offset` and put the number as the resume_offset.
-    # kernelParams = [ "resume_offset=533760" ];
-    # resumeDevice = "/dev/disk/by-label/nixos";
-    # initrd.systemd.enable = true;
+    initrd.systemd.enable = true;
   };
 
   #====<< Hardware Options >>==================================================>
