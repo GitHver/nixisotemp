@@ -491,11 +491,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1737921957,
-        "narHash": "sha256-t6F6oyUe/2SYUtRq7J8pdotbFKq3q2v2s5K0jGHg49k=",
+        "lastModified": 1738878498,
+        "narHash": "sha256-mzUthXWBmqi+j3CIgqBjVcFqJJECNoBmQbyr5Bv6KQo=",
         "owner": "GitHver",
         "repo": "nixisoextras",
-        "rev": "4d397e4a2ac6566c91b9df2bc648e126aa77e829",
+        "rev": "8fe137f8d2994d1e51f22bcb9420cef7f387cf7b",
         "type": "github"
       },
       "original": {

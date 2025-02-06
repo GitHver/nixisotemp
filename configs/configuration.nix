@@ -33,8 +33,8 @@ in { config = {
   #====<< Localization & internationalization >>===============================>
   localization = {
     # i18n locale. You can find available locales with `locale -a`.
-    language   = "en_AU" + ".UTF-8";
-    formatting = "is_IS" + ".UTF-8";
+    language   = "language-locale";
+    formatting = "formatting-locale";
     # Your time zone. See all available with `timedatectl list-timezones`.
     timezone   = "Atlantic/Reykjavik";
   };
