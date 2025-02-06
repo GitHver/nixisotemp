@@ -10,9 +10,9 @@ in {
     admins = makeUsers {
       userpaths = listFilesRecursive ./users; 
       userrules = [ "wheel" "networkmanager" ]; };
-    guests = makeUsers {
-      userpaths = listFilesRecursive ./guests;
-      userrules = [ "networkmanager" ]; };
+    # guests = makeUsers {
+    #   userpaths = listFilesRecursive ./guests;
+    #   userrules = [ "networkmanager" ]; };
   in admins
   # // guests
   ;

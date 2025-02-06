@@ -32,11 +32,14 @@
     #====<< Required variables >>======>
     lib = nixpkgs.lib // inputs.nixisoextras.lib;
     #====<< Used functions >>==========>
-    inherit (lib) nixosSystem namesOfDirsIn genAttrs;
-    inherit (lib.lists) flatten;
+    # inherit (builtins) attrNames readDir;
+    inherit (lib) nixosSystem namesOfDirsIn genAttrs attrsFromList;
+    inherit (lib.lists) flatten forEach;
     inherit (lib.filesystem) listFilesRecursive;
     #====<< Host information >>========>
     hostnames = namesOfDirsIn ./hosts;
+    # hosts = forEach hostnames (host: import ./hosts/${host}/info.nix);
+    # This is only for the formatter, as it is not tied to an already active system.
     genForAllSystems = (funct: genAttrs supportedSystems funct);
     supportedSystems = [
       "x86_64-linux"
@@ -44,18 +47,32 @@
     ];
   in {
 
+    #====<< Nix Code Formatter >>==============================================>
+    # This defines the formatter that is used when you run `nix fmt`. Since this
+    # calls the formatters package, you'll need to define which architecture
+    # package is used so different computers can fetch the right package.
+    formatter = genForAllSystems (system:
+      let pkgs = import nixpkgs { inherit system; };
+      in pkgs.nixpkgs-fmt
+      or pkgs.nixfmt-rfc-style
+      or pkgs.alejandra
+    );
+
     #====<< NixOS Configurations >>============================================>
     # Here are all your different configurations. The function below takes a
     # list of all the hostnames for your hosts (determined by the names of the
     # directories in the `/hosts` directory) and creates an attribute set for
     # each host in the list.
-    nixosConfigurations = genAttrs hostnames (host: nixosSystem {
-      specialArgs = { inherit lib inputs host; };
-      modules = flatten [
-        ./hosts/${host}
-        self.nixosModules.full
-      ];
-    });
+    nixosConfigurations = attrsFromList (forEach hostnames (host: {
+      "${host}" = nixosSystem {
+        specialArgs = { inherit lib inputs host; };
+        modules = flatten [
+          ./hosts/${host}
+          self.nixosModules.full
+          { nixpkgs.overlays = flatten [ self.overlays.inputOverlays ]; }
+        ];
+      };
+    }));
 
     #====<< NixOS Modules >>===================================================>
     # This creates an attributeset where the default attribute is a list of
@@ -71,16 +88,17 @@
       ]);
     };
 
-    #====<< Nix Code Formatter >>==============================================>
-    # This defines the formatter that is used when you run `nix fmt`. Since this
-    # calls the formatters package, you'll need to define which architecture
-    # package is used so different computers can fetch the right package.
-    formatter = genForAllSystems (system:
-      let pkgs = import nixpkgs { inherit system; };
-      in pkgs.nixpkgs-fmt
-      or pkgs.nixfmt-rfc-style
-      or pkgs.alejandra
-    );
+    #====<< Overlays >>========================================================>
+    # Overlays are perhaps the most powerful feature Nix has. You can use them
+    # to overlay overrides to existing packages in the with custom options. This
+    # alloes you to apply your own patches or build flags with out needing to
+    # maintain a fork of nixpkgs or adding a third party repository.
+    overlays = {
+      inputOverlays = (with inputs; [
+        nixisoextras.overlays.default
+      ]);
+      # someOtherOverlay = overlay;
+    };
 
   }; ############### The end of the `outputs` scope ############################
 

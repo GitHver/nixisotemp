@@ -13,7 +13,11 @@ in {
   options.services.cosmic = {
     enable = mkEnableOption "The COSMIC desktop environment";
     greeter.enable = mkEnableOption "The COSMIC display manager";
-    xwayland.enable = mkEnableOption "XWayland in the COSMIC compositor";
+    useXwayland = mkOption {
+      type = bool;
+      default = true;
+      description = "XWayland in the COSMIC compositor";
+    };
     useGnomeUtils = mkOption {
       type = bool;
       default = true;
@@ -24,10 +28,11 @@ in {
   config = {
     services = {
       desktopManager.cosmic.enable = cfg.enable;
-      desktopManager.cosmic.xwayland.enable = cfg.xwayland.enable;
+      desktopManager.cosmic.xwayland.enable = cfg.useXwayland;
       displayManager.cosmic-greeter.enable = cfg.greeter.enable;
     };
     environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = mkIf cfg.enable 1;
+    # This here is for default applications missing from COSMIC.
     environment.systemPackages = mkIf cfg.useGnomeUtils (with pkgs; [
       #==<< System management >>=========>
       mission-center      # Resource monitoring tool

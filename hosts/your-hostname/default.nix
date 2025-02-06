@@ -16,20 +16,22 @@
   # rebuilding any changes here. Best to first use a virtual machine with:
   # $ sudo nixos-rebuild build-wm-with-bootloader
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.timeout = 5;
   boot.loader.systemd-boot = {
     enable = true;
     configurationLimit = 20;
-    consoleMode = "0";
-    memtest86.enable = true;
+    consoleMode = "1";
+    memtest86.enable = false;
+    netbootxyz.enable = false;
   };
 
   #====<< Misc options >>======================================================>
-  nixnixpkgs.config.allowUnfree = false;
+  nixpkgs.config.allowUnfree = true;
   console = {
     earlySetup = true;
     font = 
-    let fontsize = "16";
-    in "ter-i${fontsize}b";
+      let fontsize = "16";
+      in "ter-i${fontsize}b";
     packages = [ pkgs.terminus_font ];
   };
 
@@ -39,16 +41,25 @@
     # it is set to the latest release. Uncomment the line below to go use the
     # stable kernel. You can also select a specific version of the kernel like:
     # `pkgs.linuxKernel.kernels.linux_6_1`
-    kernelPackages = pkgs.linuxPackages_latest;
-    initrd.systemd.enable = false;
+    # kernelPackages = pkgs.linuxPackages_latest;
+    # initrd.systemd.enable = false;
+  };
+
+  #====<< Swap options >>======================================================>
+  # ZRAM creates a block device in you RAM that works as swap. It compresses all
+  # the contents moved there, effectively increasing your RAM size at the cost
+  # of some processing power. https://nixos.wiki/wiki/Swap#Enable_zram_swap
+  zramSwap = {
+    enable = true;
+    memoryPercent = 50;
+    algorithm = "zstd";
   };
 
   #====<< Hardware Options >>==================================================>
   hardware = {
-    # enableRedistributableFirmware = true;
+    enableRedistributableFirmware = true;
     # enableAllFirmware = false;
-    amdgpu.enable = false;
-    nvidia.enable = false;
+    # amdgpu.enable = true;
   };
 
   #====<< Heavy / privileged programs >>=======================================>
@@ -56,6 +67,9 @@
     qemuvm.enable = false;     # The QEMU virtual machine.
     steam.full.enable = false; # Steam module with all permissions.
   };
+  environment.systemPackages = (with pkgs; [
+    # some-package
+  ]);
 
   #====<< Network config >>====================================================>
   networking = {

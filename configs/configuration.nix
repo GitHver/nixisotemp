@@ -1,4 +1,4 @@
-{ pkgs, lib, inputs, ... }:
+{ pkgs, lib, config, inputs, ... }:
 
 let
   inherit (lib) mkDefault;
@@ -21,14 +21,13 @@ in { config = {
   # Here you can decide if you to allow non open source packages to be installed
   # on your system. You should try to disable this and see what it says!
   nixpkgs.config.allowUnfree = mkDefault false;
-  # This adds `~/.local/bin` to the PATH variable, allowing you to have a place
-  # to put unpatched executables like scripts.
-  environment.localBinInPath = true;
   # Below is where all the sytem-wide packages are installed.
   # Go to https://search.nixos.org/packages to search for packages.
   environment.systemPackages = (with pkgs; [
-    mission-center      # Resource monitoring tool
+    wl-clipboard
     # some-package
+  ]) ++ (with pkgs.sputnix; [
+    home-manager-setup
   ]);
 
   #====<< Localization & internationalization >>===============================>
@@ -65,7 +64,13 @@ in { config = {
       trusted-users = [ "root" "@wheel" ];
       # These are features needed for flakes to work. You can find more at:
       # https://nix.dev/manual/nix/2.24/development/experimental-features
-      experimental-features = [ "flakes" "nix-command" /*"recursive-nix"*/ ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+        "pipe-operators"
+        # "recursive-nix"
+        # "dynamic-derivations"
+      ];
     };
     # For `nixd` package and option evaluation
     nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
