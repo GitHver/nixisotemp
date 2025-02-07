@@ -41,12 +41,12 @@ in { config = {
 
   #====<< Keyboard >>==========================================================>
   console.useXkbConfig = true;  # Makes the virtual terminal use the xkb config.
-  services.xserver.xkb = {
-    layout  = "is";           # Set the language keymap for XKeyboard.
-    variant = "";             # Any special layout you use like colemak, dvorak.
-    model   = "pc104";        # The keyboard model. default is 104 key.
-    options = "caps:escape";  # Here, Capslock is an additional escape key. 
-  };
+  # services.xserver.xkb = {
+  #   layout  = "is";           # Set the language keymap for XKeyboard.
+  #   variant = "";             # Any special layout you use like colemak, dvorak.
+  #   model   = "pc104";        # The keyboard model. default is 104 key.
+  #   options = "caps:escape";  # Here, Capslock is an additional escape key. 
+  # };
 
   #====<< Nix specific settings >>=============================================>
   system.stateVersion = "24.11";  # What version of NixOS configs to use.

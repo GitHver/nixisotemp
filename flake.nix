@@ -14,17 +14,17 @@
   inputs = {
     #====<< Core Nixpkgs >>====================================================>
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    #====<< Cosmic Desktop >>==================================================>
+    cosmic.url = "github:lilyinstarlight/nixos-cosmic";
+    cosmic.inputs.nixpkgs.follows = "nixpkgs";
     #====<< Extension utils >>=================================================>
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
     nixisoextras.url = "github:GitHver/nixisoextras";
     nixisoextras.inputs.nixpkgs.follows = "nixpkgs";
-    #====<< Cosmic Desktop >>==================================================>
-    cosmic.url = "github:lilyinstarlight/nixos-cosmic";
-    cosmic.inputs.nixpkgs.follows = "nixpkgs";
     #====<< Other >>===========================================================>
-    xremap.url = "github:xremap/nix-flake";
-    xremap.inputs.nixpkgs.follows = "nixpkgs";
+    # xremap.url = "github:xremap/nix-flake";
+    # xremap.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   #====<< Outputs Field >>=====================================================>
@@ -45,7 +45,7 @@
       "x86_64-linux"
       # "aarch64-linux"
     ];
-  in {
+  in { ############# The `outputs` scope #######################################
 
     #====<< Nix Code Formatter >>==============================================>
     # This defines the formatter that is used when you run `nix fmt`. Since this
@@ -84,7 +84,7 @@
       inputModules = (with inputs; [
         disko.nixosModules.default
         cosmic.nixosModules.default
-        xremap.nixosModules.default
+        # xremap.nixosModules.default
       ]);
     };
 

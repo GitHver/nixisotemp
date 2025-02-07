@@ -7,7 +7,8 @@ let
     type = "luks";
     name = "crypted";
     settings.allowDiscards = true;
-    settings.keyFile = "/tmp/decrypt_passphrase.txt";
+    # Uncomment to use file encryption
+    # settings.keyFile = "/tmp/decrypt_passphrase.txt";
     content = mainpool-cont;
   };
   return-cont = bool: if bool then luks-cont else mainpool-cont;
