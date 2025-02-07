@@ -1,4 +1,42 @@
-{
+let
+  mainpool-cont = {
+    type = "lvm_pv";
+    vg = "mainpool";
+  };
+  luks-cont = {
+    type = "luks";
+    name = "crypted";
+    settings.allowDiscards = true;
+    settings.keyFile = "/tmp/decrypt_passphrase.txt";
+    content = mainpool-cont;
+  };
+  return-cont = bool: if bool then luks-cont else mainpool-cont;
+  # Squashed for easier parsing.
+  encrypt=false;
+in {
+
+  #====<< Main LVM pool >>=====================================================>
+  # Here is where you define logical volumes for your pool. All drives with a
+  # partition where the contents are `return-cont` will have those partitions
+  # added to the pool.
+  disko.devices.lvm_vg = {
+    mainpool.type = "lvm_vg";
+    mainpool.lvs = {
+
+      #==<< Root Volume >>=============>
+      root = {
+        size = "100%";
+        content = {
+          type = "filesystem";
+          format = "xfs";
+          mountpoint = "/";
+          mountOptions = [ "defaults" ];
+        };
+      };
+
+    }; # Main pool logical volumes
+  }; # LVM volume groups
+
   #====<< Main Disk >>=========================================================>
   # This is the main disk, arbitrarily named "mainDisk". This disk will contain
   # all the contents needed to boot into a working NixOS system. If you want
@@ -13,6 +51,7 @@
     content.partitions = {
 
       #==<< Boot Partition >>==========>
+      # This will not be apart of the LVM pool.
       ESP = {
         type = "EF00";
         size = "512M";
@@ -25,23 +64,32 @@
       };
 
       #==<< Main Partition >>==========>
-      root = {
+      main = {
         size = "100%";
-        # Uncomment the below to use LUKS encryption.
-        # content = {
-        #   type = "luks";
-        #   name = "crypted";
-        #   settings.allowDiscards = true;
-        # }; content.
-        content = {
-          type = "filesystem";
-          format = "xfs"; # Can also be "ext4" without needing any changes.
-          mountpoint = "/";
-          # mountOptions = [ "defaults" ];
-        };
+        content = return-cont encrypt;
       };
 
     }; # Partitions
   }; # Main Drive
 
 }
+        # # Uncomment this to use LUKS encryption.
+        # content = {
+        #   type = "luks";
+        #   name = "crypted";
+        #   settings.allowDiscards = true;
+        # }; content.
+        # {
+        #   type = "lvm_pv";
+        #   vg = "mainpool";
+        #   # # Root, singular partition.
+        #   # mountpoint = "/";
+        #   # # XFS. A high performance, reliable filesystem
+        #   # type = "filesystem";
+        #   # format = "xfs";
+        #   # mountOptions = [ "defaults" ];
+        #   # # BTRFS. A modern `copy on write` filesystem
+        #   # type = "btrfs"; # since btrfs is special with its own LVM
+        #   # extraArgs = [ "-f" ]; # Override existing partition
+        #   # mountOptions = [ "compress=zstd" ];
+        # };

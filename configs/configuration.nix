@@ -8,8 +8,8 @@ in { config = {
   #====<< System Services >>===================================================>
   services = {
     # The COSMIC desktop environment. Wayland based & Rust made.
-    cosmic.enable = true;
-    cosmic.greeter.enable = true;
+    # cosmic.enable = true;
+    # cosmic.greeter.enable = true;
     # Printer protocols. Enable for support.
     printing.enable = false;
   };
